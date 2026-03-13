@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:mbspos/screens/akunpage/akun_page.dart';
-import 'package:mbspos/screens/dashboard/dashboard_page.dart';
+import 'package:mbspos/ui/akunpage/akun_page.dart';
+import 'package:mbspos/ui/dashboard/dashboard_page.dart';
 
 class MainframeProvider with ChangeNotifier {
   int _activeTab = 0;

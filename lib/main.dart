@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:mbspos/screens/mainframe.dart';
-import 'package:mbspos/utils/provider.dart';
+import 'package:mbspos/ui/mainframe.dart';
+import 'package:mbspos/providers/provider.dart';
 import 'package:provider/provider.dart';
 
 void main() async {

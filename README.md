@@ -27,7 +27,7 @@ MBS PoS adalah aplikasi mobile point of sale yang berjalan secara offline untuk 
     - Pembelian
 
 3. Penjualan
-    - Pensanan Penjualan
+    - Pesanan Penjualan
     - Penjualan Kredit (Back Office)
     - Penjualan Kasir
     - Cetak & Bagikan Struk
@@ -42,3 +42,12 @@ MBS PoS adalah aplikasi mobile point of sale yang berjalan secara offline untuk 
     - Penjualan harian
     - Rekapitulasi Penjualan Bulanan
     - Kelas Barang per periode
+
+
+# Database
+## Tabel Item
+Tabel untuk menampung data master item diberi nama [___tb_item___]
+
+# Algoritma launch
+1. Periksa apakah ada data usaha yang sudah tersimpan di database
+    - Jika belum ada, form input data registrasi awal usaha akan ditampilkan
