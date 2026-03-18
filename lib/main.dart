@@ -1,7 +1,4 @@
-import 'dart:developer';
-
 import 'package:flutter/material.dart';
-import 'package:mbspos/ui/mainframe.dart';
 import 'package:mbspos/providers/provider.dart';
 import 'package:mbspos/widgets/custombutton.dart';
 import 'package:mbspos/widgets/customtextbox.dart';
@@ -62,8 +59,8 @@ class Homepage extends StatelessWidget {
             CustomButton(
               onPress: () {},
             ),
-            Padding(
-              padding: const EdgeInsets.all(8.0),
+            const Padding(
+              padding: EdgeInsets.all(8.0),
               child: Customtextbox(
                 boxMode: BoxMode.outlined,
               ),

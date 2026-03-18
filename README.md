@@ -56,11 +56,22 @@ MBS PoS adalah aplikasi mobile point of sale yang berjalan secara offline untuk 
 [___tb_usaha___] : Tabel data usaha
 
 ## Table schema
-Skema tabel di organisasikan pada kelas-kelas tersendiri di folder tables untuk memudahkan perawatan, diberi suffix nama ***_table***
+Skema tabel di organisasikan pada kelas-kelas tersendiri di folder tables untuk memudahkan perawatan, diberi nama suffix ***_table***
 
 ## DAO (Data access object)
 
-
 # Algoritma launch
-1. Periksa apakah ada data usaha yang sudah tersimpan di database
-    - Jika belum ada, form input data registrasi awal usaha akan ditampilkan
+1. Periksa koneksi perangkat, 
+    - ada, lanjut ke no 2 
+    - tidak ada, lanjut ke no 3.
+2. Periksa internet, jika ada ambil setting dinamis dari firebase simpan di pengaturan local (db), lanjut ke nomor 4.
+3. Ambil setting default
+4. Periksa nama usaha di table,
+    - belum ada, lanjut ke nomor 5
+    - sudah ada, lanjut ke nomor 6
+5. Tampilkan form registrasi usaha
+6. Periksa pengaturan PIN Login
+    - ada, lanjut ke nomor 7 
+    - tidak ada, lanjut ke nomor 8
+7. Tampilkan halaman login PIN
+8. Tampilkan dashboard

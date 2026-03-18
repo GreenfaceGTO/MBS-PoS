@@ -1,20 +1,22 @@
-import 'package:mbspos/database/tables/item_table.dart';
-import 'package:mbspos/database/tables/itemsat_table.dart';
-import 'package:mbspos/database/tables/mitra_table.dart';
-import 'package:mbspos/database/tables/mutasiitem_table.dart';
-import 'package:mbspos/database/tables/ref_table.dart';
-import 'package:mbspos/database/tables/saldoapp_table.dart';
-import 'package:mbspos/database/tables/transdetail_table.dart';
-import 'package:mbspos/database/tables/transheader_table.dart';
-import 'package:mbspos/database/tables/usaha_table.dart';
+import 'package:mbspos/database/table_schema/item_table.dart';
+import 'package:mbspos/database/table_schema/itemsat_table.dart';
+import 'package:mbspos/database/table_schema/mitra_table.dart';
+import 'package:mbspos/database/table_schema/mutasiitem_table.dart';
+import 'package:mbspos/database/table_schema/ref_table.dart';
+import 'package:mbspos/database/table_schema/saldoapp_table.dart';
+import 'package:mbspos/database/table_schema/transdetail_table.dart';
+import 'package:mbspos/database/table_schema/transheader_table.dart';
+import 'package:mbspos/database/table_schema/usaha_table.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:path/path.dart';
 
 class Dbhelper {
   static Database? _db;
 
-  static Future<Database> get db async {
-    _db ??= await _init();
+  static Future<Database> get database async {
+    if (_db != null) return _db!;
+
+    _db = await _init();
     return _db!;
   }
 
@@ -39,7 +41,7 @@ class Dbhelper {
   static Future<void> _onUpgrade(
       Database db, int oldVersion, int newVersion) async {
     if (oldVersion < 2) {
-      // contoh jika ada perubaha skema
+      // contoh jika ada perubahan skema
       // await db.execute('alter table....')
     }
   }
