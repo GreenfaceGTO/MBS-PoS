@@ -1,6 +1,10 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:mbspos/ui/mainframe.dart';
 import 'package:mbspos/providers/provider.dart';
+import 'package:mbspos/widgets/custombutton.dart';
+import 'package:mbspos/widgets/customtextbox.dart';
 import 'package:provider/provider.dart';
 
 void main() async {
@@ -21,25 +25,52 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'Flutter Demo',
       theme: ThemeData(
-        // This is the theme of your application.
-        //
-        // TRY THIS: Try running your application with "flutter run". You'll see
-        // the application has a purple toolbar. Then, without quitting the app,
-        // try changing the seedColor in the colorScheme below to Colors.green
-        // and then invoke "hot reload" (save your changes or press the "hot
-        // reload" button in a Flutter-supported IDE, or press "r" if you used
-        // the command line to start the app).
-        //
-        // Notice that the counter didn't reset back to zero; the application
-        // state is not lost during the reload. To reset the state, use hot
-        // restart instead.
-        //
-        // This works for code too, not just values: Most code changes can be
-        // tested with just a hot reload.
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
+        visualDensity: const VisualDensity(vertical: -4),
+        colorScheme: ColorScheme.fromSeed(
+                seedColor: Colors.indigo, brightness: Brightness.light)
+            .copyWith(
+                primary: Colors.indigo,
+                secondary: Colors.indigoAccent,
+                surface: Colors.white),
+        textTheme: ThemeData.light().textTheme.copyWith(
+            bodyMedium: const TextStyle(fontSize: 11),
+            titleLarge: const TextStyle(fontSize: 15)),
         useMaterial3: true,
       ),
-      home: const Mainframe(),
+      home: const Homepage(),
+    );
+  }
+}
+
+class Homepage extends StatelessWidget {
+  const Homepage({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text("MBS PoS"),
+      ),
+      body: Center(
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            const Text("Sample custom widget preview"),
+            const SizedBox(
+              height: 8,
+            ),
+            CustomButton(
+              onPress: () {},
+            ),
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Customtextbox(
+                boxMode: BoxMode.outlined,
+              ),
+            )
+          ],
+        ),
+      ),
     );
   }
 }

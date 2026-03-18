@@ -45,8 +45,21 @@ MBS PoS adalah aplikasi mobile point of sale yang berjalan secara offline untuk 
 
 
 # Database
-## Tabel Item
-Tabel untuk menampung data master item diberi nama [___tb_item___]
+[___tb_item___] : Tabel data master item
+[___tb_itemsat___] : Tabel data satuan dan konversi item
+[___tb_mitra___] : Tabel data master mitra ***pelanggan*** dan ***supplier***
+[___tb_mutasiitem___] : Tabel data mutasi barang
+[___tb_ref___] : Tabel data referensi satuan, kategori dan merek
+[___tb_saldoapp___] : Tabel data saldo biaya penggunaan aplikasi
+[___tb_trxdtl___] : Tabel detail transaksi
+[___tb_trxhd___] : Tabel header transaksi
+[___tb_usaha___] : Tabel data usaha
+
+## Table schema
+Skema tabel di organisasikan pada kelas-kelas tersendiri di folder tables untuk memudahkan perawatan, diberi suffix nama ***_table***
+
+## DAO (Data access object)
+
 
 # Algoritma launch
 1. Periksa apakah ada data usaha yang sudah tersimpan di database
