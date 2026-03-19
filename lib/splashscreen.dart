@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:mbspos/providers/startup_provider.dart';
+import 'package:mbspos/service/startup_service.dart';
+import 'package:mbspos/ui/dummy_page.dart';
+import 'package:mbspos/ui/register_page.dart';
 import 'package:provider/provider.dart';
 
 class Splashscreen extends StatefulWidget {
@@ -11,18 +14,30 @@ class Splashscreen extends StatefulWidget {
 
 class _SplashscreenState extends State<Splashscreen> {
   @override
-  void initState() {
-    super.initState();
-
-    Future.microtask(() async {
-      if (mounted) {
-        final provider = context.read<StartupProvider>();
-      }
+  Widget build(BuildContext context) {
+    return Consumer<StartupProvider>(builder: (context, prov, _) {
+      return prov.isLoading
+          ? _splash()
+          : prov.route == AppStartRoute.register
+              ? const RegisterPage()
+              : (prov.route == AppStartRoute.login
+                  ? const DummyPage(caption: "Login Page")
+                  : const DummyPage(caption: "Dashboard Page"));
     });
   }
 
-  @override
-  Widget build(BuildContext context) {
-    return const Placeholder();
+  Widget _splash() {
+    return Scaffold(
+      body: Center(
+        child: SizedBox(
+          width: 200,
+          height: 150,
+          child: Image.asset(
+            "assets/mbspos.png",
+            fit: BoxFit.cover,
+          ),
+        ),
+      ),
+    );
   }
 }

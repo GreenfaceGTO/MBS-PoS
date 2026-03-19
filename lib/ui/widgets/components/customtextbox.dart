@@ -8,13 +8,15 @@ class Customtextbox extends StatelessWidget {
       {super.key,
       this.hintText = 'hint',
       this.boxMode = BoxMode.flat,
-      this.inputType = TextInputType.none,
-      this.inputAction = TextInputAction.done});
+      this.inputType = TextInputType.text,
+      this.inputAction = TextInputAction.done,
+      this.maxLine = 1});
 
   final String hintText;
   final BoxMode boxMode;
   final TextInputType inputType;
   final TextInputAction inputAction;
+  final int maxLine;
 
   @override
   Widget build(BuildContext context) {
@@ -24,6 +26,7 @@ class Customtextbox extends StatelessWidget {
       decoration: InputDecoration(
           hintText: hintText,
           border: boxMode == BoxMode.flat ? null : const OutlineInputBorder()),
+      maxLines: maxLine,
     );
   }
 }

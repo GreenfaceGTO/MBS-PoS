@@ -9,17 +9,20 @@ class CustomButton extends StatelessWidget {
       this.onPress,
       this.cornerRadius = 12,
       this.caption = "Button",
-      this.elevation = 4});
+      this.elevation = 4,
+      this.width});
   final ButtonMode mode;
   final VoidCallback? onPress;
   final String caption;
   final double cornerRadius;
   final double elevation;
+  final double? width;
 
   @override
   Widget build(BuildContext context) {
     return SizedBox(
         height: 45,
+        width: width,
         child: mode == ButtonMode.outlined
             ? _outlinedButton()
             : (mode == ButtonMode.elevated

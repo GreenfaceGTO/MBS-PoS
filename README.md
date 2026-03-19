@@ -60,18 +60,18 @@ Skema tabel di organisasikan pada kelas-kelas tersendiri di folder tables untuk 
 
 ## DAO (Data access object)
 
-# Algoritma launch
+# Algoritma peluncuran
 1. Periksa koneksi perangkat, 
-    - ada, lanjut ke no 2 
-    - tidak ada, lanjut ke no 3.
-2. Periksa internet, jika ada ambil setting dinamis dari firebase simpan di pengaturan local (db), lanjut ke nomor 4.
+    - ada, ___***lanjut ke no 2***___ 
+    - tidak ada, ___***lanjut ke no 3***___.
+2. Periksa internet, jika ada ambil setting dinamis dari firebase simpan di pengaturan local (db), ___***lanjut ke nomor 4***___.
 3. Ambil setting default
 4. Periksa nama usaha di table,
-    - belum ada, lanjut ke nomor 5
-    - sudah ada, lanjut ke nomor 6
+    - belum ada, ___***lanjut ke nomor 5***___
+    - sudah ada, ___***lanjut ke nomor 6***___
 5. Tampilkan form registrasi usaha
 6. Periksa pengaturan PIN Login
     - ada, lanjut ke nomor 7 
-    - tidak ada, lanjut ke nomor 8
+    - tidak ada, ___***lanjut ke nomor 8***___
 7. Tampilkan halaman login PIN
 8. Tampilkan dashboard

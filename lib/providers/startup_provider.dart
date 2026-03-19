@@ -7,10 +7,15 @@ class StartupProvider with ChangeNotifier {
   AppStartRoute? route;
   bool isLoading = true;
 
-  StartupProvider(this.service);
+  // deklarasi konstruktor sekaligus inisialisasi
+  StartupProvider(this.service) {
+    init();
+  }
 
   Future<void> init() async {
     route = await service.initializing();
+
+    await Future.delayed(const Duration(seconds: 3));
     isLoading = false;
     notifyListeners();
   }
