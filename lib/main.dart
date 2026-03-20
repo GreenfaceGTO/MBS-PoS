@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:mbspos/providers/providers.dart';
 import 'package:mbspos/providers/startup_provider.dart';
 import 'package:mbspos/service/connectivity_service.dart';
 import 'package:mbspos/service/startup_service.dart';
@@ -19,15 +20,8 @@ class MyApp extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    final koneksi = ConnectivityService();
-
-    final startupService = AppStartUpService(koneksi);
-
     return MultiProvider(
-      providers: [
-        ChangeNotifierProvider(
-            create: (context) => StartupProvider(startupService))
-      ],
+      providers: AppProviders().providers,
       child: MaterialApp(
         title: 'Flutter Demo',
         theme: AppTema.tema,

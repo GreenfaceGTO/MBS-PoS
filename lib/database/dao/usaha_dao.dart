@@ -12,4 +12,12 @@ class UsahaDao {
 
     return result.map((e) => UsahaModel.fromMap(e)).toList();
   }
+
+  // -----------------------
+  // Menyimpan data usaha
+  // -----------------------
+  static Future<void> saveDataUsaha({required UsahaModel data}) async {
+    final db = await Dbhelper.database;
+    await db.insert(UsahaTable.table, data.toMap());
+  }
 }

@@ -71,7 +71,7 @@ Skema tabel di organisasikan pada kelas-kelas tersendiri di folder tables untuk 
     - sudah ada, ___***lanjut ke nomor 6***___
 5. Tampilkan form registrasi usaha
 6. Periksa pengaturan PIN Login
-    - ada, lanjut ke nomor 7 
+    - ada, ___***lanjut ke nomor 7***___ 
     - tidak ada, ___***lanjut ke nomor 8***___
 7. Tampilkan halaman login PIN
 8. Tampilkan dashboard
