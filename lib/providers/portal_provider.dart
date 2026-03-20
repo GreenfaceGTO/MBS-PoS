@@ -84,8 +84,11 @@ class PortalProvider with ChangeNotifier {
         userName: user,
         password: password);
 
+    log("data : ${data.toMap().toString()}");
+
     try {
       await UsahaDao.saveDataUsaha(data: data);
+
       return true;
     } catch (e) {
       log("$runtimeType : Error ${e.toString()}");

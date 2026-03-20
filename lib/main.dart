@@ -1,9 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:mbspos/providers/providers.dart';
-import 'package:mbspos/providers/startup_provider.dart';
-import 'package:mbspos/service/connectivity_service.dart';
-import 'package:mbspos/service/startup_service.dart';
 import 'package:mbspos/splashscreen.dart';
+import 'package:mbspos/ui/dashboard_page.dart';
 import 'package:mbspos/ui/dummy_page.dart';
 import 'package:mbspos/ui/theme.dart';
 import 'package:provider/provider.dart';
@@ -29,7 +27,7 @@ class MyApp extends StatelessWidget {
         routes: {
           "/register": (_) => const DummyPage(caption: "Register Page"),
           "/login": (_) => const DummyPage(caption: "Login Page"),
-          "/dashboard": (_) => const DummyPage(caption: "Dashboard Page")
+          "/dashboard": (_) => const DashboardPage()
         },
       ),
     );

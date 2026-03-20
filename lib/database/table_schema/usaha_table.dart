@@ -1,6 +1,9 @@
 class UsahaTable {
   static const table = 'tb_usaha';
 
+  // ---------------------
+  // Query create table
+  // ---------------------
   static const create = '''CREATE TABLE $table (
     nama_usaha TEXT,
     alamat     TEXT,

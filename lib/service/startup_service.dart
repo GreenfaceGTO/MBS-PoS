@@ -8,7 +8,6 @@ enum AppStartRoute { register, login, dashboard }
 
 class AppStartUpService {
   final ConnectivityService connectivityService;
-
   AppStartUpService(this.connectivityService);
 
   Future<AppStartRoute> initializing() async {
@@ -26,15 +25,18 @@ class AppStartUpService {
     }
 
     log("$runtimeType : Mengambil data usaha...");
-    List<UsahaModel>? usaha = await UsahaDao.getDataUsaha();
-    if (usaha == null || usaha.isEmpty) {
-      return AppStartRoute.register;
+    UsahaModel? usaha = await UsahaDao.getDataUsaha();
+    if (usaha != null) {
+      log(usaha.toMap().toString());
     }
-
-    if (usaha[0].userName != null) {
-      return AppStartRoute.login;
+    if (usaha == null) {
+      return AppStartRoute.register;
     } else {
-      return AppStartRoute.dashboard;
+      if (usaha.userName != null) {
+        return AppStartRoute.login;
+      } else {
+        return AppStartRoute.dashboard;
+      }
     }
   }
 }

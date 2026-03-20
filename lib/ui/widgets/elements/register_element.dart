@@ -17,6 +17,7 @@ class _RegisterElementState extends State<RegisterElement> {
   final TextEditingController txtAlamat = TextEditingController();
   final TextEditingController txtNoTelp = TextEditingController();
   final TextEditingController txtEmail = TextEditingController();
+
   @override
   Widget build(BuildContext context) {
     return Consumer<PortalProvider>(builder: (context, prov, _) {
@@ -25,7 +26,10 @@ class _RegisterElementState extends State<RegisterElement> {
         children: [
           TextFormField(
             controller: txtKios,
+            keyboardType: TextInputType.name,
+            textInputAction: TextInputAction.next,
             decoration: const InputDecoration(hintText: "Nama Kios"),
+            onChanged: prov.setNamaKios,
             validator: (val) {
               if (val!.isEmpty) return "Wajib diisi";
               return null;
@@ -34,19 +38,27 @@ class _RegisterElementState extends State<RegisterElement> {
           spasi(),
           TextFormField(
             controller: txtAlamat,
+            textInputAction: TextInputAction.newline,
+            keyboardType: TextInputType.streetAddress,
+            onChanged: prov.setAlamat,
             decoration: const InputDecoration(hintText: "Alamat"),
             maxLines: 3,
           ),
           spasi(),
           TextFormField(
+            textInputAction: TextInputAction.next,
             controller: txtNoTelp,
+            keyboardType: TextInputType.phone,
+            onChanged: prov.setNoTelp,
             decoration: const InputDecoration(hintText: "No. Telp/HP"),
           ),
           spasi(),
           TextFormField(
+            keyboardType: TextInputType.emailAddress,
+            textInputAction: TextInputAction.done,
             controller: txtEmail,
+            onChanged: prov.setEmail,
             decoration: const InputDecoration(hintText: "Email"),
-            validator: (val) {},
           ),
         ],
       );

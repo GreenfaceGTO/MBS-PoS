@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:mbspos/providers/portal_provider.dart';
 import 'package:mbspos/ui/widgets/components/custombutton.dart';
-import 'package:mbspos/ui/widgets/elements/portal_element.dart';
 import 'package:mbspos/ui/widgets/elements/register_element.dart';
 import 'package:mbspos/ui/widgets/components/general_widget.dart';
 import 'package:provider/provider.dart';
