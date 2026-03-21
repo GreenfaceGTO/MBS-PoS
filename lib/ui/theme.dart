@@ -9,6 +9,8 @@ class AppTema {
             primary: Colors.indigo,
             secondary: Colors.indigoAccent,
             surface: Colors.white),
+    dialogTheme: DialogThemeData(
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8))),
     textTheme: ThemeData.light().textTheme.copyWith(
           bodySmall: const TextStyle(fontSize: 10),
           bodyMedium: const TextStyle(fontSize: 12),

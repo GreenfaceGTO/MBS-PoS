@@ -6,6 +6,15 @@ import 'package:mbspos/utils/preference.dart';
 mixin CacheManager {
   final Preference _pref = Preference();
 
+  // ------------------------------------------------------
+  // tab index menu data pendukung yang dipilih terakhir
+  // ------------------------------------------------------
+  void onRefTabSelected(String selectedMenu) {
+    _pref.setPrefString(key: pkSelectedRefTab, value: selectedMenu);
+  }
+
+  String? get selectedRefTabMenu => _pref.getPrefString(key: pkSelectedRefTab);
+
   // ----------------------------
   // status expand menu master
   // ----------------------------

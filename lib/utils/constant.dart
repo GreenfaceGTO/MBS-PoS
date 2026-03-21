@@ -20,6 +20,9 @@ const String pkMenuPenjualanStatus = "mnPenjualan";
 const String pkMenuPersediaanStatus = "mnPersediaan";
 const String pkMenuLaporanStatus = "mnLaporan";
 
+/// kunci untuk menyimpan tab halaman data pendukung yang dipilih terakhir
+const String pkSelectedRefTab = "reftab";
+
 // ------------------------
 // Daftar Menu Drawer
 // ------------------------

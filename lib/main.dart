@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:mbspos/providers/providers.dart';
 import 'package:mbspos/ui/splashscreen.dart';
-import 'package:mbspos/ui/dashboard_page.dart';
-import 'package:mbspos/ui/dummy_page.dart';
 import 'package:mbspos/ui/theme.dart';
 import 'package:mbspos/utils/preference.dart';
 import 'package:mbspos/utils/routes.dart';

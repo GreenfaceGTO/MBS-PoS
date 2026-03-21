@@ -73,8 +73,7 @@ class PortalProvider with ChangeNotifier {
   // submit register
   // --------------------
   Future<bool> submitRegister() async {
-    _isLoading = true;
-    notifyListeners();
+    setLoading(true);
 
     final data = UsahaModel(
         namaUsaha: namaKios,
@@ -93,7 +92,7 @@ class PortalProvider with ChangeNotifier {
     } catch (e) {
       log("$runtimeType : Error ${e.toString()}");
     } finally {
-      _isLoading = false;
+      setLoading(false);
       notifyListeners();
     }
     return false;
