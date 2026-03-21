@@ -32,7 +32,7 @@ class AppStartUpService {
     if (usaha == null) {
       return AppStartRoute.register;
     } else {
-      if (usaha.userName != null) {
+      if (usaha.password != null) {
         return AppStartRoute.login;
       } else {
         return AppStartRoute.dashboard;

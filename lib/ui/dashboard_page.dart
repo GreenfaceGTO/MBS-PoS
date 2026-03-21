@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:mbspos/constant.dart';
+import 'package:mbspos/utils/constant.dart';
 import 'package:mbspos/ui/widgets/components/customdrawer.dart';
 
 class DashboardPage extends StatefulWidget {
@@ -17,7 +17,7 @@ class _DashboardPageState extends State<DashboardPage> {
       appBar: AppBar(
         title: const Text(appTitle),
       ),
-      drawer: const Customdrawer(),
+      drawer: Customdrawer(),
       body: SafeArea(
           child: SingleChildScrollView(
         child: Column(

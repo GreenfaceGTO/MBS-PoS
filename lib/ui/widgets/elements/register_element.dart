@@ -17,6 +17,7 @@ class _RegisterElementState extends State<RegisterElement> {
   final TextEditingController txtAlamat = TextEditingController();
   final TextEditingController txtNoTelp = TextEditingController();
   final TextEditingController txtEmail = TextEditingController();
+  final TextEditingController txtUser = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -30,6 +31,18 @@ class _RegisterElementState extends State<RegisterElement> {
             textInputAction: TextInputAction.next,
             decoration: const InputDecoration(hintText: "Nama Kios"),
             onChanged: prov.setNamaKios,
+            validator: (val) {
+              if (val!.isEmpty) return "Wajib diisi";
+              return null;
+            },
+          ),
+          spasi(),
+          TextFormField(
+            controller: txtUser,
+            keyboardType: TextInputType.name,
+            textInputAction: TextInputAction.next,
+            decoration: const InputDecoration(hintText: "Nama Pemilik"),
+            onChanged: prov.setUser,
             validator: (val) {
               if (val!.isEmpty) return "Wajib diisi";
               return null;

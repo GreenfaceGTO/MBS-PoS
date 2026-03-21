@@ -38,6 +38,11 @@ class Dbhelper {
     await db.execute(UsahaTable.create);
   }
 
+  // static Future<void> _deleteDb() async {
+  //   String path = join(await getDatabasesPath(), 'mbs.app');
+  //   await deleteDatabase(path);
+  // }
+
   static Future<void> _onUpgrade(
       Database db, int oldVersion, int newVersion) async {
     if (oldVersion < 2) {
