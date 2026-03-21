@@ -49,7 +49,8 @@ List<MenuModel> lstPersediaan = [
 ];
 
 List<MenuModel> lstLaporan = [
-  MenuModel(id: 1, title: 'Penjualan Harian', icon: Icons.report),
-  MenuModel(id: 2, title: 'Rekapitulasi Penjualan Bulanan', icon: Icons.report),
-  MenuModel(id: 3, title: 'Kelas Barang per Periode', icon: Icons.report),
+  MenuModel(id: 1, title: 'Penjualan Harian', icon: Icons.receipt),
+  MenuModel(
+      id: 2, title: 'Rekapitulasi Penjualan Bulanan', icon: Icons.receipt),
+  MenuModel(id: 3, title: 'Kelas Barang per Periode', icon: Icons.receipt),
 ];

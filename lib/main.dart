@@ -5,6 +5,7 @@ import 'package:mbspos/ui/dashboard_page.dart';
 import 'package:mbspos/ui/dummy_page.dart';
 import 'package:mbspos/ui/theme.dart';
 import 'package:mbspos/utils/preference.dart';
+import 'package:mbspos/utils/routes.dart';
 import 'package:provider/provider.dart';
 
 void main() async {
@@ -27,11 +28,7 @@ class MyApp extends StatelessWidget {
         title: 'Flutter Demo',
         theme: AppTema.tema,
         home: const Splashscreen(),
-        routes: {
-          "/register": (_) => const DummyPage(caption: "Register Page"),
-          "/login": (_) => const DummyPage(caption: "Login Page"),
-          "/dashboard": (_) => const DashboardPage()
-        },
+        routes: AppRoutes.routes,
       ),
     );
   }

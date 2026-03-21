@@ -28,6 +28,15 @@ class _CustomdrawerState extends State<Customdrawer> {
     super.initState();
   }
 
+  void onMasterMenuTap(int menuId) {
+    switch (menuId) {
+      case 1:
+        Navigator.pushNamed(context, '/referensi');
+        break;
+      default:
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Drawer(
@@ -54,6 +63,9 @@ class _CustomdrawerState extends State<Customdrawer> {
                   title: const Text("Master Data"),
                   children: lstMaster.map((mst) {
                     return ListTile(
+                      onTap: () {
+                        onMasterMenuTap(mst.id);
+                      },
                       leading: Icon(mst.icon),
                       title: Text(mst.title),
                     );

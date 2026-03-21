@@ -25,7 +25,7 @@ class _DashboardPageState extends State<DashboardPage> {
             Container(
               width: double.infinity,
               color: Colors.red,
-              child: Center(
+              child: const Center(
                 child: Text("Header"),
               ),
             )
