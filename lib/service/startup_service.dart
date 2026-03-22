@@ -1,6 +1,8 @@
 import 'dart:developer';
 
 import 'package:mbspos/database/dao/usaha_dao.dart';
+import 'package:mbspos/database/dbhelper.dart';
+import 'package:mbspos/database/table_schema/mitra_table.dart';
 import 'package:mbspos/models/data/usaha_model.dart';
 import 'package:mbspos/service/connectivity_service.dart';
 
@@ -32,6 +34,10 @@ class AppStartUpService {
     if (usaha == null) {
       return AppStartRoute.register;
     } else {
+      // log("delete all mitra data");
+      // final db = await Dbhelper.database;
+      // await db.delete(MitraTable.table);
+
       if (usaha.password != null) {
         return AppStartRoute.login;
       } else {

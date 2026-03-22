@@ -52,7 +52,7 @@ class _RegisterElementState extends State<RegisterElement> {
           TextFormField(
             controller: txtAlamat,
             textInputAction: TextInputAction.newline,
-            keyboardType: TextInputType.streetAddress,
+            keyboardType: TextInputType.multiline,
             onChanged: prov.setAlamat,
             decoration: const InputDecoration(hintText: "Alamat"),
             maxLines: 3,

@@ -31,36 +31,3 @@ class MyApp extends StatelessWidget {
     );
   }
 }
-
-// class Homepage extends StatelessWidget {
-//   const Homepage({super.key});
-
-//   @override
-//   Widget build(BuildContext context) {
-//     return Scaffold(
-//       appBar: AppBar(
-//         title: const Text("MBS PoS"),
-//       ),
-//       body: Center(
-//         child: Column(
-//           mainAxisSize: MainAxisSize.min,
-//           children: [
-//             const Text("Sample custom widget preview"),
-//             const SizedBox(
-//               height: 8,
-//             ),
-//             CustomButton(
-//               onPress: () {},
-//             ),
-//             const Padding(
-//               padding: EdgeInsets.all(8.0),
-//               child: Customtextbox(
-//                 boxMode: BoxMode.outlined,
-//               ),
-//             )
-//           ],
-//         ),
-//       ),
-//     );
-//   }
-// }

@@ -62,7 +62,6 @@ class _RefWidgetState extends State<RefWidget> {
               children: prov.lstRef.map((ref) {
                 return ListTile(
                   contentPadding: const EdgeInsets.only(left: 16, right: 10),
-                  onTap: () {},
                   title: Text(ref),
                   trailing: IconButton(
                       padding: EdgeInsets.zero,

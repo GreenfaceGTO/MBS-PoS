@@ -1,0 +1,10 @@
+{
+    "paket_topup":{
+        "trial":15000,
+        "reguler":30000,
+        "premium":50000
+    },
+    "biaya_transaksi": "2.5",
+    "link_artikel":null,
+    "link_bantuan":null
+}

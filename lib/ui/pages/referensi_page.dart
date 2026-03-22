@@ -2,6 +2,7 @@ import 'dart:developer';
 
 import 'package:flutter/material.dart';
 import 'package:mbspos/providers/ref_provider.dart';
+import 'package:mbspos/ui/widgets/elements/mitra_element.dart';
 import 'package:mbspos/ui/widgets/elements/ref_element.dart';
 import 'package:provider/provider.dart';
 
@@ -33,7 +34,8 @@ class _ReferensiPageState extends State<ReferensiPage>
       //  Tampilkan jendela input referensi
       showRefForm(title: provider.selectedRef);
     } else {
-      log("Input mitra");
+      Navigator.pushNamed(context, '/mitraform',
+          arguments: {"mode": "input", "tipe": provider.selectedRef});
       // tampilkan jendela input mitra
     }
   }
@@ -113,25 +115,5 @@ class _ReferensiPageState extends State<ReferensiPage>
         ),
       );
     });
-  }
-}
-
-class MitraRefWidget extends StatefulWidget {
-  const MitraRefWidget({super.key});
-
-  @override
-  State<MitraRefWidget> createState() => _MitraRefWidgetState();
-}
-
-class _MitraRefWidgetState extends State<MitraRefWidget> {
-  @override
-  Widget build(BuildContext context) {
-    return Expanded(
-        child: Container(
-      color: Colors.red,
-      child: Center(
-        child: Text("Ref Element"),
-      ),
-    ));
   }
 }
