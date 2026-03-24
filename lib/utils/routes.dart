@@ -1,15 +1,41 @@
 import 'package:flutter/material.dart';
+import 'package:mbspos/models/args_model.dart';
 import 'package:mbspos/ui/dashboard_page.dart';
 import 'package:mbspos/ui/dummy_page.dart';
 import 'package:mbspos/ui/pages/form/mitra_form.dart';
 import 'package:mbspos/ui/pages/referensi_page.dart';
+import 'package:mbspos/ui/register_page.dart';
+import 'package:mbspos/utils/constant.dart';
 
 class AppRoutes {
+  // ---------------------------------------------------------------
+  /// router sederhana yang tidak membutuhkan passing parameter
+  /// dideklarasikan di sini agar lebih simple
+  // ---------------------------------------------------------------
   static Map<String, WidgetBuilder> routes = {
-    "/register": (_) => const DummyPage(caption: "Register Page"),
+    "/register": (_) => const RegisterPage(),
     "/login": (_) => const DummyPage(caption: "Login Page"),
     "/dashboard": (_) => const DashboardPage(),
     "/referensi": (_) => const ReferensiPage(),
-    "/mitraform": (_) => const MitraForm()
   };
+
+  // -----------------------------------------------------
+  /// Router dinamis dengan kemampuan passing parameter
+  // -----------------------------------------------------
+  static Route<dynamic> generateRoute(RouteSettings setting) {
+    switch (setting.name) {
+      case rtMitraForm:
+        final args = setting.arguments as ArgsModel;
+
+        return MaterialPageRoute(builder: (_) {
+          return MitraForm(
+            args: args,
+          );
+        });
+      default:
+        return MaterialPageRoute(
+            builder: (_) =>
+                const DummyPage(caption: "Halaman tidak ditemukan"));
+    }
+  }
 }

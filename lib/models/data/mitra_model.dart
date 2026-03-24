@@ -34,4 +34,32 @@ class MitraModel {
         "keterangan": keterangan,
         "created_at": createdAt
       };
+
+  Map<String, dynamic> toMapForUpdate() => {
+        "nama": nama,
+        "alamat": alamat,
+        "no_telp": noTelp,
+        "tipe": tipe,
+        "keterangan": keterangan,
+      };
+
+  MitraModel copyWith({
+    int? id,
+    String? nama,
+    String? alamat,
+    String? noTelp,
+    String? tipe,
+    String? keterangan,
+    String? createdAt,
+  }) {
+    return MitraModel(
+      id: id ?? this.id,
+      nama: nama ?? this.nama,
+      alamat: alamat ?? this.alamat,
+      noTelp: noTelp ?? this.noTelp,
+      tipe: tipe ?? this.tipe,
+      keterangan: keterangan ?? this.keterangan,
+      createdAt: createdAt ?? this.createdAt,
+    );
+  }
 }

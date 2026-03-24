@@ -3,6 +3,7 @@ import 'package:mbspos/providers/startup_provider.dart';
 import 'package:mbspos/service/startup_service.dart';
 import 'package:mbspos/ui/dashboard_page.dart';
 import 'package:mbspos/ui/dummy_page.dart';
+import 'package:mbspos/ui/intro_page.dart';
 import 'package:mbspos/ui/register_page.dart';
 import 'package:provider/provider.dart';
 
@@ -19,11 +20,13 @@ class _SplashscreenState extends State<Splashscreen> {
     return Consumer<StartupProvider>(builder: (context, prov, _) {
       return prov.isLoading
           ? _splash()
-          : prov.route == AppStartRoute.register
-              ? const RegisterPage()
-              : (prov.route == AppStartRoute.login
-                  ? const DummyPage(caption: "Login Page")
-                  : const DashboardPage());
+          : prov.route == AppStartRoute.intro
+              ? const IntroPage()
+              : (prov.route == AppStartRoute.register
+                  ? const RegisterPage()
+                  : (prov.route == AppStartRoute.login
+                      ? const DummyPage(caption: "Login Page")
+                      : const DashboardPage()));
     });
   }
 

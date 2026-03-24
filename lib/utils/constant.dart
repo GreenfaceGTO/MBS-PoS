@@ -28,14 +28,11 @@ const String pkSelectedRefTab = "reftab";
 // ------------------------
 List<MenuModel> lstMaster = [
   MenuModel(id: 1, title: "Data Pendukung", icon: Icons.room_preferences),
-  MenuModel(id: 2, title: "Supplier", icon: Icons.delivery_dining),
-  MenuModel(id: 3, title: "Pelanggan", icon: Icons.people),
-  MenuModel(id: 4, title: "Produk", icon: Icons.local_mall),
+  MenuModel(id: 2, title: "Produk", icon: Icons.local_mall),
 ];
 List<MenuModel> lstPembelian = [
-  MenuModel(id: 1, title: "Saran Order", icon: Icons.tips_and_updates),
-  MenuModel(id: 2, title: "Pesanan Pembelian", icon: Icons.assignment_add),
-  MenuModel(id: 3, title: "Pembelian", icon: Icons.shopping_cart),
+  MenuModel(id: 1, title: "Pesanan Pembelian", icon: Icons.assignment_add),
+  MenuModel(id: 2, title: "Pembelian", icon: Icons.shopping_cart),
 ];
 
 List<MenuModel> lstPenjualan = [
@@ -57,3 +54,12 @@ List<MenuModel> lstLaporan = [
       id: 2, title: 'Rekapitulasi Penjualan Bulanan', icon: Icons.receipt),
   MenuModel(id: 3, title: 'Kelas Barang per Periode', icon: Icons.receipt),
 ];
+
+// ----------------
+// Router name
+// ----------------
+const String rtRegister = "/register";
+const String rtLogin = "/login";
+const String rtDashboard = "/dashboard";
+const String rtReferensi = "/referensi";
+const String rtMitraForm = '/mitraform';

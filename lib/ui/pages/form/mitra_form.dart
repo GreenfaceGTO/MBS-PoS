@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:mbspos/models/args_model.dart';
 import 'package:mbspos/models/data/mitra_model.dart';
 import 'package:mbspos/providers/ref_provider.dart';
 import 'package:mbspos/ui/widgets/components/custombutton.dart';
@@ -6,7 +7,8 @@ import 'package:mbspos/ui/widgets/components/general_widget.dart';
 import 'package:provider/provider.dart';
 
 class MitraForm extends StatefulWidget {
-  const MitraForm({super.key});
+  const MitraForm({super.key, required this.args});
+  final ArgsModel args;
 
   @override
   State<MitraForm> createState() => _MitraFormState();
@@ -19,20 +21,44 @@ class _MitraFormState extends State<MitraForm> {
   TextEditingController txtKet = TextEditingController();
 
   final formKey = GlobalKey<FormState>();
+  // late Map<dynamic, dynamic> args;
+  MitraModel? data;
+
+  @override
+  void initState() {
+    if (widget.args.mode != 'input') {
+      if (widget.args.data != null) {
+        data = widget.args.data;
+        txtNama.text = data!.nama!;
+        txtAlamat.text = data!.alamat ?? "";
+        txtNoTelp.text = data!.noTelp ?? "";
+        txtKet.text = data!.keterangan ?? "";
+      }
+    }
+    super.initState();
+  }
+
+  @override
+  void dispose() {
+    txtAlamat.dispose();
+    txtKet.dispose();
+    txtNama.dispose();
+    txtNoTelp.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
-    final args = ModalRoute.of(context)!.settings.arguments as Map;
+    bool formSupplier = widget.args.tipe == 'supplier';
+    bool modeInput = widget.args.mode == 'input';
+
     return Scaffold(
       appBar: AppBar(
-        title: args['mode'] == 'input'
-            ? Text("Input Data ${args['tipe']}")
-            : Text("Edit Data ${args['tipe']}"),
+        title: modeInput
+            ? Text("Input Data ${widget.args.tipe}")
+            : Text("Edit Data ${widget.args.tipe}"),
       ),
       body: Consumer<RefProvider>(builder: (context, prov, _) {
-        bool formSupplier = args['tipe'].toString().toLowerCase() == 'supplier';
-        bool modeInput = args['mode'] == "input";
-
         return SingleChildScrollView(
           padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 12),
           child: Form(
@@ -40,7 +66,7 @@ class _MitraFormState extends State<MitraForm> {
             child: Column(
               children: [
                 TextFormField(
-                  autofocus: modeInput,
+                  autofocus: true,
                   controller: txtNama,
                   keyboardType: TextInputType.name,
                   textInputAction: TextInputAction.next,
@@ -82,6 +108,7 @@ class _MitraFormState extends State<MitraForm> {
                   onPress: () {
                     if (formKey.currentState!.validate()) {
                       MitraModel newMitra = MitraModel(
+                          id: modeInput ? null : data!.id,
                           nama: txtNama.text,
                           alamat:
                               txtAlamat.text.isNotEmpty ? txtAlamat.text : null,
@@ -91,8 +118,11 @@ class _MitraFormState extends State<MitraForm> {
                           keterangan:
                               txtKet.text.isNotEmpty ? txtKet.text : null,
                           createdAt: DateTime.now().toString());
-
-                      prov.saveMitra(newMitra);
+                      if (modeInput) {
+                        prov.saveMitra(newMitra);
+                      } else {
+                        prov.updateMitra(newMitra);
+                      }
                       Navigator.pop(context);
                     }
                   },

@@ -49,6 +49,7 @@ class RefProvider with ChangeNotifier, CacheManager {
 
     if (currentTab != null) {
       _selectedRef = currentTab;
+      onTabChange(_selectedRef);
       notifyListeners();
       getRef();
     }
@@ -180,6 +181,42 @@ class RefProvider with ChangeNotifier, CacheManager {
       if (id != null) {
         mitra.id = id;
         _lstMitra.add(mitra);
+        notifyListeners();
+      }
+    } catch (e) {
+      log("$runtimeType : Error ${e.toString()}");
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  // -----------------------------
+  /// Metode update data mitra
+  // -----------------------------
+  Future<void> updateMitra(MitraModel data) async {
+    setLoading(true);
+    try {
+      bool done = await MitraDao.updateMitra(data);
+      if (done) {
+        log("refetching...");
+        await getMitra();
+      }
+    } catch (e) {
+      log("$runtimeType : Error ${e.toString()}");
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  // ----------------------------
+  /// Metode hapus data mitra
+  // ----------------------------
+  Future<void> delMitra(int id) async {
+    setLoading(true);
+    try {
+      bool done = await MitraDao.delMitraById(id);
+      if (done) {
+        _lstMitra.removeWhere((e) => e.id == id);
         notifyListeners();
       }
     } catch (e) {
