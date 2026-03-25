@@ -30,7 +30,8 @@ class CustomButton extends StatelessWidget {
                 : TextButton(
                     style: TextButton.styleFrom(
                         shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(cornerRadius))),
+                      borderRadius: BorderRadius.circular(cornerRadius),
+                    )),
                     onPressed: onPress,
                     child: Text(caption))));
   }
@@ -45,8 +46,10 @@ class CustomButton extends StatelessWidget {
 
   OutlinedButton _outlinedButton() => OutlinedButton(
       style: OutlinedButton.styleFrom(
+          side: const BorderSide(width: 0.8, color: Colors.black54),
           shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(cornerRadius))),
+            borderRadius: BorderRadius.circular(cornerRadius),
+          )),
       onPressed: onPress,
       child: Text(caption));
 }

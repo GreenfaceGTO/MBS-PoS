@@ -33,6 +33,8 @@ class _CustomdrawerState extends State<Customdrawer> {
       case 1:
         Navigator.pushNamed(context, '/referensi');
         break;
+      case 2:
+        Navigator.pushNamed(context, "/produk");
       default:
     }
   }

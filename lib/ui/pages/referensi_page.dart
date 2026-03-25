@@ -3,6 +3,7 @@ import 'package:mbspos/models/args_model.dart';
 import 'package:mbspos/providers/ref_provider.dart';
 import 'package:mbspos/ui/widgets/elements/mitra_element.dart';
 import 'package:mbspos/ui/widgets/elements/ref_element.dart';
+import 'package:mbspos/utils/global_enums.dart';
 import 'package:provider/provider.dart';
 
 class ReferensiPage extends StatefulWidget {
@@ -56,7 +57,7 @@ class _ReferensiPageState extends State<ReferensiPage>
       // tampilkan jendela input mitra
       Navigator.pushNamed(context, '/mitraform',
           arguments: ArgsModel(
-            mode: "input",
+            formMode: FormMode.input,
             tipe: provider.selectedRef,
           ));
     }
@@ -99,7 +100,7 @@ class _ReferensiPageState extends State<ReferensiPage>
     return Consumer<RefProvider>(builder: (context, prov, _) {
       return Scaffold(
         appBar: AppBar(
-          title: const Text("Data Pendukung"),
+          title: const Text("Data Master Pendukung"),
         ),
         floatingActionButton: FloatingActionButton(
           heroTag: prov.selectedRef,

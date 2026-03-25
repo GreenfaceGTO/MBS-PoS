@@ -3,8 +3,11 @@ import 'package:mbspos/models/args_model.dart';
 import 'package:mbspos/ui/dashboard_page.dart';
 import 'package:mbspos/ui/dummy_page.dart';
 import 'package:mbspos/ui/pages/form/mitra_form.dart';
+import 'package:mbspos/ui/pages/form/produk_form.dart';
+import 'package:mbspos/ui/pages/produk_page.dart';
 import 'package:mbspos/ui/pages/referensi_page.dart';
 import 'package:mbspos/ui/register_page.dart';
+import 'package:mbspos/ui/widgets/components/databrowser.dart';
 import 'package:mbspos/utils/constant.dart';
 
 class AppRoutes {
@@ -17,11 +20,12 @@ class AppRoutes {
     "/login": (_) => const DummyPage(caption: "Login Page"),
     "/dashboard": (_) => const DashboardPage(),
     "/referensi": (_) => const ReferensiPage(),
+    "/produk": (_) => const ProdukPage()
   };
 
-  // -----------------------------------------------------
-  /// Router dinamis dengan kemampuan passing parameter
-  // -----------------------------------------------------
+  // ---------------------------------------------------------------------
+  /// Router dinamis untuk halaman dengan kemampuan passing parameter
+  // ---------------------------------------------------------------------
   static Route<dynamic> generateRoute(RouteSettings setting) {
     switch (setting.name) {
       case rtMitraForm:
@@ -31,6 +35,16 @@ class AppRoutes {
           return MitraForm(
             args: args,
           );
+        });
+      case rtProdukForm:
+        final args = setting.arguments as ArgsModel;
+        return MaterialPageRoute(builder: (_) {
+          return ProdukForm(args: args);
+        });
+      case rtBrowserData:
+        final ref = setting.arguments as Map;
+        return MaterialPageRoute(builder: (_) {
+          return Databrowser(tipeRef: ref['tipe']);
         });
       default:
         return MaterialPageRoute(

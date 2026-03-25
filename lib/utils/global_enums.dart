@@ -1,1 +1,1 @@
-enum FormMode { input, update }
+enum FormMode { input, update, view }

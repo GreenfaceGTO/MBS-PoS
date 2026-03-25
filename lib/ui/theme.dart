@@ -22,8 +22,9 @@ class AppTema {
           titleLarge:
               const TextStyle(fontSize: 18, fontWeight: FontWeight.w700),
         ),
-    inputDecorationTheme:
-        const InputDecorationTheme(border: OutlineInputBorder()),
+    inputDecorationTheme: const InputDecorationTheme(
+        border: OutlineInputBorder(
+            borderSide: BorderSide(color: Colors.black45, width: 0.5))),
     useMaterial3: true,
   );
 }

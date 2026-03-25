@@ -6,6 +6,7 @@ import 'package:mbspos/models/data/mitra_model.dart';
 import 'package:mbspos/providers/ref_provider.dart';
 import 'package:mbspos/ui/widgets/elements/emptydata_element.dart';
 import 'package:mbspos/utils/extension.dart';
+import 'package:mbspos/utils/global_enums.dart';
 import 'package:provider/provider.dart';
 
 class MitraRefWidget extends StatefulWidget {
@@ -28,7 +29,9 @@ class _MitraRefWidgetState extends State<MitraRefWidget> {
     final duplData = mitra.copyWith();
     Navigator.pushNamed(context, '/mitraform',
         arguments: ArgsModel(
-            mode: "edit", tipe: provider.selectedRef, data: duplData));
+            formMode: FormMode.update,
+            tipe: provider.selectedRef,
+            data: duplData));
   }
 
   void onDelete(MitraModel mitra) async {

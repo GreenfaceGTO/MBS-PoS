@@ -30,8 +30,8 @@ class RefDao {
   // ----------------------------------------
   static Future<List<String>?> getRefByTipe(String tipe) async {
     final db = await Dbhelper.database;
-    final result =
-        await db.query(RefTable.table, where: "tipe=?", whereArgs: [tipe]);
+    final result = await db.query(RefTable.table,
+        where: "tipe=?", whereArgs: [tipe], orderBy: 'nama_ref ASC');
 
     if (result.isEmpty) {
       return null;

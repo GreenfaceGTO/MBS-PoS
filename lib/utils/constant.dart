@@ -62,4 +62,7 @@ const String rtRegister = "/register";
 const String rtLogin = "/login";
 const String rtDashboard = "/dashboard";
 const String rtReferensi = "/referensi";
+
 const String rtMitraForm = '/mitraform';
+const String rtProdukForm = '/produkform';
+const String rtBrowserData = '/browser';

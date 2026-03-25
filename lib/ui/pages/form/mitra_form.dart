@@ -4,6 +4,7 @@ import 'package:mbspos/models/data/mitra_model.dart';
 import 'package:mbspos/providers/ref_provider.dart';
 import 'package:mbspos/ui/widgets/components/custombutton.dart';
 import 'package:mbspos/ui/widgets/components/general_widget.dart';
+import 'package:mbspos/utils/global_enums.dart';
 import 'package:provider/provider.dart';
 
 class MitraForm extends StatefulWidget {
@@ -26,7 +27,7 @@ class _MitraFormState extends State<MitraForm> {
 
   @override
   void initState() {
-    if (widget.args.mode != 'input') {
+    if (widget.args.formMode == FormMode.update) {
       if (widget.args.data != null) {
         data = widget.args.data;
         txtNama.text = data!.nama!;
@@ -50,7 +51,7 @@ class _MitraFormState extends State<MitraForm> {
   @override
   Widget build(BuildContext context) {
     bool formSupplier = widget.args.tipe == 'supplier';
-    bool modeInput = widget.args.mode == 'input';
+    bool modeInput = widget.args.formMode == FormMode.input;
 
     return Scaffold(
       appBar: AppBar(

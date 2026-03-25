@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:mbspos/database/table_schema/item_table.dart';
 import 'package:mbspos/database/table_schema/itemsat_table.dart';
 import 'package:mbspos/database/table_schema/mitra_table.dart';
@@ -23,7 +25,16 @@ class Dbhelper {
   static Future<Database> _init() async {
     final path = join(await getDatabasesPath(), 'mbs.app');
     return openDatabase(path,
-        version: 1, onCreate: _onCreate, onUpgrade: _onUpgrade);
+        version: 2, onCreate: _onCreate, onUpgrade: _onUpgrade);
+  }
+
+  static Future<void> _onUpgrade(
+      Database db, int oldVersion, int newVersion) async {
+    if (oldVersion < 3) {
+      log("updgrading db to 2nd version...");
+      await db
+          .execute("ALTER TABLE ${ItemTable.table} ADD COLUMN supplier TEXT");
+    }
   }
 
   static Future<void> _onCreate(Database db, int version) async {
@@ -36,18 +47,5 @@ class Dbhelper {
     await db.execute(TransHeaderTable.create);
     await db.execute(TransDetailTable.create);
     await db.execute(UsahaTable.create);
-  }
-
-  // static Future<void> _deleteDb() async {
-  //   String path = join(await getDatabasesPath(), 'mbs.app');
-  //   await deleteDatabase(path);
-  // }
-
-  static Future<void> _onUpgrade(
-      Database db, int oldVersion, int newVersion) async {
-    if (oldVersion < 2) {
-      // contoh jika ada perubahan skema
-      // await db.execute('alter table....')
-    }
   }
 }
