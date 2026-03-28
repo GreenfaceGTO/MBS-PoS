@@ -11,6 +11,11 @@ class AppTema {
             surface: Colors.white),
     dialogTheme: DialogThemeData(
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8))),
+    dropdownMenuTheme: const DropdownMenuThemeData(
+        textStyle: TextStyle(fontSize: 13),
+        inputDecorationTheme: InputDecorationTheme(
+            labelStyle: TextStyle(fontSize: 13),
+            hintStyle: TextStyle(fontSize: 13))),
     textTheme: ThemeData.light().textTheme.copyWith(
           bodySmall: const TextStyle(fontSize: 10),
           bodyMedium: const TextStyle(fontSize: 12),

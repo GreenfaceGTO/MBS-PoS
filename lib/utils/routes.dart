@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:mbspos/models/args_model.dart';
+import 'package:mbspos/models/data/satitem_model.dart';
 import 'package:mbspos/ui/dashboard_page.dart';
 import 'package:mbspos/ui/dummy_page.dart';
 import 'package:mbspos/ui/pages/form/mitra_form.dart';
 import 'package:mbspos/ui/pages/form/produk_form.dart';
+import 'package:mbspos/ui/pages/form/satkonversi_form.dart';
 import 'package:mbspos/ui/pages/produk_page.dart';
 import 'package:mbspos/ui/pages/referensi_page.dart';
 import 'package:mbspos/ui/register_page.dart';
@@ -20,7 +22,7 @@ class AppRoutes {
     "/login": (_) => const DummyPage(caption: "Login Page"),
     "/dashboard": (_) => const DashboardPage(),
     "/referensi": (_) => const ReferensiPage(),
-    "/produk": (_) => const ProdukPage()
+    "/produk": (_) => const ProdukPage(),
   };
 
   // ---------------------------------------------------------------------
@@ -45,6 +47,13 @@ class AppRoutes {
         final ref = setting.arguments as Map;
         return MaterialPageRoute(builder: (_) {
           return Databrowser(tipeRef: ref['tipe']);
+        });
+      case rtSatKonversi:
+        final args = setting.arguments as ArgsModel;
+        return MaterialPageRoute<SatitemModel?>(builder: (_) {
+          return SatkonversiForm(
+            args: args,
+          );
         });
       default:
         return MaterialPageRoute(

@@ -1,8 +1,15 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:mbspos/models/args_model.dart';
+import 'package:mbspos/models/data/mitra_model.dart';
+import 'package:mbspos/models/data/satitem_model.dart';
+import 'package:mbspos/providers/produk_provider.dart';
 import 'package:mbspos/ui/widgets/components/custombutton.dart';
 import 'package:mbspos/ui/widgets/components/general_widget.dart';
+import 'package:mbspos/ui/widgets/elements/emptydata_element.dart';
 import 'package:mbspos/utils/global_enums.dart';
+import 'package:provider/provider.dart';
 
 class ProdukForm extends StatefulWidget {
   const ProdukForm({super.key, required this.args});
@@ -21,18 +28,75 @@ class _ProdukFormState extends State<ProdukForm> {
   TextEditingController txtKategori = TextEditingController();
   TextEditingController txtSupplier = TextEditingController();
   TextEditingController txtMinStok = TextEditingController();
+  TextEditingController txtSatuan = TextEditingController();
+
+  List<String> lstKategori = [];
+  List<SatitemModel> lstSatuan = [];
+  List<String>? lstSourceMerek = [];
+  List<String>? lstSourceSat = [];
+
+  late ProdukProvider provider;
+
+  String? selectedMerek;
+  String? selectedSatDasar;
 
   @override
   void initState() {
     inputMode = widget.args.formMode == FormMode.input;
 
+    provider = Provider.of<ProdukProvider>(context, listen: false);
+
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
+      log("fetching merek...");
+      lstSourceMerek = await provider.getReferensi(tipe: "merek");
+      lstSourceSat = await provider.getReferensi(tipe: 'satuan');
+      setState(() {});
+    });
+
     super.initState();
   }
 
+  // -----------------------------------------------
+  /// menampilkan browser untuk memilih satuan
+  // -----------------------------------------------
   Future<String?> browseRef({required String tipeData}) async {
     final result = await Navigator.pushNamed(context, '/browser',
         arguments: {'tipe': tipeData});
+
     return result as String?;
+  }
+
+  // ------------------------------------------------
+  /// Menampilkan browser untuk memilih kategori
+  // ------------------------------------------------
+  Future<void> addKategori(BuildContext context) async {
+    final result = await Navigator.pushNamed(context, "/browser",
+        arguments: {'tipe': 'kategori'}) as String?;
+
+    if (result != null) {
+      if (lstKategori.contains(result)) {
+        if (context.mounted) {
+          showMessage(context,
+              message: "Kategori sudah ada", mode: MessageMode.info);
+          return;
+        }
+      }
+
+      lstKategori.add(result);
+      setState(() {});
+    }
+  }
+
+  // ------------------------------------------------
+  /// Menampilkan browser untuk memilih supplier
+  // ------------------------------------------------
+  Future<MitraModel?> browseMitra({required String tipeMitra}) async {
+    final result = await Navigator.pushNamed(context, "/browser",
+        arguments: {'tipe': tipeMitra});
+    if (result == null) {
+      return null;
+    }
+    return result as MitraModel;
   }
 
   @override
@@ -41,7 +105,48 @@ class _ProdukFormState extends State<ProdukForm> {
     txtMerek.dispose();
     txtNama.dispose();
     txtMinStok.dispose();
+    txtSatuan.dispose();
     super.dispose();
+  }
+
+  void showInfoSatuan() {
+    showDialog(
+        context: context,
+        builder: (ctx) {
+          return const AlertDialog(
+            title: Text("Satuan Lain"),
+            content: Text.rich(TextSpan(
+                text: "Adalah jumlah satuan dasar dalam kemasan lain.\n\n",
+                children: [
+                  TextSpan(
+                      text: "Contoh : ",
+                      style: TextStyle(fontWeight: FontWeight.bold)),
+                  TextSpan(text: "\n- 1 Lusin = 12 Pcs"),
+                  TextSpan(text: "\n- 1 Kg = 1000 Gram"),
+                  TextSpan(text: "\n- 1 Dus = 120 Pcs"),
+                  TextSpan(
+                      text: "\n\nKetentuan",
+                      style: TextStyle(
+                          color: Colors.red,
+                          fontSize: 11,
+                          fontWeight: FontWeight.w600)),
+                  TextSpan(
+                    text:
+                        "\nSatuan dasar harus ditentukan terlebih dulu sebelum dapat menambahkan satuan lain.",
+                  ),
+                ])),
+          );
+        });
+  }
+
+  Future<SatitemModel?> frmInputSatuan(String namaSatuan) async {
+    final result = await Navigator.pushNamed(context, "/satkonversi",
+        arguments: ArgsModel(
+          formMode: FormMode.input,
+          tipe: namaSatuan,
+        ));
+    if (result != null) {}
+    return null;
   }
 
   @override
@@ -62,70 +167,47 @@ class _ProdukFormState extends State<ProdukForm> {
                   mainAxisSize: MainAxisSize.min,
                   children: [
                     TextFormField(
-                      decoration:
-                          const InputDecoration(hintText: "Nama Produk"),
+                      autofocus: true,
+                      keyboardType: TextInputType.name,
+                      textInputAction: TextInputAction.next,
+                      decoration: const InputDecoration(
+                          hintText: "cth: Mie Goreng",
+                          label: Text("Nama Produk")),
+                      validator: (val) {
+                        if (val!.isEmpty) return "Wajib diisi";
+                        return null;
+                      },
                     ),
                     spasi(),
-                    TextFormField(
-                      controller: txtMerek,
-                      decoration: InputDecoration(
-                          hintText: "Merek",
-                          suffixIcon: IconButton(
-                              onPressed: () async {
-                                String? result =
-                                    await browseRef(tipeData: "merek");
-                                if (result != null) {
-                                  txtMerek.text = result;
-                                  setState(() {});
-                                }
-                              },
-                              icon: const Icon(
-                                Icons.library_books_sharp,
-                                size: 18,
-                              ))),
-                    ),
+                    _merekSection(context),
+                    spasi(),
+                    _kategoriSection(context),
+                    spasi(),
+                    _satDasarSection(context),
                     spasi(),
                     TextFormField(
-                      controller: txtKategori,
-                      decoration: InputDecoration(
-                          hintText: "Kategori",
-                          suffixIcon: IconButton(
-                              onPressed: () async {
-                                String? result =
-                                    await browseRef(tipeData: "kategori");
-                                if (result != null) {
-                                  txtKategori.text = result;
-                                  setState(() {});
-                                }
-                              },
-                              icon: const Icon(
-                                Icons.library_books_sharp,
-                                size: 18,
-                              ))),
-                    ),
-                    spasi(),
-                    TextFormField(
+                      controller: txtSupplier,
                       readOnly: true,
                       decoration: InputDecoration(
                           hintText: "Supplier",
+                          label: const Text("Supplier"),
                           suffixIcon: IconButton(
-                              onPressed: () {},
+                              onPressed: () async {
+                                MitraModel? result =
+                                    await browseMitra(tipeMitra: 'supplier');
+                                if (result != null) {
+                                  log(result.toMap().toString());
+                                  txtSupplier.text = result.nama!;
+                                  setState(() {});
+                                }
+                              },
                               icon: const Icon(
                                 Icons.library_books_sharp,
                                 size: 18,
                               ))),
                     ),
-                    spasi(),
-                    Align(
-                      alignment: Alignment.centerLeft,
-                      child: SizedBox(
-                        width: 150,
-                        child: TextFormField(
-                          decoration:
-                              const InputDecoration(hintText: "Min. Stok"),
-                        ),
-                      ),
-                    ),
+                    const Divider(),
+                    _satLainSection()
                   ],
                 ),
               ),
@@ -143,6 +225,273 @@ class _ProdukFormState extends State<ProdukForm> {
             )
           ],
         ),
+      ),
+    );
+  }
+
+  Column _satDasarSection(BuildContext context) {
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        Row(
+          children: [
+            Expanded(
+              child: DropdownButtonFormField<String>(
+                  decoration:
+                      const InputDecoration(label: Text("Satuan Dasar")),
+                  hint: const Text(
+                    "Satuan Dasar",
+                    style: TextStyle(fontSize: 13, fontWeight: FontWeight.w400),
+                  ),
+                  style: const TextStyle(
+                      fontSize: 13,
+                      fontWeight: FontWeight.w400,
+                      color: Colors.black87),
+                  items: lstSourceSat!.map((sat) {
+                    return DropdownMenuItem(value: sat, child: Text(sat));
+                  }).toList(),
+                  onChanged: (val) {
+                    setState(() {
+                      selectedSatDasar = val;
+                    });
+                  }),
+            ),
+            IconButton(
+                onPressed: () async {
+                  String? newSat =
+                      await provider.addNewRef(context, tipeRef: "Satuan");
+                  if (newSat != null) {
+                    setState(() {
+                      lstSourceSat!.add(newSat);
+                      lstSourceSat!.sort((a, b) => a.compareTo(b));
+                    });
+                  }
+                },
+                icon: const Icon(
+                  Icons.add_circle,
+                  size: 18,
+                ))
+          ],
+        ),
+        spasi(),
+        TextFormField(
+          keyboardType: TextInputType.number,
+          textInputAction: TextInputAction.next,
+          decoration: const InputDecoration(
+              hintText: "Harga Pokok", label: Text("Harga Pokok")),
+        ),
+        spasi(),
+        TextFormField(
+          readOnly: true,
+          onTap: () {
+            showMessage(context,
+                message: "Scan barcode dari kemasan produk untuk merekan",
+                mode: MessageMode.info);
+          },
+          decoration: InputDecoration(
+              hintText: "Barcode",
+              label: const Text("Barcode"),
+              suffixIcon: IconButton(
+                  onPressed: () {},
+                  icon: const Icon(
+                    Icons.barcode_reader,
+                    size: 18,
+                  ))),
+        ),
+        spasi(),
+        Align(
+          alignment: Alignment.centerLeft,
+          child: SizedBox(
+            width: 150,
+            child: TextFormField(
+              keyboardType: TextInputType.number,
+              textInputAction: TextInputAction.next,
+              decoration: const InputDecoration(
+                  hintText: "Stok Minimum", label: Text("Stok Minimum")),
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+
+  Row _merekSection(BuildContext context) {
+    return Row(
+      children: [
+        Expanded(
+            child: DropdownButtonFormField<String>(
+                decoration: const InputDecoration(label: Text("Merek")),
+                hint: const Text(
+                  "Merek",
+                  style: TextStyle(fontSize: 13, fontWeight: FontWeight.w400),
+                ),
+                style: const TextStyle(
+                    fontSize: 13,
+                    fontWeight: FontWeight.w400,
+                    color: Colors.black87),
+                items: lstSourceMerek!.map((mrk) {
+                  return DropdownMenuItem(value: mrk, child: Text(mrk));
+                }).toList(),
+                onChanged: (val) {
+                  log(val!);
+                  setState(() {
+                    selectedMerek = val;
+                  });
+                })),
+        IconButton(
+            onPressed: () async {
+              final newMerek =
+                  await provider.addNewRef(context, tipeRef: "Merek");
+              if (newMerek != null) {
+                setState(() {
+                  lstSourceMerek!.add(newMerek);
+                  lstSourceMerek!.sort((a, b) => a.compareTo(b));
+                });
+              }
+            },
+            icon: const Icon(
+              Icons.add_circle,
+              size: 18,
+            ))
+      ],
+    );
+  }
+
+  Container _satLainSection() {
+    return Container(
+      constraints: const BoxConstraints(minHeight: 60),
+      decoration:
+          BoxDecoration(border: Border.all(color: Colors.black38, width: 0.5)),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Container(
+            padding: const EdgeInsets.only(left: 8),
+            color: Colors.grey.shade200,
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    const Text(
+                      "Satuan Lain",
+                      style: TextStyle(
+                        fontWeight: FontWeight.w500,
+                        fontSize: 14,
+                      ),
+                    ),
+                    IconButton(
+                        onPressed: () {
+                          showInfoSatuan();
+                        },
+                        icon: const Icon(
+                          Icons.help,
+                          size: 15,
+                          color: Colors.teal,
+                        )),
+                  ],
+                ),
+                IconButton(
+                    onPressed: selectedSatDasar == null
+                        ? null
+                        : () async {
+                            final result = await browseRef(tipeData: 'satuan');
+                            if (result != null) {
+                              if (mounted) {
+                                SatitemModel? newSat =
+                                    await Navigator.pushNamed(
+                                        context, "/satkonversi",
+                                        arguments: ArgsModel(
+                                            formMode: FormMode.input,
+                                            tipe: result.toLowerCase(),
+                                            data: {
+                                              "satuan_dasar": selectedSatDasar,
+                                            }));
+                                if (newSat != null) {}
+                              }
+                            }
+                          },
+                    icon: const Icon(
+                      Icons.add_circle,
+                      size: 18,
+                    ))
+              ],
+            ),
+          ),
+          Container(
+            width: double.infinity,
+            constraints: const BoxConstraints(minHeight: 10),
+            padding: const EdgeInsets.all(8),
+            child: lstSatuan.isEmpty
+                ? const EmptydataElement()
+                : ListView(
+                    shrinkWrap: true,
+                    physics: const NeverScrollableScrollPhysics(),
+                    children: lstSatuan.map((sat) {
+                      return ListTile(
+                        title: Text(sat.satuan!),
+                      );
+                    }).toList(),
+                  ),
+          )
+        ],
+      ),
+    );
+  }
+
+  Container _kategoriSection(BuildContext context) {
+    return Container(
+      constraints: const BoxConstraints(minHeight: 60),
+      decoration:
+          BoxDecoration(border: Border.all(color: Colors.black38, width: 0.5)),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Container(
+            padding: const EdgeInsets.only(left: 8),
+            color: Colors.grey.shade200,
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                const Text(
+                  "Kategori",
+                  style: TextStyle(fontWeight: FontWeight.w500, fontSize: 14),
+                ),
+                IconButton(
+                    onPressed: () async {
+                      await addKategori(context);
+                    },
+                    icon: const Icon(
+                      Icons.add_circle,
+                      size: 18,
+                    ))
+              ],
+            ),
+          ),
+          Container(
+            padding: const EdgeInsets.all(8),
+            width: double.infinity,
+            constraints: const BoxConstraints(minHeight: 10),
+            child: lstKategori.isEmpty
+                ? const EmptydataElement()
+                : Wrap(
+                    spacing: 8,
+                    runSpacing: 8,
+                    children: lstKategori.map((ktg) {
+                      return InputChip(
+                        shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(4)),
+                        label: Text(ktg),
+                        onDeleted: () {
+                          lstKategori.removeWhere((e) => e == ktg);
+                          setState(() {});
+                        },
+                      );
+                    }).toList(),
+                  ),
+          ),
+        ],
       ),
     );
   }

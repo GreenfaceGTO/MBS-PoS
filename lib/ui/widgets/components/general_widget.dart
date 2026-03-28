@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:mbspos/main.dart';
+import 'package:mbspos/utils/global_enums.dart';
 
 enum OrientationMode { vertical, horizontal }
 
@@ -52,4 +54,38 @@ SizedBox spasi(
       height: jarak,
     );
   }
+}
+
+void showMessage(
+  BuildContext context, {
+  required String message,
+  MessageMode mode = MessageMode.info,
+  int durasi = 3,
+}) {
+  Color bgColor = Colors.teal;
+  Color frColor = Colors.white;
+  if (mode == MessageMode.error) {
+    bgColor = Colors.red;
+  } else if (mode == MessageMode.warning) {
+    bgColor = Colors.amberAccent;
+    frColor = Colors.black;
+  }
+
+  final messenger = ScaffoldMessenger.maybeOf(context) ??
+      rootScaffoldMessengerKey.currentState;
+
+  messenger?.showSnackBar(
+    SnackBar(
+      content: Text(
+        message,
+        style: TextStyle(
+          fontSize: 12,
+          fontWeight: FontWeight.w700,
+          color: frColor,
+        ),
+      ),
+      backgroundColor: bgColor,
+      duration: Duration(seconds: durasi),
+    ),
+  );
 }

@@ -7,6 +7,7 @@ class ItemTable {
     nama_produk TEXT,
     merek       TEXT,
     kategori    TEXT,
+    supplier    TEXT,
     stok        INTEGER        DEFAULT 0,
     min_stok    INTEGER        DEFAULT 0,
     aktif       INTEGER (1, 1) DEFAULT (1) 

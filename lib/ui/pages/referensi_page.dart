@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:mbspos/models/args_model.dart';
 import 'package:mbspos/providers/ref_provider.dart';
@@ -22,12 +24,17 @@ class _ReferensiPageState extends State<ReferensiPage>
   @override
   void initState() {
     // buat 5 globalkey sesuai dengan jumlah tab menu yang dideklarasikan di provider
+    // untuk digunakan pada auto scrolling
     _keys = List.generate(5, (_) => GlobalKey());
+
     WidgetsBinding.instance.addPostFrameCallback((_) async {
       provider = Provider.of<RefProvider>(context, listen: false);
       provider.init();
-      int tabIndex = provider.lstRefPage.indexOf(provider.selectedRef);
-      _autoScrollToIndexTab(tabIndex);
+      log("selectedRef : ${provider.selectedRef}");
+      log("tabIndex : ${provider.tabIndex}");
+
+      _autoScrollToIndexTab(provider.tabIndex);
+      provider.getRef();
     });
     super.initState();
   }
@@ -44,6 +51,12 @@ class _ReferensiPageState extends State<ReferensiPage>
           curve: Curves.easeInOut,
           alignment: 0.5);
     }
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    _scrollController.dispose();
   }
 
   // ---------------------------------------

@@ -75,3 +75,7 @@ Skema tabel di organisasikan pada kelas-kelas tersendiri di folder tables untuk 
     - tidak ada, ___***lanjut ke nomor 8***___
 7. Tampilkan halaman login PIN
 8. Tampilkan dashboard
+
+
+# Dokumentasi Teknis
+

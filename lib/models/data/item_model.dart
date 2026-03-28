@@ -1,3 +1,5 @@
+import 'package:mbspos/models/data/satitem_model.dart';
+
 class ItemModel {
   int? id;
   String? noSku;
@@ -8,6 +10,7 @@ class ItemModel {
   int minStok;
   String? supplier;
   bool aktif;
+  List<SatitemModel> satuan;
 
   ItemModel(
       {this.id,
@@ -18,7 +21,8 @@ class ItemModel {
       this.supplier,
       this.stok = 0,
       this.minStok = 0,
-      this.aktif = true});
+      this.aktif = true,
+      this.satuan = const []});
 
   factory ItemModel.fromMap(Map<String, dynamic> map) => ItemModel(
       id: map['id'],
@@ -29,7 +33,10 @@ class ItemModel {
       stok: map['stok'],
       minStok: map['min_stok'],
       supplier: map['supplier'],
-      aktif: map['aktif']);
+      aktif: map['aktif'],
+      satuan: map['satuan'] != null
+          ? List.from(map['satuan'].map((e) => SatitemModel.fromMap(e)))
+          : []);
 
   Map<String, dynamic> toMap() => {
         "id": id,
@@ -40,6 +47,7 @@ class ItemModel {
         "stok": stok,
         "min_stok": minStok,
         "supplier": supplier,
-        "aktif": aktif
+        "aktif": aktif,
+        "satuan": List.from(satuan.map((e) => e.toMap()))
       };
 }

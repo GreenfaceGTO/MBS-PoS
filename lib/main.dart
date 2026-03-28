@@ -6,10 +6,13 @@ import 'package:mbspos/utils/preference.dart';
 import 'package:mbspos/utils/routes.dart';
 import 'package:provider/provider.dart';
 
+final GlobalKey<ScaffoldMessengerState> rootScaffoldMessengerKey =
+    GlobalKey<ScaffoldMessengerState>();
+
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
-  await Preference().init();
+  await Preference().init(clear: false);
 
   runApp(const MyApp());
 }
@@ -23,6 +26,7 @@ class MyApp extends StatelessWidget {
     return MultiProvider(
       providers: AppProviders().providers,
       child: MaterialApp(
+        scaffoldMessengerKey: rootScaffoldMessengerKey,
         title: 'Flutter Demo',
         theme: AppTema.tema,
         onGenerateRoute: AppRoutes.generateRoute,

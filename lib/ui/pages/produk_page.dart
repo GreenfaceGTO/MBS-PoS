@@ -29,6 +29,12 @@ class _ProdukPageState extends State<ProdukPage> {
     return Scaffold(
       appBar: AppBar(
         title: const Text("Data Master Produk"),
+        actions: [
+          IconButton(
+              tooltip: "Import dari file",
+              onPressed: () {},
+              icon: const Icon(Icons.upload_file_sharp))
+        ],
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {

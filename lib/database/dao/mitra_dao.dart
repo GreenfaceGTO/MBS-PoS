@@ -52,7 +52,7 @@ class MitraDao {
   // -----------------------------------------
   /// Mengambil daftar mitra menurut tipe
   // -----------------------------------------
-  static Future<List<MitraModel>?> getAllMitra(String tipe) async {
+  static Future<List<MitraModel>> getAllMitra(String tipe) async {
     final db = await Dbhelper.database;
     final result =
         await db.query(MitraTable.table, where: "tipe=?", whereArgs: [tipe]);

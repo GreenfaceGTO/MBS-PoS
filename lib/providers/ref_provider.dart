@@ -46,12 +46,9 @@ class RefProvider with ChangeNotifier, CacheManager {
   // ---------------------------------------------------------
   void init() {
     String? currentTab = selectedRefTabMenu;
-
     if (currentTab != null) {
       _selectedRef = currentTab;
-      onTabChange(_selectedRef);
       notifyListeners();
-      getRef();
     }
   }
 
@@ -59,6 +56,17 @@ class RefProvider with ChangeNotifier, CacheManager {
   /// getter tab menu index
   // -------------------------
   String get selectedRef => _selectedRef;
+
+  // -----------------------------------------------
+  /// Mengambil posisi index dari menu referensi
+  // -----------------------------------------------
+  int get tabIndex {
+    int index = lstRefPage.indexOf(_selectedRef);
+    if (index < 0) {
+      return 0;
+    }
+    return index;
+  }
 
   // ----------------------------------
   /// setter loading indicator status
@@ -161,7 +169,7 @@ class RefProvider with ChangeNotifier, CacheManager {
     final result = await MitraDao.getAllMitra(tipe);
     log(result.toString());
     _lstMitra.clear();
-    if (result != null) {
+    if (result.isNotEmpty) {
       _lstMitra = result;
       _lstMitra.sort(
         (a, b) => a.nama!.compareTo(b.nama!),

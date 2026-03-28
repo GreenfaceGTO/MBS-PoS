@@ -64,14 +64,21 @@ class _IntroPageState extends State<IntroPage> {
                           "\n\nAplikasi ini menawarkan sistem manajemen retail terpadu yang berfokus pada ",
                       children: [
                         TextSpan(
-                            text:
-                                "pencatatan keuangan dan manajemen persediaan ",
+                            text: "pencatatan keuangan ",
+                            style: TextStyle(
+                              fontWeight: FontWeight.w600,
+                            )),
+                        TextSpan(
+                          text: "dan ",
+                        ),
+                        TextSpan(
+                            text: "manajemen persediaan ",
                             style: TextStyle(
                               fontWeight: FontWeight.w600,
                             )),
                         TextSpan(
                           text:
-                              "agar Anda dapat dengan mudah menentukan berapa banyak kebutuhan produk yang perlu disediakan untuk periode tertentu agar modal usaha lebih efektif. ",
+                              "agar Anda mudah menentukan berapa banyak kebutuhan produk yang perlu disediakan untuk periode tertentu agar modal usaha lebih efektif. ",
                         ),
                         TextSpan(
                             text:

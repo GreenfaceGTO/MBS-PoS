@@ -8,8 +8,11 @@ class Preference {
 
   late SharedPreferences _pref;
 
-  Future<void> init() async {
+  Future<void> init({bool clear = false}) async {
     _pref = await SharedPreferences.getInstance();
+    if (clear) {
+      _pref.clear();
+    }
   }
 
   //******************************
@@ -19,7 +22,7 @@ class Preference {
     _pref.setString(key, value);
   }
 
-  String getPrefString({required String key}) => _pref.getString(key) ?? '';
+  String? getPrefString({required String key}) => _pref.getString(key);
 
   // *************************
   // BEGIN OF BOOl PREFERENCE
