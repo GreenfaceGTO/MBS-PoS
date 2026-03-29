@@ -1,10 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:mbspos/main.dart';
 import 'package:mbspos/utils/global_enums.dart';
+import 'package:intl/intl.dart';
 
 enum OrientationMode { vertical, horizontal }
 
 const double defaultPadding = 16;
+
+NumberFormat toRupiah = NumberFormat.currency(
+  locale: 'ID',
+  symbol: "Rp. ",
+  decimalDigits: 2,
+);
 
 sectionTitle(BuildContext context, {required String title}) {
   TextTheme tema = Theme.of(context).textTheme;

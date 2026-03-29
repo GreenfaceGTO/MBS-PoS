@@ -31,7 +31,7 @@ class Dbhelper {
   static Future<void> _onUpgrade(
       Database db, int oldVersion, int newVersion) async {
     if (oldVersion < 2) {
-      log("message");
+      log(" message");
     }
   }
 

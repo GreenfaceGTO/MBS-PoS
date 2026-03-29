@@ -114,26 +114,29 @@ class _ProdukFormState extends State<ProdukForm> {
         context: context,
         builder: (ctx) {
           return const AlertDialog(
-            title: Text("Satuan Lain"),
+            title: Text("Satuan Produk"),
             content: Text.rich(TextSpan(
-                text: "Adalah jumlah satuan dasar dalam kemasan lain.\n\n",
+                text: "Produk dapat memiliki beberapa satuan. ",
                 children: [
                   TextSpan(
-                      text: "Contoh : ",
+                      text: "\n\nContoh : ",
                       style: TextStyle(fontWeight: FontWeight.bold)),
                   TextSpan(text: "\n- 1 Lusin = 12 Pcs"),
-                  TextSpan(text: "\n- 1 Kg = 1000 Gram"),
-                  TextSpan(text: "\n- 1 Dus = 120 Pcs"),
+                  TextSpan(text: "\n- 1 Dus = 144 Pcs"),
                   TextSpan(
-                      text: "\n\nKetentuan",
+                      text: "\n\nHarap diingat!",
                       style: TextStyle(
                           color: Colors.red,
                           fontSize: 11,
                           fontWeight: FontWeight.w600)),
                   TextSpan(
-                    text:
-                        "\nSatuan dasar harus ditentukan terlebih dulu sebelum dapat menambahkan satuan lain.",
-                  ),
+                      text:
+                          "\nSatuan dengan jumlah isi terkecil akan otomatis dijadikan sebagai satuan dasar."),
+
+                  // TextSpan(
+                  //   text:
+                  //       "\nSatuan dasar harus ditentukan terlebih dulu sebelum dapat menambahkan satuan lain.",
+                  // ),
                 ])),
           );
         });
@@ -183,8 +186,6 @@ class _ProdukFormState extends State<ProdukForm> {
                     spasi(),
                     _kategoriSection(context),
                     spasi(),
-                    _satDasarSection(context),
-                    spasi(),
                     TextFormField(
                       controller: txtSupplier,
                       readOnly: true,
@@ -207,7 +208,7 @@ class _ProdukFormState extends State<ProdukForm> {
                               ))),
                     ),
                     const Divider(),
-                    _satLainSection()
+                    _satuanSection()
                   ],
                 ),
               ),
@@ -229,91 +230,91 @@ class _ProdukFormState extends State<ProdukForm> {
     );
   }
 
-  Column _satDasarSection(BuildContext context) {
-    return Column(
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        Row(
-          children: [
-            Expanded(
-              child: DropdownButtonFormField<String>(
-                  decoration:
-                      const InputDecoration(label: Text("Satuan Dasar")),
-                  hint: const Text(
-                    "Satuan Dasar",
-                    style: TextStyle(fontSize: 13, fontWeight: FontWeight.w400),
-                  ),
-                  style: const TextStyle(
-                      fontSize: 13,
-                      fontWeight: FontWeight.w400,
-                      color: Colors.black87),
-                  items: lstSourceSat!.map((sat) {
-                    return DropdownMenuItem(value: sat, child: Text(sat));
-                  }).toList(),
-                  onChanged: (val) {
-                    setState(() {
-                      selectedSatDasar = val;
-                    });
-                  }),
-            ),
-            IconButton(
-                onPressed: () async {
-                  String? newSat =
-                      await provider.addNewRef(context, tipeRef: "Satuan");
-                  if (newSat != null) {
-                    setState(() {
-                      lstSourceSat!.add(newSat);
-                      lstSourceSat!.sort((a, b) => a.compareTo(b));
-                    });
-                  }
-                },
-                icon: const Icon(
-                  Icons.add_circle,
-                  size: 18,
-                ))
-          ],
-        ),
-        spasi(),
-        TextFormField(
-          keyboardType: TextInputType.number,
-          textInputAction: TextInputAction.next,
-          decoration: const InputDecoration(
-              hintText: "Harga Pokok", label: Text("Harga Pokok")),
-        ),
-        spasi(),
-        TextFormField(
-          readOnly: true,
-          onTap: () {
-            showMessage(context,
-                message: "Scan barcode dari kemasan produk untuk merekan",
-                mode: MessageMode.info);
-          },
-          decoration: InputDecoration(
-              hintText: "Barcode",
-              label: const Text("Barcode"),
-              suffixIcon: IconButton(
-                  onPressed: () {},
-                  icon: const Icon(
-                    Icons.barcode_reader,
-                    size: 18,
-                  ))),
-        ),
-        spasi(),
-        Align(
-          alignment: Alignment.centerLeft,
-          child: SizedBox(
-            width: 150,
-            child: TextFormField(
-              keyboardType: TextInputType.number,
-              textInputAction: TextInputAction.next,
-              decoration: const InputDecoration(
-                  hintText: "Stok Minimum", label: Text("Stok Minimum")),
-            ),
-          ),
-        ),
-      ],
-    );
-  }
+  // Column _satDasarSection(BuildContext context) {
+  //   return Column(
+  //     mainAxisSize: MainAxisSize.min,
+  //     children: [
+  //       Row(
+  //         children: [
+  //           Expanded(
+  //             child: DropdownButtonFormField<String>(
+  //                 decoration:
+  //                     const InputDecoration(label: Text("Satuan Dasar")),
+  //                 hint: const Text(
+  //                   "Satuan Dasar",
+  //                   style: TextStyle(fontSize: 13, fontWeight: FontWeight.w400),
+  //                 ),
+  //                 style: const TextStyle(
+  //                     fontSize: 13,
+  //                     fontWeight: FontWeight.w400,
+  //                     color: Colors.black87),
+  //                 items: lstSourceSat!.map((sat) {
+  //                   return DropdownMenuItem(value: sat, child: Text(sat));
+  //                 }).toList(),
+  //                 onChanged: (val) {
+  //                   setState(() {
+  //                     selectedSatDasar = val;
+  //                   });
+  //                 }),
+  //           ),
+  //           IconButton(
+  //               onPressed: () async {
+  //                 String? newSat =
+  //                     await provider.addNewRef(context, tipeRef: "Satuan");
+  //                 if (newSat != null) {
+  //                   setState(() {
+  //                     lstSourceSat!.add(newSat);
+  //                     lstSourceSat!.sort((a, b) => a.compareTo(b));
+  //                   });
+  //                 }
+  //               },
+  //               icon: const Icon(
+  //                 Icons.add_circle,
+  //                 size: 18,
+  //               ))
+  //         ],
+  //       ),
+  //       spasi(),
+  //       TextFormField(
+  //         keyboardType: TextInputType.number,
+  //         textInputAction: TextInputAction.next,
+  //         decoration: const InputDecoration(
+  //             hintText: "Harga Pokok", label: Text("Harga Pokok")),
+  //       ),
+  //       spasi(),
+  //       TextFormField(
+  //         readOnly: true,
+  //         onTap: () {
+  //           showMessage(context,
+  //               message: "Scan barcode dari kemasan produk untuk merekan",
+  //               mode: MessageMode.info);
+  //         },
+  //         decoration: InputDecoration(
+  //             hintText: "Barcode",
+  //             label: const Text("Barcode"),
+  //             suffixIcon: IconButton(
+  //                 onPressed: () {},
+  //                 icon: const Icon(
+  //                   Icons.barcode_reader,
+  //                   size: 18,
+  //                 ))),
+  //       ),
+  //       spasi(),
+  //       Align(
+  //         alignment: Alignment.centerLeft,
+  //         child: SizedBox(
+  //           width: 150,
+  //           child: TextFormField(
+  //             keyboardType: TextInputType.number,
+  //             textInputAction: TextInputAction.next,
+  //             decoration: const InputDecoration(
+  //                 hintText: "Stok Minimum", label: Text("Stok Minimum")),
+  //           ),
+  //         ),
+  //       ),
+  //     ],
+  //   );
+  // }
 
   Row _merekSection(BuildContext context) {
     return Row(
@@ -357,7 +358,7 @@ class _ProdukFormState extends State<ProdukForm> {
     );
   }
 
-  Container _satLainSection() {
+  Container _satuanSection() {
     return Container(
       constraints: const BoxConstraints(minHeight: 60),
       decoration:
@@ -375,7 +376,7 @@ class _ProdukFormState extends State<ProdukForm> {
                   mainAxisSize: MainAxisSize.min,
                   children: [
                     const Text(
-                      "Satuan Lain",
+                      "Satuan",
                       style: TextStyle(
                         fontWeight: FontWeight.w500,
                         fontSize: 14,
@@ -393,25 +394,22 @@ class _ProdukFormState extends State<ProdukForm> {
                   ],
                 ),
                 IconButton(
-                    onPressed: selectedSatDasar == null
-                        ? null
-                        : () async {
-                            final result = await browseRef(tipeData: 'satuan');
-                            if (result != null) {
-                              if (mounted) {
-                                SatitemModel? newSat =
-                                    await Navigator.pushNamed(
-                                        context, "/satkonversi",
-                                        arguments: ArgsModel(
-                                            formMode: FormMode.input,
-                                            tipe: result.toLowerCase(),
-                                            data: {
-                                              "satuan_dasar": selectedSatDasar,
-                                            }));
-                                if (newSat != null) {}
-                              }
-                            }
-                          },
+                    onPressed: () async {
+                      final result = await browseRef(tipeData: 'satuan');
+                      if (result != null) {
+                        if (mounted) {
+                          SatitemModel? newSat = await Navigator.pushNamed(
+                              context, "/satkonversi",
+                              arguments: ArgsModel(
+                                  formMode: FormMode.input,
+                                  tipe: result.toLowerCase(),
+                                  data: {
+                                    "satuan_dasar": selectedSatDasar,
+                                  }));
+                          if (newSat != null) {}
+                        }
+                      }
+                    },
                     icon: const Icon(
                       Icons.add_circle,
                       size: 18,
