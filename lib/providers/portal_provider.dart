@@ -2,7 +2,7 @@ import 'dart:developer';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:mbspos/database/dao/usaha_dao.dart';
+import 'package:mbspos/data/database/dao/usaha_dao.dart';
 import 'package:mbspos/models/data/usaha_model.dart';
 
 class PortalProvider with ChangeNotifier {

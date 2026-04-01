@@ -25,6 +25,7 @@ class _SplashscreenState extends State<Splashscreen> {
               : (prov.route == AppStartRoute.register
                   ? const RegisterPage()
                   : (prov.route == AppStartRoute.login
+                      // TODO : ganti dengan login page yang sebenarnya
                       ? const DummyPage(caption: "Login Page")
                       : const DashboardPage()));
     });

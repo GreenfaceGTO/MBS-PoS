@@ -1,6 +1,6 @@
 import 'dart:developer';
 
-import 'package:mbspos/database/dao/usaha_dao.dart';
+import 'package:mbspos/data/database/dao/usaha_dao.dart';
 import 'package:mbspos/models/data/usaha_model.dart';
 import 'package:mbspos/service/connectivity_service.dart';
 

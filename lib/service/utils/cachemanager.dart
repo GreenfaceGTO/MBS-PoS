@@ -1,7 +1,7 @@
 import 'dart:developer';
 
-import 'package:mbspos/utils/constant.dart';
-import 'package:mbspos/utils/preference.dart';
+import 'package:mbspos/service/utils/constant.dart';
+import 'package:mbspos/service/utils/preference.dart';
 
 mixin CacheManager {
   final Preference _pref = Preference();

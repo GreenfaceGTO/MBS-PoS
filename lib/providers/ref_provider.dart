@@ -1,10 +1,10 @@
 import 'dart:developer';
 
 import 'package:flutter/material.dart';
-import 'package:mbspos/database/dao/mitra_dao.dart';
-import 'package:mbspos/database/dao/ref_dao.dart';
+import 'package:mbspos/data/database/dao/mitra_dao.dart';
+import 'package:mbspos/data/database/dao/ref_dao.dart';
 import 'package:mbspos/models/data/mitra_model.dart';
-import 'package:mbspos/utils/cachemanager.dart';
+import 'package:mbspos/service/utils/cachemanager.dart';
 
 class RefProvider with ChangeNotifier, CacheManager {
   // ---------------------------------

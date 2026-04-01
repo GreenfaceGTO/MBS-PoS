@@ -3,6 +3,7 @@ class SatitemModel {
   String? satuan;
   int? isi;
   String? tipe;
+  double? hargaPokok;
   String? barcode;
   double? margin;
   double? potongan;
@@ -12,6 +13,7 @@ class SatitemModel {
       this.satuan,
       this.isi,
       this.tipe,
+      this.hargaPokok,
       this.barcode,
       this.margin,
       this.potongan});
@@ -21,6 +23,7 @@ class SatitemModel {
       satuan: map['satuan'],
       isi: map['isi'],
       tipe: map['tipe'],
+      hargaPokok: map['harga_pokok'],
       barcode: map['barcode'],
       margin: map['margin'],
       potongan: map['potongan']);
@@ -30,6 +33,7 @@ class SatitemModel {
         "satuan": satuan,
         "isi": isi,
         "tipe": tipe,
+        "harga_pokok": hargaPokok,
         "barcode": barcode,
         "margin": margin,
         "potongan": potongan

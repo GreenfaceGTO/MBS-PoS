@@ -5,8 +5,8 @@ import 'package:mbspos/models/args_model.dart';
 import 'package:mbspos/models/data/mitra_model.dart';
 import 'package:mbspos/providers/ref_provider.dart';
 import 'package:mbspos/ui/widgets/elements/emptydata_element.dart';
-import 'package:mbspos/utils/extension.dart';
-import 'package:mbspos/utils/global_enums.dart';
+import 'package:mbspos/service/utils/extension.dart';
+import 'package:mbspos/service/utils/global_enums.dart';
 import 'package:provider/provider.dart';
 
 class MitraRefWidget extends StatefulWidget {

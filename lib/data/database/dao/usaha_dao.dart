@@ -1,7 +1,7 @@
 import 'dart:developer';
 
-import 'package:mbspos/database/dbhelper.dart';
-import 'package:mbspos/database/table_schema/usaha_table.dart';
+import 'package:mbspos/data/database/dbhelper.dart';
+import 'package:mbspos/data/database/table_schema/usaha_table.dart';
 import 'package:mbspos/models/data/usaha_model.dart';
 
 class UsahaDao {

@@ -1,11 +1,33 @@
 import 'package:flutter/material.dart';
 import 'package:mbspos/main.dart';
-import 'package:mbspos/utils/global_enums.dart';
+import 'package:mbspos/service/utils/global_enums.dart';
 import 'package:intl/intl.dart';
+import 'package:simple_barcode_scanner/simple_barcode_scanner.dart';
 
 enum OrientationMode { vertical, horizontal }
 
 const double defaultPadding = 16;
+
+Future<String?> scanBarcode(
+  BuildContext context,
+) async {
+  String? result = await SimpleBarcodeScanner.scanBarcode(context,
+      barcodeAppBar: const BarcodeAppBar(
+          appBarTitle: "Scan barcode",
+          centerTitle: false,
+          enableBackButton: true,
+          backButtonIcon: Icon(Icons.chevron_left)),
+      isShowFlashIcon: true,
+      cancelButtonText: "BATAL",
+      delayMillis: 500,
+      cameraFace: CameraFace.back,
+      scanFormat: ScanFormat.ONLY_BARCODE);
+
+  if (result != null && result != '-1') {
+    return result;
+  }
+  return null;
+}
 
 NumberFormat toRupiah = NumberFormat.currency(
   locale: 'ID',

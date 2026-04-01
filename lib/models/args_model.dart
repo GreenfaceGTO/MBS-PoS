@@ -1,5 +1,5 @@
 // ----------------------------------------------------------------
-import 'package:mbspos/utils/global_enums.dart';
+import 'package:mbspos/service/utils/global_enums.dart';
 
 /// kelas yang digunakan untuk mempassing argument ke halaman lain
 // ----------------------------------------------------------------

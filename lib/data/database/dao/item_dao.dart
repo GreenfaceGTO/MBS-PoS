@@ -1,5 +1,5 @@
-import 'package:mbspos/database/dbhelper.dart';
-import 'package:mbspos/database/table_schema/item_table.dart';
+import 'package:mbspos/data/database/dbhelper.dart';
+import 'package:mbspos/data/database/table_schema/item_table.dart';
 import 'package:mbspos/models/data/item_model.dart';
 
 class ItemDao {

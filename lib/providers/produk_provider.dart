@@ -1,15 +1,24 @@
 import 'dart:developer';
 
 import 'package:flutter/material.dart';
-import 'package:mbspos/database/dao/item_dao.dart';
-import 'package:mbspos/database/dao/mitra_dao.dart';
-import 'package:mbspos/database/dao/ref_dao.dart';
+import 'package:mbspos/data/database/dao/item_dao.dart';
+import 'package:mbspos/data/database/dao/mitra_dao.dart';
+import 'package:mbspos/data/database/dao/ref_dao.dart';
 import 'package:mbspos/models/data/item_model.dart';
 import 'package:mbspos/models/data/mitra_model.dart';
 import 'package:mbspos/ui/widgets/components/general_widget.dart';
-import 'package:mbspos/utils/global_enums.dart';
+import 'package:mbspos/service/utils/global_enums.dart';
 
 class ProdukProvider with ChangeNotifier {
+  ProdukProvider() {
+    init();
+  }
+  void init() async {
+    // log("running init...");
+    await fetchMerek();
+    await fetchKategori();
+  }
+
   // --------------------------------
   /// deklarasi variabel loading
   // --------------------------------
@@ -56,10 +65,84 @@ class ProdukProvider with ChangeNotifier {
     }
   }
 
+  // ------------------------------------
+  /// variabel daftar referensi merek
+  // ------------------------------------
+  List<String> _lstMerek = [];
+
+  // --------------------------------------
+  /// setter daftar referensi merek
+  // --------------------------------------
+  Future<void> fetchMerek() async {
+    setLoading(true);
+    try {
+      log("$runtimeType : fetching merek...");
+      final result = await RefDao.getRefByTipe("merek");
+      if (result != null) {
+        _lstMerek = result;
+        notifyListeners();
+      }
+    } catch (e) {
+      log("$runtimeType : Error ${e.toString()}");
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  // ----------------------------------
+  /// getter daftar referensi merek
+  // ----------------------------------
+  List<String> get lstMerek => _lstMerek;
+
+  // -----------------------------
+  /// variabel daftar kategori
+  // -----------------------------
+  List<String> _lstKategori = [];
+
+  // --------------------------------------
+  /// setter daftar referensi kategori
+  // --------------------------------------
+  Future<void> fetchKategori() async {
+    setLoading(true);
+    try {
+      log("$runtimeType : fetching kategori...");
+      final result = await RefDao.getRefByTipe("kategori");
+      if (result != null) {
+        _lstKategori = result;
+
+        notifyListeners();
+      }
+    } catch (e) {
+      log("$runtimeType : Error ${e.toString()}");
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  // -------------------------
+  /// getter daftar kategori
+  // -------------------------
+  List<String> get lstKategori => _lstKategori;
+
+  // --------------------------------------------
+  /// Metode untuk mengambil data referensi
+  // --------------------------------------------
+  Future<List<String>?> getReferensi({required String tipe}) async {
+    setLoading(true);
+    try {
+      return await RefDao.getRefByTipe(tipe);
+    } catch (e) {
+      log("$runtimeType : Error ${e.toString()}");
+    } finally {
+      setLoading(false);
+    }
+    return null;
+  }
+
   // -------------------------------------------
   /// Menampilkan form input referensi baru
   // -------------------------------------------
-  Future<String?> addNewRef(BuildContext context,
+  Future<void> addNewRef(BuildContext context,
       {required String tipeRef}) async {
     String? result = await showDialog(
         context: context,
@@ -98,7 +181,10 @@ class ProdukProvider with ChangeNotifier {
       try {
         bool done = await RefDao.saveRef(tipeRef.toLowerCase(), result);
         if (done) {
-          return result;
+          if (tipeRef.toLowerCase() == "merek") {
+            _lstMerek.add(result);
+          }
+          notifyListeners();
         }
       } catch (e) {
         if (context.mounted) {
@@ -106,22 +192,6 @@ class ProdukProvider with ChangeNotifier {
         }
       }
     }
-    return null;
-  }
-
-  // --------------------------------------------
-  /// Metode untuk mengambil data referensi
-  // --------------------------------------------
-  Future<List<String>?> getReferensi({required String tipe}) async {
-    setLoading(true);
-    try {
-      return await RefDao.getRefByTipe(tipe);
-    } catch (e) {
-      log("$runtimeType : Error ${e.toString()}");
-    } finally {
-      setLoading(false);
-    }
-    return null;
   }
 
   Future<List<MitraModel>> getMitra({required String tipe}) async {

@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:mbspos/models/data/mitra_model.dart';
 import 'package:mbspos/providers/produk_provider.dart';
 import 'package:mbspos/ui/widgets/elements/emptydata_element.dart';
-import 'package:mbspos/utils/extension.dart';
+import 'package:mbspos/service/utils/extension.dart';
 import 'package:provider/provider.dart';
 
 class Databrowser extends StatefulWidget {
@@ -33,23 +33,22 @@ class _DatabrowserState extends State<Databrowser> {
 
   void onFloatinButtonTapped() async {
     if (widget.tipeRef == 'kategori') {
-      final String? newKat =
-          await provider.addNewRef(context, tipeRef: "Kategori");
-      if (newKat != null) {
-        setState(() {
-          dataRef!.add(newKat);
-          dataRef!.sort((a, b) => a.compareTo(b));
-        });
-      }
+      await provider.addNewRef(context, tipeRef: "Kategori");
+      // if (newKat != null) {
+      //   setState(() {
+      //     dataRef!.add(newKat);
+      //     dataRef!.sort((a, b) => a.compareTo(b));
+      //   });
+      // }
     } else if (widget.tipeRef == 'satuan') {
-      final String? newSat =
-          await provider.addNewRef(context, tipeRef: "Satuan");
-      if (newSat != null) {
-        setState(() {
-          dataRef!.add(newSat);
-          dataRef!.sort((a, b) => a.compareTo(b));
-        });
-      }
+      // final String? newSat =
+      await provider.addNewRef(context, tipeRef: "Satuan");
+      // if (newSat != null) {
+      //   setState(() {
+      //     dataRef!.add(newSat);
+      //     dataRef!.sort((a, b) => a.compareTo(b));
+      //   });
+      // }
     }
   }
 

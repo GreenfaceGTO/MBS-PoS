@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:mbspos/utils/constant.dart';
+import 'package:mbspos/service/utils/constant.dart';
 import 'package:mbspos/ui/widgets/components/customdrawer.dart';
 
 class DashboardPage extends StatefulWidget {

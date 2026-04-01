@@ -5,7 +5,7 @@ import 'package:mbspos/models/args_model.dart';
 import 'package:mbspos/providers/ref_provider.dart';
 import 'package:mbspos/ui/widgets/elements/mitra_element.dart';
 import 'package:mbspos/ui/widgets/elements/ref_element.dart';
-import 'package:mbspos/utils/global_enums.dart';
+import 'package:mbspos/service/utils/global_enums.dart';
 import 'package:provider/provider.dart';
 
 class ReferensiPage extends StatefulWidget {

@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:mbspos/ui/widgets/components/general_widget.dart';
 import 'package:mbspos/ui/widgets/elements/drawerheader_element.dart';
-import 'package:mbspos/utils/cachemanager.dart';
-import 'package:mbspos/utils/constant.dart';
+import 'package:mbspos/service/utils/cachemanager.dart';
+import 'package:mbspos/service/utils/constant.dart';
 
 class Customdrawer extends StatefulWidget with CacheManager {
   Customdrawer({super.key});

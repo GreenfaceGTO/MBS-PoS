@@ -1,7 +1,7 @@
 import 'dart:developer';
 
-import 'package:mbspos/database/dbhelper.dart';
-import 'package:mbspos/database/table_schema/ref_table.dart';
+import 'package:mbspos/data/database/dbhelper.dart';
+import 'package:mbspos/data/database/table_schema/ref_table.dart';
 
 /// Akses ke tabel referensi
 class RefDao {

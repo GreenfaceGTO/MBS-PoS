@@ -4,13 +4,15 @@ import 'package:mbspos/models/data/satitem_model.dart';
 import 'package:mbspos/ui/dashboard_page.dart';
 import 'package:mbspos/ui/dummy_page.dart';
 import 'package:mbspos/ui/pages/form/mitra_form.dart';
-import 'package:mbspos/ui/pages/form/produk_form.dart';
+// import 'package:mbspos/ui/pages/form/produk_form.xoldart';
 import 'package:mbspos/ui/pages/form/satkonversi_form.dart';
 import 'package:mbspos/ui/pages/produk_page.dart';
 import 'package:mbspos/ui/pages/referensi_page.dart';
 import 'package:mbspos/ui/register_page.dart';
 import 'package:mbspos/ui/widgets/components/databrowser.dart';
-import 'package:mbspos/utils/constant.dart';
+import 'package:mbspos/service/utils/constant.dart';
+
+import '../../ui/pages/form/produk_form.dart';
 
 class AppRoutes {
   // ---------------------------------------------------------------
