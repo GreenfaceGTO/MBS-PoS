@@ -11,6 +11,9 @@ class AppTema {
             surface: Colors.white),
     dialogTheme: DialogThemeData(
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8))),
+    cardTheme: CardThemeData(
+        elevation: 3,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8))),
     dropdownMenuTheme: const DropdownMenuThemeData(
         textStyle: TextStyle(fontSize: 13),
         inputDecorationTheme: InputDecorationTheme(

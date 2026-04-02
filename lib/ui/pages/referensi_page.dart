@@ -3,6 +3,7 @@ import 'dart:developer';
 import 'package:flutter/material.dart';
 import 'package:mbspos/models/args_model.dart';
 import 'package:mbspos/providers/master_provider.dart';
+import 'package:mbspos/service/utils/constant.dart';
 import 'package:mbspos/ui/widgets/elements/mitra_element.dart';
 import 'package:mbspos/ui/widgets/elements/ref_element.dart';
 import 'package:mbspos/service/utils/global_enums.dart';
@@ -34,7 +35,6 @@ class _ReferensiPageState extends State<ReferensiPage>
       log("tabIndex : ${provider.tabIndex}");
 
       _autoScrollToIndexTab(provider.tabIndex);
-      provider.getRef();
     });
     super.initState();
   }
@@ -63,7 +63,7 @@ class _ReferensiPageState extends State<ReferensiPage>
   /// metode saat tombol floating di tekan
   // ---------------------------------------
   void onFloatinButtonTap() {
-    if (provider.lstRefPage.indexOf(provider.selectedRef) < 3) {
+    if (provider.tabIndex < 3) {
       //  Tampilkan jendela input referensi
       showRefForm(title: provider.selectedRef);
     } else {
@@ -96,8 +96,10 @@ class _ReferensiPageState extends State<ReferensiPage>
               TextButton(
                   onPressed: () {
                     if (txtRef.text.isNotEmpty) {
-                      provider.saveRef(txtRef.text);
-                      provider.getRef();
+                      context
+                          .read<MasterProvider>()
+                          .addNewRef(title.toLowerCase(), txtRef.text);
+
                       Navigator.pop(ctx);
                     }
                   },
@@ -113,7 +115,7 @@ class _ReferensiPageState extends State<ReferensiPage>
     return Consumer<MasterProvider>(builder: (context, prov, _) {
       return Scaffold(
         appBar: AppBar(
-          title: const Text("Data Master Pendukung"),
+          title: const Text("Data Pendukung"),
         ),
         floatingActionButton: FloatingActionButton(
           heroTag: prov.selectedRef,
@@ -129,13 +131,13 @@ class _ReferensiPageState extends State<ReferensiPage>
                 controller: _scrollController,
                 padding: const EdgeInsets.symmetric(horizontal: 8),
                 scrollDirection: Axis.horizontal,
-                children: prov.lstRefPage.map((pg) {
+                children: lstRefPage.map((pg) {
                   return Container(
-                    key: _keys[prov.lstRefPage.indexOf(pg)],
+                    key: _keys[lstRefPage.indexOf(pg)],
                     padding: const EdgeInsets.symmetric(horizontal: 4),
                     child: ChoiceChip(
                       onSelected: (val) {
-                        prov.onTabChange(pg);
+                        prov.selectTab(pg);
                       },
                       label: Text(pg),
                       padding: const EdgeInsets.all(12),
@@ -146,9 +148,7 @@ class _ReferensiPageState extends State<ReferensiPage>
                 }).toList(),
               ),
             ),
-            prov.lstRefPage.indexOf(prov.selectedRef) < 3
-                ? const RefWidget()
-                : const MitraRefWidget()
+            prov.tabIndex < 3 ? const RefWidget() : const MitraRefWidget()
           ],
         ),
       );

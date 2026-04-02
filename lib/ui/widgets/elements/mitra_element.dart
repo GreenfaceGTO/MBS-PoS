@@ -1,12 +1,11 @@
-import 'dart:developer';
-
 import 'package:flutter/material.dart';
 import 'package:mbspos/models/args_model.dart';
 import 'package:mbspos/models/data/mitra_model.dart';
 import 'package:mbspos/providers/master_provider.dart';
+import 'package:mbspos/service/utils/global_enums.dart';
+import 'package:mbspos/ui/widgets/components/general_widget.dart';
 import 'package:mbspos/ui/widgets/elements/emptydata_element.dart';
 import 'package:mbspos/service/utils/extension.dart';
-import 'package:mbspos/service/utils/global_enums.dart';
 import 'package:provider/provider.dart';
 
 class MitraRefWidget extends StatefulWidget {
@@ -17,24 +16,16 @@ class MitraRefWidget extends StatefulWidget {
 }
 
 class _MitraRefWidgetState extends State<MitraRefWidget> {
-  late MasterProvider provider;
-
-  @override
-  void initState() {
-    provider = Provider.of(context, listen: false);
-    super.initState();
-  }
-
   void onButtonEditTapped(MitraModel mitra) {
     final duplData = mitra.copyWith();
     Navigator.pushNamed(context, '/mitraform',
         arguments: ArgsModel(
             formMode: FormMode.update,
-            tipe: provider.selectedRef,
+            tipe: context.read<MasterProvider>().selectedRef,
             data: duplData));
   }
 
-  void onDelete(MitraModel mitra) async {
+  void deleteConfirm(MitraModel mitra) async {
     bool? confirm = await showDialog(
       context: context,
       builder: (ctx) {
@@ -60,65 +51,171 @@ class _MitraRefWidgetState extends State<MitraRefWidget> {
     );
 
     if (confirm != null && confirm) {
-      provider.delMitra(mitra.id!);
+      if (mounted) {
+        context.read<MasterProvider>().delMitra(mitra);
+      }
     }
   }
 
   @override
   Widget build(BuildContext context) {
-    return Expanded(child: SizedBox(
-      child: Consumer<MasterProvider>(builder: (context, prov, _) {
-        return prov.lstMitra.isEmpty
-            ? EmptydataElement(
-                caption: "Belum ada data ${prov.selectedRef}",
-              )
-            : ListView(
-                children: prov.lstMitra.map((mtr) {
-                  return Padding(
-                    padding: const EdgeInsets.only(bottom: 4),
-                    child: ListTile(
-                      shape: const RoundedRectangleBorder(),
-                      contentPadding: const EdgeInsets.only(left: 12, right: 8),
-                      onTap: () {
-                        log(mtr.toMap().toString());
-                      },
-                      title: Text(mtr.nama!),
-                      subtitle: (mtr.alamat == null || mtr.noTelp == null)
-                          ? null
-                          : Column(
-                              mainAxisSize: MainAxisSize.min,
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                if (mtr.alamat != null) Text(mtr.alamat!),
-                                if (mtr.noTelp != null) Text(mtr.noTelp!)
-                              ],
+    final prov = context.watch<MasterProvider>();
+    return Expanded(
+        child: prov.tabIndex == 3
+            ? _supplierWidget(prov)
+            : _pelangganWidget(prov));
+  }
+
+  SizedBox _pelangganWidget(MasterProvider prov) {
+    return SizedBox(
+      child: prov.daftarPelanggan.isEmpty
+          ? EmptydataElement(
+              caption: "Belum ada data ${prov.selectedRef}",
+            )
+          : ListView.separated(
+              itemBuilder: (context, idx) {
+                MitraModel data = prov.daftarPelanggan[idx];
+                return ListTile(
+                  title: Text(data.nama!,
+                      style: const TextStyle(
+                          fontSize: 15, fontWeight: FontWeight.w500)),
+                  subtitle: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: _detailMitra(data),
+                  ),
+                  trailing: PopupMenuButton(onSelected: (val) {
+                    if (val == "/hapus") {
+                      // log(data.toMap().toString());
+                      deleteConfirm(data);
+                    } else {
+                      onButtonEditTapped(data);
+                    }
+                  }, itemBuilder: (context) {
+                    return const [
+                      PopupMenuItem(
+                          value: "/edit",
+                          child: ListTile(
+                            leading: Icon(
+                              Icons.edit,
+                              size: 18,
                             ),
-                      trailing: Row(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          IconButton(
-                              onPressed: () {
-                                onButtonEditTapped(mtr);
-                              },
-                              icon: const Icon(
-                                Icons.edit,
-                                size: 18,
-                              )),
-                          IconButton(
-                              onPressed: () {
-                                onDelete(mtr);
-                              },
-                              icon: const Icon(
-                                Icons.delete_forever,
-                                size: 18,
-                              )),
-                        ],
-                      ),
-                    ),
-                  );
-                }).toList(),
-              );
-      }),
-    ));
+                            title: Text("Edit"),
+                          )),
+                      PopupMenuItem(
+                          value: "/hapus",
+                          child: ListTile(
+                            leading: Icon(
+                              Icons.delete_forever,
+                              size: 18,
+                            ),
+                            title: Text("Hapus"),
+                          )),
+                    ];
+                  }),
+                );
+              },
+              separatorBuilder: (context, idx) {
+                return const Divider();
+              },
+              itemCount: prov.daftarPelanggan.length),
+    );
+  }
+
+  SizedBox _supplierWidget(MasterProvider prov) {
+    return SizedBox(
+      child: prov.daftarSupplier.isEmpty
+          ? EmptydataElement(
+              caption: "Belum ada data ${prov.selectedRef}",
+            )
+          : ListView.separated(
+              itemBuilder: (context, idx) {
+                MitraModel data = prov.daftarSupplier[idx];
+                return ListTile(
+                  title: Text(data.nama!,
+                      style: const TextStyle(
+                          fontSize: 15, fontWeight: FontWeight.w500)),
+                  subtitle: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: _detailMitra(data),
+                  ),
+                  trailing: PopupMenuButton(onSelected: (val) {
+                    if (val == "/hapus") {
+                      // log(data.toMap().toString());
+                      deleteConfirm(data);
+                    } else {
+                      onButtonEditTapped(data);
+                    }
+                  }, itemBuilder: (context) {
+                    return const [
+                      PopupMenuItem(
+                          value: "/edit",
+                          child: ListTile(
+                            leading: Icon(
+                              Icons.edit,
+                              size: 18,
+                            ),
+                            title: Text("Edit"),
+                          )),
+                      PopupMenuItem(
+                          value: "/hapus",
+                          child: ListTile(
+                            leading: Icon(
+                              Icons.delete_forever,
+                              size: 18,
+                            ),
+                            title: Text("Hapus"),
+                          )),
+                    ];
+                  }),
+                );
+              },
+              separatorBuilder: (context, idx) {
+                return const Divider();
+              },
+              itemCount: prov.daftarSupplier.length),
+    );
+  }
+
+  List<Widget> _detailMitra(MitraModel data) {
+    return [
+      spasi(jarak: 4),
+      if (data.alamat != null)
+        Row(
+          children: [
+            const Icon(
+              Icons.location_on,
+              size: 12,
+            ),
+            spasi(mode: OrientationMode.horizontal, jarak: 4),
+            Text(
+              data.alamat!,
+            ),
+          ],
+        ),
+      if (data.noTelp != null)
+        Row(
+          children: [
+            const Icon(
+              Icons.phone,
+              size: 12,
+            ),
+            spasi(jarak: 4, mode: OrientationMode.horizontal),
+            Text(data.noTelp!),
+          ],
+        ),
+      if (data.keterangan != null)
+        Row(
+          children: [
+            const Icon(
+              Icons.description,
+              size: 12,
+            ),
+            spasi(jarak: 4, mode: OrientationMode.horizontal),
+            Text(data.keterangan!),
+          ],
+        )
+    ];
   }
 }

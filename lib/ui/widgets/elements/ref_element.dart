@@ -11,19 +11,12 @@ class RefWidget extends StatefulWidget {
 }
 
 class _RefWidgetState extends State<RefWidget> {
-  late MasterProvider provider;
-
-  @override
-  void initState() {
-    provider = Provider.of(context, listen: false);
-    super.initState();
-  }
-
   // -------------------------------------------------
   /// Menampilkan jendela konfirmasi hapus referensi
   // -------------------------------------------------
-  void deleteConfirm({required String title}) async {
-    bool? result = await showDialog(
+  void deleteConfirm(BuildContext context,
+      {required String tipe, required String title}) async {
+    await showDialog(
         context: context,
         builder: (ctx) {
           return AlertDialog(
@@ -32,41 +25,46 @@ class _RefWidgetState extends State<RefWidget> {
                 "Yakin data pendukung ${title.toUpperCase()} ini akan dihapus?"),
             actions: [
               TextButton(
-                  onPressed: () {
-                    Navigator.pop(ctx, true);
+                  onPressed: () async {
+                    context.read<MasterProvider>().deleteRef(tipe, title);
+                    Navigator.pop(ctx);
                   },
                   child: const Text("HAPUS")),
               TextButton(
                   onPressed: () {
-                    Navigator.pop(ctx, false);
+                    Navigator.pop(ctx);
                   },
                   child: const Text("BATAL"))
             ],
           );
         });
-
-    if (result != null && result) {
-      provider.deleteRef(title);
-    }
   }
 
   @override
   Widget build(BuildContext context) {
-    return Expanded(child:
-        SizedBox(child: Consumer<MasterProvider>(builder: (context, prov, _) {
-      return prov.lstRef.isEmpty
+    final prov = context.watch<MasterProvider>();
+    return Expanded(
+        child: prov.tabIndex == 0
+            ? _satuanWidget(prov)
+            : (prov.tabIndex == 1
+                ? _kategoriWidget(prov)
+                : _merekWidget(prov)));
+  }
+
+  SizedBox _satuanWidget(MasterProvider prov) {
+    return SizedBox(
+      child: prov.daftarSatuan.isEmpty
           ? EmptydataElement(
               caption: "Belum ada data ${prov.selectedRef}",
             )
           : ListView(
-              children: prov.lstRef.map((ref) {
+              children: prov.daftarSatuan.map((sat) {
                 return ListTile(
                   contentPadding: const EdgeInsets.only(left: 16, right: 10),
-                  title: Text(ref),
+                  title: Text(sat),
                   trailing: IconButton(
-                      padding: EdgeInsets.zero,
-                      onPressed: () {
-                        deleteConfirm(title: ref);
+                      onPressed: () async {
+                        deleteConfirm(context, tipe: "satuan", title: sat);
                       },
                       icon: const Icon(
                         Icons.delete_forever,
@@ -74,7 +72,57 @@ class _RefWidgetState extends State<RefWidget> {
                       )),
                 );
               }).toList(),
-            );
-    })));
+            ),
+    );
+  }
+
+  SizedBox _kategoriWidget(MasterProvider prov) {
+    return SizedBox(
+      child: prov.daftarKategori.isEmpty
+          ? EmptydataElement(
+              caption: "Belum ada data ${prov.selectedRef}",
+            )
+          : ListView(
+              children: prov.daftarKategori.map((kat) {
+                return ListTile(
+                  contentPadding: const EdgeInsets.only(left: 16, right: 10),
+                  title: Text(kat),
+                  trailing: IconButton(
+                      onPressed: () {
+                        deleteConfirm(context, tipe: "kategori", title: kat);
+                      },
+                      icon: const Icon(
+                        Icons.delete_forever,
+                        size: 18,
+                      )),
+                );
+              }).toList(),
+            ),
+    );
+  }
+
+  SizedBox _merekWidget(MasterProvider prov) {
+    return SizedBox(
+      child: prov.daftarMerek.isEmpty
+          ? EmptydataElement(
+              caption: "Belum ada data ${prov.selectedRef}",
+            )
+          : ListView(
+              children: prov.daftarMerek.map((merek) {
+                return ListTile(
+                  contentPadding: const EdgeInsets.only(left: 16, right: 10),
+                  title: Text(merek),
+                  trailing: IconButton(
+                      onPressed: () {
+                        deleteConfirm(context, tipe: 'merek', title: merek);
+                      },
+                      icon: const Icon(
+                        Icons.delete_forever,
+                        size: 18,
+                      )),
+                );
+              }).toList(),
+            ),
+    );
   }
 }

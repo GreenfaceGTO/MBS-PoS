@@ -120,7 +120,8 @@ class _MitraFormState extends State<MitraForm> {
                               txtKet.text.isNotEmpty ? txtKet.text : null,
                           createdAt: DateTime.now().toString());
                       if (modeInput) {
-                        prov.saveMitra(newMitra);
+                        prov.addNewMitra(
+                            prov.selectedRef.toLowerCase(), newMitra);
                       } else {
                         prov.updateMitra(newMitra);
                       }

@@ -1,4 +1,7 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
+import 'package:mbspos/providers/master_provider.dart';
 import 'package:mbspos/providers/startup_provider.dart';
 import 'package:mbspos/service/startup_service.dart';
 import 'package:mbspos/ui/dashboard_page.dart';
@@ -15,6 +18,17 @@ class Splashscreen extends StatefulWidget {
 }
 
 class _SplashscreenState extends State<Splashscreen> {
+  @override
+  void initState() {
+    super.initState();
+    Future.microtask(() async {
+      log("$runtimeType : loading data master provider...");
+      if (mounted) {
+        await context.read<MasterProvider>().init();
+      }
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Consumer<StartupProvider>(builder: (context, prov, _) {

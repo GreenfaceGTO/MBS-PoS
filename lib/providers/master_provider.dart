@@ -5,237 +5,172 @@ import 'package:mbspos/data/database/dao/item_dao.dart';
 import 'package:mbspos/data/database/dao/mitra_dao.dart';
 import 'package:mbspos/data/database/dao/ref_dao.dart';
 import 'package:mbspos/data/repository/masterdata_repo.dart';
+import 'package:mbspos/models/data/item_model.dart';
 import 'package:mbspos/models/data/mitra_model.dart';
 import 'package:mbspos/service/utils/cachemanager.dart';
+import 'package:mbspos/service/utils/constant.dart';
 
 class MasterProvider with ChangeNotifier, CacheManager {
   final _masterdataRepo = MasterdataRepo(
       refDao: RefDao(), mitraDao: MitraDao(), itemDao: ItemDao());
 
-  // ---------------------------------
-  // inisialisasi loading indicator
-  // ---------------------------------
-  bool _isLoading = false;
+  // ------------------------------
+  // marking inisialisasi provider
+  // ------------------------------
+  bool _isInitialized = false;
 
-  // ------------------------------
-  /// inisialisasi awal tab index
-  // ------------------------------
+  // ==============deklarasi variabel==============
+  List<String> _daftarMerek = [];
+  List<String> _daftarKategori = [];
+  List<String> _daftarSatuan = [];
+  List<ItemModel> _daftarProduk = [];
+  List<MitraModel> _daftarSupplier = [];
+  List<MitraModel> _daftarPelanggan = [];
   String _selectedRef = "Satuan";
 
-  // ------------------------------------------------------------
-  /// deklarasi variabel daftar untuk menampung data ref yang
-  /// diloading dari db
-  // ------------------------------------------------------------
-  List<String> _lstRef = [];
+  // ================getter================
+  List<String> get daftarMerek => _daftarMerek;
+  List<String> get daftarKategori => _daftarKategori;
+  List<String> get daftarSatuan => _daftarSatuan;
+  List<ItemModel> get daftarProduk => _daftarProduk;
+  List<MitraModel> get daftarSupplier => _daftarSupplier;
+  List<MitraModel> get daftarPelanggan => _daftarPelanggan;
 
-  // ------------------------------------------------------------
-  /// deklarasi variabel daftar untuk menampung data supplier
-  /// atau pelanggan
-  // ------------------------------------------------------------
-  List<MitraModel> _lstMitra = [];
-
-  // -------------------------------------------
-  /// deklarasi variabel daftar nama tab menu
-  // -------------------------------------------
-  List<String> lstRefPage = [
-    "Satuan",
-    "Kategori",
-    "Merek",
-    "Supplier",
-    "Pelanggan"
-  ];
-
-  // ---------------------------------------------------------
-  /// metode untuk mengambil tab yang tersimpan saat pertama
-  /// halaman yang menggunakan provider ini dibuka
-  // ---------------------------------------------------------
-  void init() {
-    String? currentTab = selectedRefTabMenu;
-    if (currentTab != null) {
-      _selectedRef = currentTab;
-      notifyListeners();
-    }
-  }
-
-  // -------------------------
-  /// getter tab menu index
-  // -------------------------
   String get selectedRef => _selectedRef;
 
-  // -----------------------------------------------
-  /// Mengambil posisi index dari menu referensi
-  // -----------------------------------------------
   int get tabIndex {
-    int index = lstRefPage.indexOf(_selectedRef);
-    if (index < 0) {
-      return 0;
-    }
-    return index;
+    return lstRefPage.indexOf(_selectedRef);
   }
 
-  // ----------------------------------
-  /// setter loading indicator status
-  // ----------------------------------
-  void setLoading(bool value) {
-    _isLoading = value;
+  // ===================Setter===================
+  void selectTab(String tabName) {
+    _selectedRef = tabName;
     notifyListeners();
   }
 
-  // ----------------------------------
-  /// getter loading indicator status
-  // ----------------------------------
-  bool get isLoading => _isLoading;
+  // =============Method=============
 
-  // -----------------------------
-  /// getter daftar referensi
-  // -----------------------------
-  List<String> get lstRef => _lstRef;
+  // --------------------------
+  // inisialisasi local data
+  // --------------------------
+  Future<void> init() async {
+    if (_isInitialized) return;
+    _isInitialized = true;
+    _daftarMerek = await _masterdataRepo.getAllRef("merek");
+    _daftarKategori = await _masterdataRepo.getAllRef("kategori");
+    _daftarSatuan = await _masterdataRepo.getAllRef("satuan");
+    _daftarProduk = await _masterdataRepo.getAllProduk();
+    _daftarSupplier = await _masterdataRepo.getAllMitra("supplier");
+    _daftarPelanggan = await _masterdataRepo.getAllMitra("pelanggan");
+    notifyListeners();
+  }
 
-  // ---------------------------
-  /// getter daftar mitra
-  // ---------------------------
-  List<MitraModel> get lstMitra => _lstMitra;
+  // -------------------------------
+  // Menambahkan data referensi
+  // -------------------------------
+  Future<void> addNewRef(String tipe, String namaRef) async {
+    int result = await _masterdataRepo.addNewRef(tipe.toLowerCase(), namaRef);
+    log("add new result : ${result.toString()}");
+    if (result > 0) {
+      switch (tipe.toLowerCase()) {
+        case "satuan":
+          log("$runtimeType: refreshing satuan list...");
+          _daftarSatuan.add(namaRef);
+          _daftarSatuan.sort((a, b) => a.compareTo(b));
+        case "kategori":
+          log("$runtimeType : refreshing kategori list...");
+          _daftarKategori.add(namaRef);
+          _daftarKategori.sort((a, b) => a.compareTo(b));
+        case "merek":
+          log("$runtimeType : refreshing merek list...");
+          _daftarMerek.add(namaRef);
+          _daftarMerek.sort((a, b) => a.compareTo(b));
+      }
+      notifyListeners();
+      log(_daftarSatuan.toString());
+    }
+  }
 
   // ----------------------------
-  /// setter saat tab dipilih
+  // Menghapus data referensi
   // ----------------------------
-  void onTabChange(String selectedPage) async {
-    onRefTabSelected(selectedPage);
-    _selectedRef = selectedPage;
-    if (lstRefPage.indexOf(selectedPage) < 3) {
-      await getRef();
-    } else {
-      await getMitra();
-    }
-    notifyListeners();
-  }
+  Future<void> deleteRef(String tipe, String namaRef) async {
+    bool done = await _masterdataRepo.delRef(tipe, namaRef);
+    if (done) {
+      switch (tipe.toLowerCase()) {
+        case 'satuan':
+          _daftarSatuan
+              .removeWhere((e) => e.toLowerCase() == namaRef.toLowerCase());
 
-  // ------------------------------------------------------
-  /// Metode untuk mengambil data referensi menurut tipe
-  // ------------------------------------------------------
-  Future<void> getRef() async {
-    String tipe = selectedRef.toLowerCase();
-    log(tipe);
-    final result = await _masterdataRepo.getAllRef(tipe);
-    _lstRef.clear();
-    _lstRef = result;
-    _lstRef.sort(
-      (a, b) => a.compareTo(b),
-    );
-    notifyListeners();
-  }
+          break;
+        case "kategori":
+          _daftarKategori
+              .removeWhere((e) => e.toLowerCase() == namaRef.toLowerCase());
 
-  // -------------------------------
-  /// Metode simpan data referensi
-  // -------------------------------
-  Future<void> saveRef(String namaRef) async {
-    setLoading(true);
-    try {
-      int id =
-          await _masterdataRepo.addNewRef(selectedRef.toLowerCase(), namaRef);
-
-      if (id > 0) {
-        lstRef.add(namaRef);
-        notifyListeners();
+        case "merek":
+          _daftarMerek
+              .removeWhere((e) => e.toLowerCase() == namaRef.toLowerCase());
       }
-    } catch (e) {
-      log("$runtimeType : Error ${e.toString()}");
-    } finally {
-      setLoading(false);
-    }
-  }
-
-  // -------------------------------
-  /// Metode hapus data referensi
-  // -------------------------------
-  Future<void> deleteRef(String namaRef) async {
-    setLoading(true);
-    try {
-      bool done =
-          await _masterdataRepo.delRef(selectedRef.toLowerCase(), namaRef);
-
-      if (done) {
-        lstRef.removeWhere((e) => e == namaRef);
-        notifyListeners();
-      }
-    } catch (e) {
-      log("$runtimeType : Error ${e.toString()}");
-    } finally {
-      setLoading(false);
-    }
-  }
-
-  // ---------------------------
-  /// Metode fetch data mitra
-  // ---------------------------
-  Future<void> getMitra() async {
-    String tipe = selectedRef.toLowerCase();
-    final result = await _masterdataRepo.getAllMitra(tipe);
-
-    log(result.toString());
-    _lstMitra.clear();
-    if (result.isNotEmpty) {
-      _lstMitra = result;
-      _lstMitra.sort(
-        (a, b) => a.nama!.compareTo(b.nama!),
-      );
       notifyListeners();
     }
   }
 
-  // ----------------------------
-  /// Metode simpan data mitra
-  // ----------------------------
-  Future<void> saveMitra(MitraModel mitra) async {
-    setLoading(true);
-    try {
-      int id = await _masterdataRepo.saveNewMitra(mitra);
-      if (id > 0) {
-        mitra.id = id;
-        _lstMitra.add(mitra);
-        notifyListeners();
+  // -----------------------------------------------------------
+  // Menambah data mitra baru baik supplier maupun pelanggan
+  // -----------------------------------------------------------
+  Future<void> addNewMitra(String tipe, MitraModel data) async {
+    int id = await _masterdataRepo.addNewMitra(data);
+    if (id > 0) {
+      data.id = id;
+      switch (data.tipe!.toLowerCase()) {
+        case "supplier":
+          log("$runtimeType : Updating supplier on local...");
+
+          _daftarSupplier.add(data);
+          _daftarSupplier.sort((a, b) => a.nama!.compareTo(b.nama!));
+        case "pelanggan":
+          log("$runtimeType : Updating pelanggan on local...");
+          _daftarPelanggan.add(data);
+          _daftarPelanggan.sort((a, b) => a.nama!.compareTo(b.nama!));
       }
-    } catch (e) {
-      log("$runtimeType : Error ${e.toString()}");
-    } finally {
-      setLoading(false);
+      notifyListeners();
     }
   }
 
-  // -----------------------------
-  /// Metode update data mitra
-  // -----------------------------
+  // -------------------------------------------------
+  // Menghapus mitra baik supplier atau pelanggan
+  // -------------------------------------------------
   Future<void> updateMitra(MitraModel data) async {
-    setLoading(true);
-    try {
-      bool done = await _masterdataRepo.updateMitra(data);
-      if (done) {
-        log("refetching...");
-        await getMitra();
+    bool done = await _masterdataRepo.updateMitra(data);
+    if (done) {
+      switch (data.tipe!.toLowerCase()) {
+        case "supplier":
+          _daftarSupplier.removeWhere((e) => e.id == data.id);
+          _daftarSupplier.add(data);
+          _daftarSupplier.sort((a, b) => a.nama!.compareTo(b.nama!));
+        case "pelanggan":
+          _daftarPelanggan.removeWhere((e) => e.id == data.id);
+          _daftarPelanggan.add(data);
+          _daftarPelanggan.sort((a, b) => a.nama!.compareTo(b.nama!));
       }
-    } catch (e) {
-      log("$runtimeType : Error ${e.toString()}");
-    } finally {
-      setLoading(false);
+
+      notifyListeners();
     }
   }
 
-  // ----------------------------
-  /// Metode hapus data mitra
-  // ----------------------------
-  Future<void> delMitra(int id) async {
-    setLoading(true);
-    try {
-      bool done = await _masterdataRepo.delMitra(id);
-
-      if (done) {
-        _lstMitra.removeWhere((e) => e.id == id);
-        notifyListeners();
+  // ------------------------------------------------
+  // Menghapus mitra baik supplier maupun pelanggan
+  // ------------------------------------------------
+  Future<void> delMitra(MitraModel data) async {
+    bool done = await _masterdataRepo.delMitra(data.id!);
+    if (done) {
+      switch (data.tipe!.toLowerCase()) {
+        case 'supplier':
+          _daftarSupplier.removeWhere((e) => e.id == data.id);
+        case 'pelanggan':
+          _daftarPelanggan.removeWhere((e) => e.id == data.id);
       }
-    } catch (e) {
-      log("$runtimeType : Error ${e.toString()}");
-    } finally {
-      setLoading(false);
+      notifyListeners();
     }
   }
 }

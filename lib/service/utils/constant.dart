@@ -1,6 +1,4 @@
-// --------------------
-// App Identifier
-// --------------------
+// ==============App Identifier==============
 import 'package:flutter/material.dart';
 import 'package:mbspos/models/menu_model.dart';
 
@@ -11,9 +9,7 @@ const String programmer = "Nan Gobel";
 const String devEmail = 'mitrasoft.dev@gmail.com';
 const String devPhone = "085171060653";
 
-// ----------------------
-// Preference Key
-// ----------------------
+// =============Preference Key=============
 const String pkMenuMasterStatus = "mnMaster";
 const String pkMenuPembelianStatus = "mnPembelian";
 const String pkMenuPenjualanStatus = "mnPenjualan";
@@ -23,9 +19,16 @@ const String pkMenuLaporanStatus = "mnLaporan";
 /// kunci untuk menyimpan tab halaman data pendukung yang dipilih terakhir
 const String pkSelectedRefTab = "reftab";
 
-// ------------------------
-// Daftar Menu Drawer
-// ------------------------
+// ===============Daftar tab title halaman master referensi===============
+List<String> lstRefPage = [
+  "Satuan",
+  "Kategori",
+  "Merek",
+  "Supplier",
+  "Pelanggan"
+];
+
+// =============Daftar Menu Drawer=============
 List<MenuModel> lstMaster = [
   MenuModel(id: 1, title: "Data Pendukung", icon: Icons.room_preferences),
   MenuModel(id: 2, title: "Produk", icon: Icons.local_mall),
@@ -55,9 +58,7 @@ List<MenuModel> lstLaporan = [
   MenuModel(id: 3, title: 'Kelas Barang per Periode', icon: Icons.receipt),
 ];
 
-// ----------------
-// Router name
-// ----------------
+// ================Router name================
 const String rtRegister = "/register";
 const String rtLogin = "/login";
 const String rtDashboard = "/dashboard";

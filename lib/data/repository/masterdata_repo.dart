@@ -44,9 +44,9 @@ class MasterdataRepo {
   }
 
   // ---------------------------
-  // Menyimpan data mitra baru
+  // Menambah data mitra baru
   // ---------------------------
-  Future<int> saveNewMitra(MitraModel data) async {
+  Future<int> addNewMitra(MitraModel data) async {
     return await MitraDao.saveMitra(data);
   }
 
