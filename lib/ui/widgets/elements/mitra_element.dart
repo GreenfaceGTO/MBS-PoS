@@ -3,7 +3,7 @@ import 'dart:developer';
 import 'package:flutter/material.dart';
 import 'package:mbspos/models/args_model.dart';
 import 'package:mbspos/models/data/mitra_model.dart';
-import 'package:mbspos/providers/ref_provider.dart';
+import 'package:mbspos/providers/master_provider.dart';
 import 'package:mbspos/ui/widgets/elements/emptydata_element.dart';
 import 'package:mbspos/service/utils/extension.dart';
 import 'package:mbspos/service/utils/global_enums.dart';
@@ -17,7 +17,7 @@ class MitraRefWidget extends StatefulWidget {
 }
 
 class _MitraRefWidgetState extends State<MitraRefWidget> {
-  late RefProvider provider;
+  late MasterProvider provider;
 
   @override
   void initState() {
@@ -67,7 +67,7 @@ class _MitraRefWidgetState extends State<MitraRefWidget> {
   @override
   Widget build(BuildContext context) {
     return Expanded(child: SizedBox(
-      child: Consumer<RefProvider>(builder: (context, prov, _) {
+      child: Consumer<MasterProvider>(builder: (context, prov, _) {
         return prov.lstMitra.isEmpty
             ? EmptydataElement(
                 caption: "Belum ada data ${prov.selectedRef}",

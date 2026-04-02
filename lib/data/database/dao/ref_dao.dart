@@ -18,24 +18,21 @@ class RefDao {
   // -------------------------
   // Menyimpan data referensi
   // -------------------------
-  static Future<bool> saveRef(String tipe, String namaRef) async {
+  static Future<int> saveRef(String tipe, String namaRef) async {
     final db = await Dbhelper.database;
     Map<String, String> data = {"nama_ref": namaRef, "tipe": tipe};
     log(data.toString());
-    return await db.insert(RefTable.table, data) > 0;
+    return await db.insert(RefTable.table, data);
   }
 
   // ----------------------------------------
   // Mengambil data referensi menurut tipe
   // ----------------------------------------
-  static Future<List<String>?> getRefByTipe(String tipe) async {
+  static Future<List<String>> getRefByTipe(String tipe) async {
     final db = await Dbhelper.database;
     final result = await db.query(RefTable.table,
         where: "tipe=?", whereArgs: [tipe], orderBy: 'nama_ref ASC');
 
-    if (result.isEmpty) {
-      return null;
-    }
     return result.map((e) => e['nama_ref'] as String).toList();
   }
 }

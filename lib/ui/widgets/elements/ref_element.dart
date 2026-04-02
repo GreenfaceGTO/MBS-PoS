@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:mbspos/providers/ref_provider.dart';
+import 'package:mbspos/providers/master_provider.dart';
 import 'package:mbspos/ui/widgets/elements/emptydata_element.dart';
 import 'package:provider/provider.dart';
 
@@ -11,7 +11,7 @@ class RefWidget extends StatefulWidget {
 }
 
 class _RefWidgetState extends State<RefWidget> {
-  late RefProvider provider;
+  late MasterProvider provider;
 
   @override
   void initState() {
@@ -53,7 +53,7 @@ class _RefWidgetState extends State<RefWidget> {
   @override
   Widget build(BuildContext context) {
     return Expanded(child:
-        SizedBox(child: Consumer<RefProvider>(builder: (context, prov, _) {
+        SizedBox(child: Consumer<MasterProvider>(builder: (context, prov, _) {
       return prov.lstRef.isEmpty
           ? EmptydataElement(
               caption: "Belum ada data ${prov.selectedRef}",

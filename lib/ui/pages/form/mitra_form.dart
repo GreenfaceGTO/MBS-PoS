@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:mbspos/models/args_model.dart';
 import 'package:mbspos/models/data/mitra_model.dart';
-import 'package:mbspos/providers/ref_provider.dart';
+import 'package:mbspos/providers/master_provider.dart';
 import 'package:mbspos/ui/widgets/components/custombutton.dart';
 import 'package:mbspos/ui/widgets/components/general_widget.dart';
 import 'package:mbspos/service/utils/global_enums.dart';
@@ -59,7 +59,7 @@ class _MitraFormState extends State<MitraForm> {
             ? Text("Input Data ${widget.args.tipe}")
             : Text("Edit Data ${widget.args.tipe}"),
       ),
-      body: Consumer<RefProvider>(builder: (context, prov, _) {
+      body: Consumer<MasterProvider>(builder: (context, prov, _) {
         return SingleChildScrollView(
           padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 12),
           child: Form(

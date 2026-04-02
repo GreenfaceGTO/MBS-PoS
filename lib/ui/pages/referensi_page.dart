@@ -2,7 +2,7 @@ import 'dart:developer';
 
 import 'package:flutter/material.dart';
 import 'package:mbspos/models/args_model.dart';
-import 'package:mbspos/providers/ref_provider.dart';
+import 'package:mbspos/providers/master_provider.dart';
 import 'package:mbspos/ui/widgets/elements/mitra_element.dart';
 import 'package:mbspos/ui/widgets/elements/ref_element.dart';
 import 'package:mbspos/service/utils/global_enums.dart';
@@ -17,7 +17,7 @@ class ReferensiPage extends StatefulWidget {
 
 class _ReferensiPageState extends State<ReferensiPage>
     with SingleTickerProviderStateMixin {
-  late RefProvider provider;
+  late MasterProvider provider;
   late List<GlobalKey> _keys;
   final ScrollController _scrollController = ScrollController();
 
@@ -28,7 +28,7 @@ class _ReferensiPageState extends State<ReferensiPage>
     _keys = List.generate(5, (_) => GlobalKey());
 
     WidgetsBinding.instance.addPostFrameCallback((_) async {
-      provider = Provider.of<RefProvider>(context, listen: false);
+      provider = Provider.of<MasterProvider>(context, listen: false);
       provider.init();
       log("selectedRef : ${provider.selectedRef}");
       log("tabIndex : ${provider.tabIndex}");
@@ -110,7 +110,7 @@ class _ReferensiPageState extends State<ReferensiPage>
 
   @override
   Widget build(BuildContext context) {
-    return Consumer<RefProvider>(builder: (context, prov, _) {
+    return Consumer<MasterProvider>(builder: (context, prov, _) {
       return Scaffold(
         appBar: AppBar(
           title: const Text("Data Master Pendukung"),

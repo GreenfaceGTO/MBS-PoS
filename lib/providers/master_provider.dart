@@ -1,12 +1,17 @@
 import 'dart:developer';
 
 import 'package:flutter/material.dart';
+import 'package:mbspos/data/database/dao/item_dao.dart';
 import 'package:mbspos/data/database/dao/mitra_dao.dart';
 import 'package:mbspos/data/database/dao/ref_dao.dart';
+import 'package:mbspos/data/repository/masterdata_repo.dart';
 import 'package:mbspos/models/data/mitra_model.dart';
 import 'package:mbspos/service/utils/cachemanager.dart';
 
-class RefProvider with ChangeNotifier, CacheManager {
+class MasterProvider with ChangeNotifier, CacheManager {
+  final _masterdataRepo = MasterdataRepo(
+      refDao: RefDao(), mitraDao: MitraDao(), itemDao: ItemDao());
+
   // ---------------------------------
   // inisialisasi loading indicator
   // ---------------------------------
@@ -111,17 +116,13 @@ class RefProvider with ChangeNotifier, CacheManager {
   Future<void> getRef() async {
     String tipe = selectedRef.toLowerCase();
     log(tipe);
-    final result = await RefDao.getRefByTipe(tipe);
-
+    final result = await _masterdataRepo.getAllRef(tipe);
     _lstRef.clear();
-    if (result != null) {
-      _lstRef = result;
-      _lstRef.sort(
-        (a, b) => a.compareTo(b),
-      );
-
-      notifyListeners();
-    }
+    _lstRef = result;
+    _lstRef.sort(
+      (a, b) => a.compareTo(b),
+    );
+    notifyListeners();
   }
 
   // -------------------------------
@@ -130,8 +131,10 @@ class RefProvider with ChangeNotifier, CacheManager {
   Future<void> saveRef(String namaRef) async {
     setLoading(true);
     try {
-      bool done = await RefDao.saveRef(selectedRef.toLowerCase(), namaRef);
-      if (done) {
+      int id =
+          await _masterdataRepo.addNewRef(selectedRef.toLowerCase(), namaRef);
+
+      if (id > 0) {
         lstRef.add(namaRef);
         notifyListeners();
       }
@@ -148,7 +151,8 @@ class RefProvider with ChangeNotifier, CacheManager {
   Future<void> deleteRef(String namaRef) async {
     setLoading(true);
     try {
-      bool done = await RefDao.delRef(selectedRef.toLowerCase(), namaRef);
+      bool done =
+          await _masterdataRepo.delRef(selectedRef.toLowerCase(), namaRef);
 
       if (done) {
         lstRef.removeWhere((e) => e == namaRef);
@@ -166,7 +170,8 @@ class RefProvider with ChangeNotifier, CacheManager {
   // ---------------------------
   Future<void> getMitra() async {
     String tipe = selectedRef.toLowerCase();
-    final result = await MitraDao.getAllMitra(tipe);
+    final result = await _masterdataRepo.getAllMitra(tipe);
+
     log(result.toString());
     _lstMitra.clear();
     if (result.isNotEmpty) {
@@ -184,9 +189,8 @@ class RefProvider with ChangeNotifier, CacheManager {
   Future<void> saveMitra(MitraModel mitra) async {
     setLoading(true);
     try {
-      int? id = await MitraDao.saveMitra(mitra);
-
-      if (id != null) {
+      int id = await _masterdataRepo.saveNewMitra(mitra);
+      if (id > 0) {
         mitra.id = id;
         _lstMitra.add(mitra);
         notifyListeners();
@@ -204,7 +208,7 @@ class RefProvider with ChangeNotifier, CacheManager {
   Future<void> updateMitra(MitraModel data) async {
     setLoading(true);
     try {
-      bool done = await MitraDao.updateMitra(data);
+      bool done = await _masterdataRepo.updateMitra(data);
       if (done) {
         log("refetching...");
         await getMitra();
@@ -222,7 +226,8 @@ class RefProvider with ChangeNotifier, CacheManager {
   Future<void> delMitra(int id) async {
     setLoading(true);
     try {
-      bool done = await MitraDao.delMitraById(id);
+      bool done = await _masterdataRepo.delMitra(id);
+
       if (done) {
         _lstMitra.removeWhere((e) => e.id == id);
         notifyListeners();

@@ -43,7 +43,7 @@ class MitraDao {
   // -------------------------
   /// Menyimpan data mitra
   // -------------------------
-  static Future<int?> saveMitra(MitraModel data) async {
+  static Future<int> saveMitra(MitraModel data) async {
     final db = await Dbhelper.database;
 
     return await db.insert(MitraTable.table, data.toMap());

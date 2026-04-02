@@ -44,7 +44,9 @@ MBS PoS adalah aplikasi mobile point of sale yang berjalan secara offline untuk 
     - Kelas Barang per periode
 
 
-# Database
+# Dokumentasi Teknis
+
+## Database
 [___tb_item___] : Tabel data master item
 [___tb_itemsat___] : Tabel data satuan dan konversi item
 [___tb_mitra___] : Tabel data master mitra ***pelanggan*** dan ***supplier***
@@ -60,7 +62,7 @@ Skema tabel di organisasikan pada kelas-kelas tersendiri di folder tables untuk 
 
 ## DAO (Data access object)
 
-# Algoritma peluncuran
+## Algoritma peluncuran
 1. Periksa koneksi perangkat, 
     - ada, ___***lanjut ke no 2***___ 
     - tidak ada, ___***lanjut ke no 3***___.
@@ -77,4 +79,4 @@ Skema tabel di organisasikan pada kelas-kelas tersendiri di folder tables untuk 
 8. Tampilkan dashboard
 
 
-# Dokumentasi Teknis
+
