@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:mbspos/models/args_model.dart';
 import 'package:mbspos/providers/master_provider.dart';
 import 'package:mbspos/service/utils/constant.dart';
+import 'package:mbspos/ui/pages/form/dialog_helper.dart';
 import 'package:mbspos/ui/widgets/elements/mitra_element.dart';
 import 'package:mbspos/ui/widgets/elements/ref_element.dart';
 import 'package:mbspos/service/utils/global_enums.dart';
@@ -62,10 +63,17 @@ class _ReferensiPageState extends State<ReferensiPage>
   // ---------------------------------------
   /// metode saat tombol floating di tekan
   // ---------------------------------------
-  void onFloatinButtonTap() {
+  void onFloatinButtonTap() async {
     if (provider.tabIndex < 3) {
-      //  Tampilkan jendela input referensi
-      showRefForm(title: provider.selectedRef);
+      String? result =
+          await DialogHelper.showRefForm(context, title: provider.selectedRef);
+      if (result != null) {
+        if (mounted) {
+          context
+              .read<MasterProvider>()
+              .addNewRef(context, provider.selectedRef.toLowerCase(), result);
+        }
+      }
     } else {
       // tampilkan jendela input mitra
       Navigator.pushNamed(context, '/mitraform',
@@ -74,40 +82,6 @@ class _ReferensiPageState extends State<ReferensiPage>
             tipe: provider.selectedRef,
           ));
     }
-  }
-
-  // ------------------------------------
-  /// Menampilkan form input referensi
-  // ------------------------------------
-  void showRefForm({required String title}) async {
-    TextEditingController txtRef = TextEditingController();
-    showDialog(
-        context: context,
-        builder: (ctx) {
-          return AlertDialog(
-            title: Text(title),
-            content: TextFormField(
-              controller: txtRef,
-              autofocus: true,
-              keyboardType: TextInputType.name,
-              textInputAction: TextInputAction.done,
-            ),
-            actions: [
-              TextButton(
-                  onPressed: () {
-                    if (txtRef.text.isNotEmpty) {
-                      context
-                          .read<MasterProvider>()
-                          .addNewRef(title.toLowerCase(), txtRef.text);
-
-                      Navigator.pop(ctx);
-                    }
-                  },
-                  child: const Text("SIMPAN"))
-            ],
-          );
-        },
-        barrierDismissible: true);
   }
 
   @override

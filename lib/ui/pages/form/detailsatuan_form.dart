@@ -1,0 +1,303 @@
+import 'dart:developer';
+
+import 'package:flutter/material.dart';
+import 'package:mbspos/models/data/satitem_model.dart';
+import 'package:mbspos/providers/master_provider.dart';
+import 'package:mbspos/ui/pages/form/dialog_helper.dart';
+import 'package:mbspos/ui/widgets/components/custombutton.dart';
+import 'package:mbspos/ui/widgets/components/general_widget.dart';
+import 'package:provider/provider.dart';
+// import 'package:mbspos/ui/widgets/elements/xdetailsatuan_element.oldart';
+
+class DetailsatuanForm extends StatefulWidget {
+  const DetailsatuanForm(
+      {super.key, this.satDasar = true, required this.namaProduk});
+  final bool satDasar;
+  final String namaProduk;
+
+  @override
+  State<DetailsatuanForm> createState() => _DetailsatuanFormState();
+}
+
+class _DetailsatuanFormState extends State<DetailsatuanForm> {
+  TextEditingController txtIsi = TextEditingController();
+  TextEditingController txtHpokok = TextEditingController();
+  TextEditingController txtMargin = TextEditingController();
+  TextEditingController txtHjual = TextEditingController();
+  TextEditingController txtBarcode = TextEditingController();
+  final formKey = GlobalKey<FormState>();
+
+  String? selectedSatuan;
+
+  @override
+  void initState() {
+    if (widget.satDasar) {
+      txtIsi.text = "1";
+    }
+    super.initState();
+  }
+
+  void hitungHarga({required String dari}) {
+    double hPokok = 0;
+    double margin = 0;
+    double hJual = 0;
+    double hasil = 0;
+
+    switch (dari) {
+      case 'pokok':
+        if (txtHpokok.text.isNotEmpty) {
+          hPokok = double.parse(txtHpokok.text);
+          if (txtMargin.text.isNotEmpty) {
+            margin = double.parse(txtMargin.text);
+            hasil = hPokok + (hPokok * (margin / 100));
+          } else {
+            hasil = hPokok;
+          }
+        }
+        setState(() {
+          txtHjual.text = hasil.toStringAsFixed(2);
+        });
+        break;
+      case "margin":
+        if (txtMargin.text.isNotEmpty) {
+          if (txtHpokok.text.isNotEmpty) {
+            hPokok = double.parse(txtHpokok.text);
+          }
+          margin = double.parse(txtMargin.text);
+          hasil = hPokok + (hPokok * (margin / 100));
+        }
+        setState(() {
+          txtHjual.text = hasil.toStringAsFixed(2);
+        });
+        break;
+      case "hargajual":
+        if (txtHpokok.text.isNotEmpty) {
+          hPokok = double.parse(txtHpokok.text);
+        }
+
+        if (txtHjual.text.isNotEmpty) {
+          hJual = double.parse(txtHjual.text);
+        }
+
+        if (hPokok > 0) {
+          hasil = ((hJual - hPokok) / hPokok) * 100;
+        }
+
+        setState(() {
+          txtMargin.text = hasil.toStringAsFixed(2);
+        });
+        break;
+      default:
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final prov = context.watch<MasterProvider>();
+
+    return Scaffold(
+      appBar: AppBar(
+        title: widget.satDasar
+            ? const Text("Detail Satuan")
+            : const Text("Detail Satuan Konversi"),
+      ),
+      body: SingleChildScrollView(
+          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+          child: Form(
+            key: formKey,
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Row(
+                  children: [
+                    const Text("Nama Produk :"),
+                    spasi(mode: OrientationMode.horizontal, jarak: 4),
+                    Text(
+                      widget.namaProduk,
+                      style: const TextStyle(fontWeight: FontWeight.w500),
+                      softWrap: true,
+                      maxLines: 2,
+                    )
+                  ],
+                ),
+                spasi(),
+                Row(
+                  children: [
+                    Expanded(
+                        child: DropdownButtonFormField(
+                            hint: const Text("Pilih Satuan"),
+                            style: const TextStyle(
+                                fontSize: 13, fontWeight: FontWeight.normal),
+                            items: prov.daftarSatuan.map((sat) {
+                              return DropdownMenuItem(
+                                  value: sat,
+                                  child: Text(
+                                    sat,
+                                    style:
+                                        const TextStyle(color: Colors.black87),
+                                  ));
+                            }).toList(),
+                            onChanged: (val) {
+                              log(val.toString());
+                              setState(() {
+                                selectedSatuan = val;
+                              });
+                            })),
+                    IconButton(
+                        onPressed: () async {
+                          String? newSat = await DialogHelper.showRefForm(
+                              context,
+                              title: "Satuan");
+                          if (newSat != null) {
+                            if (context.mounted) {
+                              context
+                                  .read<MasterProvider>()
+                                  .addNewRef(context, "satuan", newSat);
+                            }
+                          }
+                        },
+                        icon: const Icon(
+                          Icons.add_circle,
+                          size: 20,
+                        ))
+                  ],
+                ),
+                if (selectedSatuan != null)
+                  Column(
+                    children: [
+                      spasi(),
+                      if (!widget.satDasar)
+                        Align(
+                          alignment: Alignment.centerLeft,
+                          child: Padding(
+                            padding:
+                                const EdgeInsets.only(bottom: defaultPadding),
+                            child: SizedBox(
+                              width: 120,
+                              child: TextFormField(
+                                controller: txtIsi,
+                                keyboardType: TextInputType.number,
+                                textInputAction: TextInputAction.next,
+                                decoration:
+                                    const InputDecoration(label: Text("Isi")),
+                                validator: (val) {
+                                  if (val!.isEmpty) {
+                                    return "Wajib diisi";
+                                  } else {
+                                    if (int.parse(val) < 2) {
+                                      return "Harus lebih dari 1";
+                                    }
+                                  }
+                                  return null;
+                                },
+                              ),
+                            ),
+                          ),
+                        ),
+                      TextFormField(
+                        controller: txtHpokok,
+                        keyboardType: TextInputType.number,
+                        textInputAction: TextInputAction.next,
+                        decoration:
+                            const InputDecoration(label: Text("Harga Pokok")),
+                        onChanged: (val) {
+                          hitungHarga(dari: "pokok");
+                        },
+                        validator: (val) {
+                          if (val!.isEmpty) return "Wajib diisi";
+                          return null;
+                        },
+                      ),
+                      spasi(),
+                      Row(
+                        children: [
+                          SizedBox(
+                              width: 120,
+                              child: TextFormField(
+                                controller: txtMargin,
+                                keyboardType: TextInputType.number,
+                                textInputAction: TextInputAction.next,
+                                onFieldSubmitted: (val) {
+                                  FocusScope.of(context).nextFocus();
+                                },
+                                onChanged: (val) {
+                                  hitungHarga(dari: "margin");
+                                },
+                                decoration: const InputDecoration(
+                                    hintText: "cth. 20",
+                                    label: Text("Margin Profit")),
+                              )),
+                          IconButton(
+                              onPressed: () {
+                                DialogHelper.showInfoMargiProfit(context);
+                              },
+                              icon: const Icon(
+                                Icons.info,
+                                size: 18,
+                                color: Colors.teal,
+                              ))
+                        ],
+                      ),
+                      spasi(),
+                      TextFormField(
+                        controller: txtHjual,
+                        keyboardType: TextInputType.number,
+                        textInputAction: TextInputAction.next,
+                        onChanged: (va) {
+                          hitungHarga(dari: "hargajual");
+                        },
+                        decoration:
+                            const InputDecoration(label: Text("Harga Jual")),
+                      ),
+                      spasi(),
+                      Row(
+                        children: [
+                          Expanded(
+                            child: TextFormField(
+                              controller: txtBarcode,
+                              textInputAction: TextInputAction.done,
+                              decoration:
+                                  const InputDecoration(label: Text("Barcode")),
+                            ),
+                          ),
+                          IconButton(
+                              onPressed: () async {
+                                final barcode = await scanBarcode(context);
+                                if (barcode != null) {
+                                  setState(() {
+                                    txtBarcode.text = barcode;
+                                  });
+                                }
+                              },
+                              icon: const Icon(
+                                Icons.barcode_reader,
+                                size: 20,
+                              ))
+                        ],
+                      )
+                    ],
+                  ),
+                spasi(jarak: 30),
+                CustomButton(
+                  onPress: () {
+                    if (formKey.currentState!.validate()) {
+                      SatitemModel satProduk = SatitemModel(
+                          satuan: selectedSatuan,
+                          isi: int.parse(txtIsi.text),
+                          tipe: widget.satDasar ? "D" : "K",
+                          hargaPokok: double.parse(txtHpokok.text),
+                          margin: double.parse(txtMargin.text),
+                          barcode: txtBarcode.text);
+
+                      Navigator.pop(context, satProduk);
+                    }
+                  },
+                  caption: "KONFIRMASI",
+                  width: 220,
+                )
+              ],
+            ),
+          )),
+    );
+  }
+}

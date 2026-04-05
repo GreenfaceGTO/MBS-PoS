@@ -21,8 +21,8 @@ class _RefWidgetState extends State<RefWidget> {
         builder: (ctx) {
           return AlertDialog(
             title: const Text("Konfirmasi"),
-            content: Text(
-                "Yakin data pendukung ${title.toUpperCase()} ini akan dihapus?"),
+            content:
+                Text("Yakin $tipe ${title.toUpperCase()} ini akan dihapus?"),
             actions: [
               TextButton(
                   onPressed: () async {

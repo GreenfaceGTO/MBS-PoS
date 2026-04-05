@@ -1,10 +1,17 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:mbspos/models/args_model.dart';
 import 'package:mbspos/models/data/mitra_model.dart';
-import 'package:mbspos/providers/produk_provider.dart';
-import 'package:mbspos/ui/dummy_page.dart';
+import 'package:mbspos/models/data/satitem_model.dart';
+import 'package:mbspos/providers/master_provider.dart';
+import 'package:mbspos/service/utils/global_enums.dart';
+import 'package:mbspos/service/utils/textformatter.dart';
+import 'package:mbspos/ui/pages/form/dialog_helper.dart';
+import 'package:mbspos/ui/pages/form/detailsatuan_form.dart';
 import 'package:mbspos/ui/widgets/components/customstepper.dart';
 import 'package:mbspos/ui/widgets/components/general_widget.dart';
+import 'package:mbspos/ui/widgets/elements/emptydata_element.dart';
 import 'package:provider/provider.dart';
 
 class ProdukForm extends StatefulWidget {
@@ -16,38 +23,86 @@ class ProdukForm extends StatefulWidget {
 }
 
 class _ProdukFormState extends State<ProdukForm> {
-  final provider = ProdukProvider();
   final formKey = GlobalKey<FormState>();
   int currentStep = 0;
   List<String> lstStepTitle = [
     "Data Umum",
     "Kategori",
-    "Satuan dan Harga",
+    "Satuan & Harga",
     "Preview"
   ];
 
-  // -----------------------
-  // properti data umum
-  // -----------------------
+  // =========properti data umum= (step1)========
   TextEditingController txtNama = TextEditingController();
   TextEditingController txtSupplier = TextEditingController();
   String? selectedMerek;
   MitraModel? selectedSupplier;
-  // -----------------------------
-  // end of properti data umum
-  // -----------------------------
+  SatitemModel? selectedSatDasar;
+  // ==========end of properti data umum==========
 
-  bool validateDataUmum() {
-    if (formKey.currentState!.validate()) {
-      return true;
+// =============properti data kategori (step2)=============
+  List<String> selectedKategori = [];
+// =============end of properti data kategori (step2)=============
+
+// =============properti data satuan (step3)=============
+  TextEditingController txtIsi = TextEditingController();
+  TextEditingController txtHpokok = TextEditingController();
+  TextEditingController txtMargin = TextEditingController();
+  TextEditingController txtHjual = TextEditingController();
+  TextEditingController txtBarcode = TextEditingController();
+
+  List<SatitemModel> lstSatuan = [];
+// =============end of properti data satuan (step3)=============
+
+// =============metode validasi setiap halaman=============
+  bool validateInput(BuildContext context) {
+    switch (currentStep) {
+      case 0:
+        if (formKey.currentState!.validate()) {
+          return true;
+        }
+
+      case 1:
+        if (selectedKategori.isEmpty) {
+          showMessage(
+              message: "Setidaknya pilih 1 kategori.",
+              mode: MessageMode.warning);
+        } else {
+          return true;
+        }
+      case 2:
+        if (formKey.currentState!.validate()) {
+          if (selectedSatDasar != null) {
+            return true;
+          } else {
+            showMessage(
+                message: "Satuan dasar belum dipilih",
+                mode: MessageMode.warning);
+          }
+        }
     }
+
     return false;
   }
 
-  // ------------------------------------------------
-  /// Menampilkan browser untuk memilih supplier
-  // ------------------------------------------------
-  Future<MitraModel?> browseMitra({required String tipeMitra}) async {
+  // ==========membuka form detail satuan==========
+  Future<SatitemModel?> openSatuanForm({required bool satDasar}) async {
+    SatitemModel? satuan = await Navigator.push(
+        context,
+        MaterialPageRoute(
+            builder: (context) => DetailsatuanForm(
+                  satDasar: satDasar,
+                  namaProduk: txtNama.text,
+                )));
+    if (satuan != null) {
+      return satuan;
+    }
+    return null;
+  }
+
+  // ========Menampilkan browser untuk memilih supplier========
+  Future<MitraModel?> browseMitra(BuildContext context,
+      {required String tipeMitra}) async {
     final result = await Navigator.pushNamed(context, "/browser",
         arguments: {'tipe': tipeMitra});
     if (result == null) {
@@ -56,180 +111,488 @@ class _ProdukFormState extends State<ProdukForm> {
     return result as MitraModel;
   }
 
+  double hargaJualSat(double hPokok, double margin) {
+    return hPokok + (hPokok * (margin / 100));
+  }
+
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text("Produk"),
-      ),
-      body: Form(
-        key: formKey,
-        child: Column(
-          children: [
-            Container(
-              color: Colors.indigo.shade400,
-              child: Customstepper(
-                  currentStep: currentStep,
-                  steps: lstStepTitle,
-                  onStepTapped: (val) {}),
-            ),
-            Expanded(
-                child: Container(
-              padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 12),
-              child: _stepPage(),
-            )),
-            _buttonNavigation()
-          ],
+    return PopScope(
+      canPop: false,
+      child: Scaffold(
+        appBar: AppBar(
+          automaticallyImplyLeading: false,
+          title: const Text("Produk"),
+        ),
+        body: Form(
+          key: formKey,
+          child: Column(
+            children: [
+              Container(
+                color: Theme.of(context).primaryColor,
+                child: Customstepper(
+                    currentStep: currentStep,
+                    steps: lstStepTitle,
+                    onStepTapped: (val) {}),
+              ),
+              Expanded(
+                  child: Container(
+                child: _stepPage(context),
+              )),
+              const Divider(),
+              _buttonNavigation(context)
+            ],
+          ),
         ),
       ),
     );
   }
 
-  Widget _stepPage() {
+  // ================spliter halaman================
+  Widget _stepPage(BuildContext context) {
     switch (currentStep) {
       case 0:
-        return _dataUmum();
+        return _dataUmum(context);
       case 1:
-        return _kategori();
+        return _kategori(context);
       case 2:
-        return _satuan();
+        return _satuan(context);
+
       default:
         return _preview();
     }
   }
 
-  Widget _preview() {
-    return const DummyPage(caption: "Preview");
+  // ================Halaman satuan================
+  Widget _satuan(
+    BuildContext context,
+  ) {
+    // final prov = context.read<MasterProvider>();
+    return selectedSatDasar == null
+        ? Center(
+            child: SizedBox(
+              height: 45,
+              child: OutlinedButton.icon(
+                onPressed: () async {
+                  final satDasar = await openSatuanForm(satDasar: true);
+                  if (satDasar != null) {
+                    setState(() {
+                      selectedSatDasar = satDasar;
+                    });
+                  }
+                },
+                label: const Text("PILIH SATUAN"),
+                icon: const Icon(Icons.add_circle_outline),
+              ),
+            ),
+          )
+        : SingleChildScrollView(
+            padding: const EdgeInsets.all(12.0),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                const Text(
+                  "Satuan Dasar :",
+                  style: TextStyle(fontSize: 14, fontWeight: FontWeight.w500),
+                ),
+                spasi(jarak: 4),
+                _rowFieldWidget("Kemasan", selectedSatDasar!.satuan!),
+                _rowFieldWidget("Harga Pokok",
+                    toRupiah.format(selectedSatDasar!.hargaPokok)),
+                _rowFieldWidget("Margin profit",
+                    "${selectedSatDasar!.margin!.toStringAsFixed(2)}%"),
+                _rowFieldWidget(
+                    "Harga Jual",
+                    toRupiah.format((hargaJualSat(selectedSatDasar!.hargaPokok!,
+                            selectedSatDasar!.margin!)
+                        .round()))),
+                spasi(jarak: 30),
+                _satuanLainWidget()
+              ],
+            ),
+          );
   }
 
-  Widget _dataUmum() {
+  Widget _rowFieldWidget(String title, String value) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 2),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Text(title),
+          Text(
+            value,
+            style: const TextStyle(fontWeight: FontWeight.w500),
+          )
+        ],
+      ),
+    );
+  }
+
+  Container _satuanLainWidget() {
+    return Container(
+      decoration:
+          BoxDecoration(border: Border.all(color: Colors.black38, width: 0.5)),
+      child: Column(
+        children: [
+          Container(
+            padding: const EdgeInsets.only(left: 12),
+            color: Colors.grey.shade200,
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    const Text(
+                      "Satuan Lainnya",
+                      style:
+                          TextStyle(fontSize: 14, fontWeight: FontWeight.w500),
+                    ),
+                    IconButton(
+                        onPressed: () {
+                          DialogHelper.showInfoSatuan(context);
+                        },
+                        icon: const Icon(
+                          Icons.info,
+                          color: Colors.teal,
+                          size: 18,
+                        ))
+                  ],
+                ),
+                IconButton(
+                    onPressed: () async {
+                      final satKonv = await openSatuanForm(satDasar: false);
+                      if (satKonv != null) {
+                        if (satKonv.satuan!.toLowerCase() ==
+                            selectedSatDasar!.satuan!.toLowerCase()) {
+                          showMessage(
+                              message:
+                                  "Satuan konversi tidak boleh sama dengan satuan dasar",
+                              mode: MessageMode.error);
+                        } else {
+                          setState(() {
+                            lstSatuan.add(satKonv);
+                          });
+                        }
+                        log("validasi");
+                      }
+                    },
+                    icon: const Icon(
+                      Icons.add_circle,
+                      size: 18,
+                    ))
+              ],
+            ),
+          ),
+          lstSatuan.isEmpty
+              ? const Padding(
+                  padding: EdgeInsets.symmetric(vertical: 4),
+                  child: EmptydataElement(
+                    iconSize: 30,
+                  ),
+                )
+              : ListView(
+                  shrinkWrap: true,
+                  physics: const NeverScrollableScrollPhysics(),
+                  children: lstSatuan.map((satl) {
+                    int hargaJual = bulatkan(
+                        satl.hargaPokok! +
+                            (satl.hargaPokok! * (satl.margin! / 100)),
+                        1000);
+                    return Container(
+                        margin: const EdgeInsets.symmetric(
+                            vertical: 4, horizontal: 8),
+                        padding: const EdgeInsets.symmetric(
+                            vertical: 4, horizontal: 8),
+                        decoration: BoxDecoration(
+                            border:
+                                Border.all(color: Colors.black38, width: 0.5),
+                            borderRadius: BorderRadius.circular(4)),
+                        child: Column(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            _rowFieldWidget("Kemasan", satl.satuan!),
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                _colFieldWidget("Isi", satl.isi.toString()),
+                                _colFieldWidget(
+                                    "Pokok", toRupiah.format(satl.hargaPokok)),
+                                _colFieldWidget(
+                                    "Harga", toRupiah.format(hargaJual))
+                              ],
+                            )
+                          ],
+                        ));
+                  }).toList(),
+                )
+        ],
+      ),
+    );
+  }
+
+  Widget _colFieldWidget(String title, String value) {
     return Column(
+      mainAxisSize: MainAxisSize.min,
       children: [
-        TextFormField(
-          controller: txtNama,
-          decoration: const InputDecoration(
-              hintText: "Cth. Mie Goreng", label: Text("Nama Produk")),
-          validator: (val) {
-            if (val!.isEmpty) return "Wajib diisi!";
-            return null;
-          },
+        Text(
+          title,
         ),
-        spasi(),
-        Consumer<ProdukProvider>(builder: (context, prov, _) {
-          return Row(
-            children: [
-              Expanded(
-                  child: DropdownButtonFormField<String>(
-                      menuMaxHeight: 500,
-                      decoration: const InputDecoration(label: Text("Merek")),
-                      hint: const Text(
-                        "Merek",
-                        style: TextStyle(
-                            fontSize: 13, fontWeight: FontWeight.w400),
-                      ),
-                      style: const TextStyle(
-                          fontSize: 13,
-                          fontWeight: FontWeight.w400,
-                          color: Colors.black87),
-                      items: prov.lstMerek.map((mrk) {
-                        return DropdownMenuItem(value: mrk, child: Text(mrk));
-                      }).toList(),
-                      onChanged: (val) {
-                        setState(() {
-                          selectedMerek = val;
-                        });
-                      })),
-              IconButton(
-                  onPressed: () async {
-                    await prov.addNewRef(context, tipeRef: "Merek");
-                  },
-                  icon: const Icon(Icons.add_circle))
-            ],
-          );
-        }),
-        spasi(),
-        TextFormField(
-          controller: txtSupplier,
-          readOnly: true,
-          decoration: InputDecoration(
-              hintText: "Pilih Supplier",
-              label: const Text("Supplier"),
-              suffixIcon: IconButton(
-                  onPressed: () async {
-                    final mitra = await browseMitra(tipeMitra: "supplier");
-                    if (mitra != null) {
-                      setState(() {
-                        selectedSupplier = mitra;
-                        txtSupplier.text = mitra.nama!;
-                      });
-                    }
-                  },
-                  icon: const Icon(
-                    Icons.library_books_sharp,
-                    size: 18,
-                  ))),
+        Text(
+          value,
+          style: const TextStyle(fontWeight: FontWeight.w500),
         )
       ],
     );
   }
 
-  Widget _kategori() {
-    return ListView(
-      children: List.generate(10, (idx) {
-        return ListTile(
-          title: Text("Kategori $idx"),
+  Widget _preview() {
+    final hargaJualDasar = selectedSatDasar!.hargaPokok! +
+        (selectedSatDasar!.hargaPokok! * (selectedSatDasar!.margin! / 100));
+    return SingleChildScrollView(
+      padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 12),
+      child: Column(
+        children: [
+          sectionTitle(context, title: "Data Umum"),
+          _rowFieldWidget("Nama Produk", txtNama.text),
+          if (selectedMerek != null) _rowFieldWidget("Merek", selectedMerek!),
+          if (selectedSupplier != null)
+            _rowFieldWidget("Supplier", selectedSupplier!.nama!),
+          spasi(),
+          sectionTitle(context, title: "Kategori"),
+          SizedBox(
+            width: double.infinity,
+            child: Wrap(
+              spacing: 8,
+              runSpacing: 8,
+              alignment: WrapAlignment.start,
+              children: selectedKategori.map((kat) {
+                return Text(kat);
+              }).toList(),
+            ),
+          ),
+          spasi(),
+          sectionTitle(context, title: "Harga Pokok"),
+          _rowFieldWidget("1 ${selectedSatDasar!.satuan}",
+              toRupiah.format(selectedSatDasar!.hargaPokok)),
+          if (lstSatuan.isNotEmpty)
+            Column(
+              mainAxisSize: MainAxisSize.min,
+              children: lstSatuan.map((satl) {
+                return _rowFieldWidget("1 ${satl.satuan} (Isi: ${satl.isi})",
+                    toRupiah.format(satl.hargaPokok));
+              }).toList(),
+            ),
+          spasi(),
+          sectionTitle(context, title: "Harga Jual"),
+          _rowFieldWidget("1 ${selectedSatDasar!.satuan!}",
+              toRupiah.format(bulatkan(hargaJualDasar, 1000))),
+          if (lstSatuan.isNotEmpty)
+            Column(
+              mainAxisSize: MainAxisSize.min,
+              children: lstSatuan.map((satl) {
+                final hJualkonv = satl.hargaPokok! +
+                    (satl.hargaPokok! * (satl.margin! / 100));
+                return _rowFieldWidget("1 ${satl.satuan}",
+                    toRupiah.format(bulatkan(hJualkonv, 1000)));
+              }).toList(),
+            )
+        ],
+      ),
+    );
+  }
+
+  /// === Halaman input data umum ===
+  Widget _dataUmum(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 12),
+      child: Column(
+        children: [
+          TextFormField(
+            controller: txtNama,
+            inputFormatters: [CapitalizeEachWord()],
+            decoration: const InputDecoration(
+                hintText: "Cth. Mie Goreng", label: Text("Nama Produk")),
+            validator: (val) {
+              if (val!.isEmpty) return "Wajib diisi!";
+              return null;
+            },
+          ),
+          spasi(),
+          Consumer<MasterProvider>(builder: (context, prov, _) {
+            return Row(
+              children: [
+                Expanded(
+                    child: DropdownButtonFormField<String>(
+                        menuMaxHeight: 500,
+                        decoration: const InputDecoration(label: Text("Merek")),
+                        hint: const Text(
+                          "Merek",
+                          style: TextStyle(
+                              fontSize: 13, fontWeight: FontWeight.w400),
+                        ),
+                        style: const TextStyle(
+                            fontSize: 13,
+                            fontWeight: FontWeight.w400,
+                            color: Colors.black87),
+                        items: prov.daftarMerek.map((mrk) {
+                          return DropdownMenuItem(value: mrk, child: Text(mrk));
+                        }).toList(),
+                        onChanged: (val) {
+                          setState(() {
+                            selectedMerek = val;
+                          });
+                        })),
+                IconButton(
+                    onPressed: () async {
+                      String? newMerek = await DialogHelper.showRefForm(context,
+                          title: "Merek");
+                      if (newMerek != null) {
+                        if (context.mounted) {
+                          context
+                              .read<MasterProvider>()
+                              .addNewRef(context, "merek", newMerek);
+                        }
+                      }
+                    },
+                    icon: const Icon(Icons.add_circle))
+              ],
+            );
+          }),
+          spasi(),
+          TextFormField(
+            controller: txtSupplier,
+            readOnly: true,
+            decoration: InputDecoration(
+                hintText: "Pilih Supplier",
+                label: const Text("Supplier"),
+                suffixIcon: IconButton(
+                    onPressed: () async {
+                      final mitra =
+                          await browseMitra(context, tipeMitra: "supplier");
+                      if (mitra != null) {
+                        setState(() {
+                          selectedSupplier = mitra;
+                          txtSupplier.text = mitra.nama!;
+                        });
+                      }
+                    },
+                    icon: const Icon(
+                      Icons.library_books_sharp,
+                      size: 18,
+                    ))),
+          )
+        ],
+      ),
+    );
+  }
+
+  /// =========Halaman pilih kategori=========
+  Widget _kategori(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.only(top: 12),
+      child: Consumer<MasterProvider>(builder: (context, prov, _) {
+        return Column(
+          children: [
+            const Text(
+              "Pilih satu atau beberapa kategori sekaligus",
+              style: TextStyle(color: Colors.teal),
+            ),
+            spasi(jarak: 4),
+            Expanded(
+              child: ListView(
+                  children: prov.daftarKategori.map((kat) {
+                return ListTile(
+                  onTap: () {
+                    bool check = selectedKategori.contains(kat);
+                    if (!check) {
+                      selectedKategori.add(kat);
+                    } else {
+                      selectedKategori.removeWhere((e) => e == kat);
+                    }
+                    setState(() {});
+                  },
+                  title: Text(kat),
+                  trailing: selectedKategori.contains(kat)
+                      ? const Icon(
+                          Icons.check_circle,
+                          size: 18,
+                          color: Colors.teal,
+                        )
+                      : null,
+                );
+              }).toList()),
+            ),
+            SizedBox(
+              height: 45,
+              width: 200,
+              child: OutlinedButton.icon(
+                onPressed: () async {
+                  String? newKat = await DialogHelper.showRefForm(context,
+                      title: "Kategori");
+                  if (newKat != null) {
+                    if (context.mounted) {
+                      context
+                          .read<MasterProvider>()
+                          .addNewRef(context, 'kategori', newKat);
+                    }
+                  }
+                },
+                label: const Text("KATEGORI BARU"),
+                icon: const Icon(Icons.add),
+              ),
+            )
+          ],
         );
       }),
     );
   }
 
-  Widget _satuan() {
-    return const SizedBox(
-      child: Center(
-        child: Text("Satuan dan Harga"),
-      ),
-    );
-  }
-
-  Padding _buttonNavigation() {
-    return Padding(
-      padding: const EdgeInsets.only(bottom: 8, right: 8, left: 8),
+  Widget _buttonNavigation(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.only(bottom: 8, right: 8, left: 8, top: 8),
+      color: Theme.of(context).primaryColor,
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          currentStep > 0
-              ? SizedBox(
-                  height: 40,
-                  child: TextButton.icon(
-                    style: TextButton.styleFrom(
-                        shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(8))),
-                    iconAlignment: IconAlignment.start,
-                    onPressed: () {
-                      if (currentStep > 0) {
-                        setState(() {
-                          currentStep--;
-                        });
-                      }
-                    },
-                    label: const Text("Sebelumnya"),
-                    icon: const Icon(Icons.chevron_left),
-                  ),
-                )
-              : const SizedBox(),
           SizedBox(
             height: 40,
             child: TextButton.icon(
               style: TextButton.styleFrom(
+                  foregroundColor: Colors.yellow.shade200,
+                  shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(8))),
+              iconAlignment: IconAlignment.start,
+              onPressed: () {
+                if (currentStep > 0) {
+                  setState(() {
+                    currentStep--;
+                  });
+                } else {
+                  Navigator.pop(context);
+                }
+              },
+              label: currentStep == 0
+                  ? const Text("Batal")
+                  : const Text("Sebelumnya"),
+              icon: currentStep == 0
+                  ? const Icon(Icons.close)
+                  : const Icon(Icons.arrow_back),
+            ),
+          ),
+          SizedBox(
+            height: 40,
+            child: TextButton.icon(
+              style: TextButton.styleFrom(
+                  foregroundColor: Colors.yellow.shade200,
                   shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(8))),
               iconAlignment: IconAlignment.end,
               onPressed: () {
                 if (currentStep < lstStepTitle.length - 1) {
-                  bool next = false;
-                  if (currentStep == 0) {
-                    next = validateDataUmum();
-                  }
+                  bool next = validateInput(context);
+                  false;
 
                   if (next) {
                     setState(() {
@@ -238,8 +601,12 @@ class _ProdukFormState extends State<ProdukForm> {
                   }
                 }
               },
-              label: const Text("Selanjutnya"),
-              icon: const Icon(Icons.chevron_right),
+              label: currentStep < lstStepTitle.length - 1
+                  ? const Text("Selanjutnya")
+                  : const Text("SIMPAN"),
+              icon: currentStep < lstStepTitle.length - 1
+                  ? const Icon(Icons.arrow_forward)
+                  : null,
             ),
           )
         ],

@@ -1,5 +1,3 @@
-import 'dart:developer';
-
 import 'package:mbspos/data/database/dbhelper.dart';
 import 'package:mbspos/data/database/table_schema/ref_table.dart';
 
@@ -21,7 +19,6 @@ class RefDao {
   static Future<int> saveRef(String tipe, String namaRef) async {
     final db = await Dbhelper.database;
     Map<String, String> data = {"nama_ref": namaRef, "tipe": tipe};
-    log(data.toString());
     return await db.insert(RefTable.table, data);
   }
 

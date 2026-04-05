@@ -9,14 +9,14 @@ import 'package:mbspos/models/data/item_model.dart';
 import 'package:mbspos/models/data/mitra_model.dart';
 import 'package:mbspos/service/utils/cachemanager.dart';
 import 'package:mbspos/service/utils/constant.dart';
+import 'package:mbspos/service/utils/global_enums.dart';
+import 'package:mbspos/ui/widgets/components/general_widget.dart';
 
 class MasterProvider with ChangeNotifier, CacheManager {
   final _masterdataRepo = MasterdataRepo(
       refDao: RefDao(), mitraDao: MitraDao(), itemDao: ItemDao());
 
-  // ------------------------------
-  // marking inisialisasi provider
-  // ------------------------------
+  // ===========marking inisialisasi provider===========
   bool _isInitialized = false;
 
   // ==============deklarasi variabel==============
@@ -68,26 +68,31 @@ class MasterProvider with ChangeNotifier, CacheManager {
   // -------------------------------
   // Menambahkan data referensi
   // -------------------------------
-  Future<void> addNewRef(String tipe, String namaRef) async {
-    int result = await _masterdataRepo.addNewRef(tipe.toLowerCase(), namaRef);
-    log("add new result : ${result.toString()}");
-    if (result > 0) {
-      switch (tipe.toLowerCase()) {
-        case "satuan":
-          log("$runtimeType: refreshing satuan list...");
-          _daftarSatuan.add(namaRef);
-          _daftarSatuan.sort((a, b) => a.compareTo(b));
-        case "kategori":
-          log("$runtimeType : refreshing kategori list...");
-          _daftarKategori.add(namaRef);
-          _daftarKategori.sort((a, b) => a.compareTo(b));
-        case "merek":
-          log("$runtimeType : refreshing merek list...");
-          _daftarMerek.add(namaRef);
-          _daftarMerek.sort((a, b) => a.compareTo(b));
+  Future<void> addNewRef(
+      BuildContext context, String tipe, String namaRef) async {
+    try {
+      int result = await _masterdataRepo.addNewRef(tipe.toLowerCase(), namaRef);
+      log("add new result : ${result.toString()}");
+      if (result > 0) {
+        switch (tipe.toLowerCase()) {
+          case "satuan":
+            log("$runtimeType: refreshing satuan list...");
+            _daftarSatuan.add(namaRef);
+            _daftarSatuan.sort((a, b) => a.compareTo(b));
+          case "kategori":
+            log("$runtimeType : refreshing kategori list...");
+            _daftarKategori.add(namaRef);
+            _daftarKategori.sort((a, b) => a.compareTo(b));
+          case "merek":
+            log("$runtimeType : refreshing merek list...");
+            _daftarMerek.add(namaRef);
+            _daftarMerek.sort((a, b) => a.compareTo(b));
+        }
+        notifyListeners();
+        log(_daftarSatuan.toString());
       }
-      notifyListeners();
-      log(_daftarSatuan.toString());
+    } catch (e) {
+      showMessage(message: msgSafeFail, mode: MessageMode.error);
     }
   }
 

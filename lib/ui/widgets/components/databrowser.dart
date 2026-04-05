@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:mbspos/models/data/mitra_model.dart';
-import 'package:mbspos/providers/produk_provider.dart';
+import 'package:mbspos/providers/master_provider.dart';
 import 'package:mbspos/ui/widgets/elements/emptydata_element.dart';
 import 'package:mbspos/service/utils/extension.dart';
 import 'package:provider/provider.dart';
@@ -14,46 +14,51 @@ class Databrowser extends StatefulWidget {
 }
 
 class _DatabrowserState extends State<Databrowser> {
-  List<String>? dataRef = [];
-  List<MitraModel> dataMitra = [];
-  late ProdukProvider provider;
+  // List<String>? dataRef = [];
+  // List<MitraModel> dataMitra = [];
+  // late ProdukProvider provider;
   @override
   void initState() {
     super.initState();
-    provider = Provider.of<ProdukProvider>(context, listen: false);
-    WidgetsBinding.instance.addPostFrameCallback((_) async {
-      if (widget.tipeRef == 'supplier' || widget.tipeRef == 'pelanggan') {
-        dataMitra = await provider.getMitra(tipe: widget.tipeRef);
-      } else {
-        dataRef = await provider.getReferensi(tipe: widget.tipeRef);
-      }
-      setState(() {});
-    });
+    // provider = Provider.of<ProdukProvider>(context, listen: false);
+    // WidgetsBinding.instance.addPostFrameCallback((_) async {
+    //   if (widget.tipeRef == 'supplier' || widget.tipeRef == 'pelanggan') {
+    //     dataMitra = await provider.getMitra(tipe: widget.tipeRef);
+    //   } else {
+    //     dataRef = await provider.getReferensi(tipe: widget.tipeRef);
+    //   }
+    //   setState(() {});
+    // });
   }
 
   void onFloatinButtonTapped() async {
-    if (widget.tipeRef == 'kategori') {
-      await provider.addNewRef(context, tipeRef: "Kategori");
-      // if (newKat != null) {
-      //   setState(() {
-      //     dataRef!.add(newKat);
-      //     dataRef!.sort((a, b) => a.compareTo(b));
-      //   });
-      // }
-    } else if (widget.tipeRef == 'satuan') {
-      // final String? newSat =
-      await provider.addNewRef(context, tipeRef: "Satuan");
-      // if (newSat != null) {
-      //   setState(() {
-      //     dataRef!.add(newSat);
-      //     dataRef!.sort((a, b) => a.compareTo(b));
-      //   });
-      // }
-    }
+    await context
+        .read<MasterProvider>()
+        .addNewRef(context, widget.tipeRef.toLowerCase(), widget.tipeRef);
+    // if (widget.tipeRef == 'kategori') {
+    //   // provider.addNewRef(context, tipeRef: "Kategori");
+    //   // if (newKat != null) {
+    //   //   setState(() {
+    //   //     dataRef!.add(newKat);
+    //   //     dataRef!.sort((a, b) => a.compareTo(b));
+    //   //   });
+    //   // }
+    // } else if (widget.tipeRef == 'satuan') {
+    //   // final String? newSat =
+    //   await provider.addNewRef(context, tipeRef: "Satuan");
+    //   // if (newSat != null) {
+    //   //   setState(() {
+    //   //     dataRef!.add(newSat);
+    //   //     dataRef!.sort((a, b) => a.compareTo(b));
+    //   //   });
+    //   // }
+    // }
   }
 
   @override
   Widget build(BuildContext context) {
+    final prov = context.watch<MasterProvider>();
+
     return Scaffold(
         appBar: AppBar(
           title: Text("Daftar ${widget.tipeRef.capitalizeFirst()}"),
@@ -63,15 +68,24 @@ class _DatabrowserState extends State<Databrowser> {
           child: const Icon(Icons.add),
         ),
         body: widget.tipeRef == 'supplier' || widget.tipeRef == 'pelanggan'
-            ? _daftarMitra()
-            : _daftarRef(context));
+            ? _daftarMitra(prov)
+            : _daftarRef(prov));
   }
 
-  Widget _daftarMitra() {
-    return dataMitra.isEmpty
+  Widget _daftarMitra(MasterProvider prov) {
+    late List<MitraModel> data;
+    switch (widget.tipeRef.toLowerCase()) {
+      case "supplier":
+        data = prov.daftarSupplier;
+
+      case "pelanggan":
+        data = prov.daftarPelanggan;
+    }
+
+    return data.isEmpty
         ? const EmptydataElement()
         : ListView(
-            children: dataMitra.map((mtr) {
+            children: data.map((mtr) {
               return ListTile(
                 onTap: () {
                   Navigator.pop(context, mtr);
@@ -90,11 +104,22 @@ class _DatabrowserState extends State<Databrowser> {
           );
   }
 
-  Widget _daftarRef(BuildContext context) {
-    return dataRef!.isEmpty || dataRef == null
+  Widget _daftarRef(MasterProvider prov) {
+    late List<String> data;
+
+    switch (widget.tipeRef.toLowerCase()) {
+      case "satuan":
+        data = prov.daftarSatuan;
+      case "kategori":
+        data = prov.daftarKategori;
+      case "merek":
+        data = prov.daftarMerek;
+    }
+
+    return data.isEmpty
         ? const EmptydataElement()
         : ListView(
-            children: dataRef!.map((dt) {
+            children: data.map((dt) {
               return ListTile(
                 onTap: () {
                   Navigator.pop(context, dt);

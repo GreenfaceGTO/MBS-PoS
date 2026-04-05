@@ -1,0 +1,237 @@
+import 'package:flutter/material.dart';
+import 'package:mbspos/providers/master_provider.dart';
+import 'package:mbspos/ui/pages/form/dialog_helper.dart';
+import 'package:mbspos/ui/widgets/components/general_widget.dart';
+import 'package:provider/provider.dart';
+
+class DetailsatuanElement extends StatefulWidget {
+  const DetailsatuanElement(
+      {super.key,
+      required this.controllerIsi,
+      required this.controllerPokok,
+      required this.controllerMargin,
+      required this.controllerHJual,
+      required this.controllerBcode,
+      this.satDasar = false});
+  final bool satDasar;
+  final TextEditingController controllerIsi;
+  final TextEditingController controllerPokok;
+  final TextEditingController controllerMargin;
+  final TextEditingController controllerHJual;
+  final TextEditingController controllerBcode;
+
+  @override
+  State<DetailsatuanElement> createState() => _DetailsatuanElementState();
+}
+
+class _DetailsatuanElementState extends State<DetailsatuanElement> {
+  @override
+  void initState() {
+    super.initState();
+    if (widget.satDasar) {
+      widget.controllerIsi.text = "1";
+    }
+  }
+
+  void hitungHarga({required String dari}) {
+    double hPokok = 0;
+    double margin = 0;
+    double hJual = 0;
+    double hasil = 0;
+
+    switch (dari) {
+      case 'pokok':
+        if (widget.controllerPokok.text.isNotEmpty) {
+          hPokok = double.parse(widget.controllerPokok.text);
+          if (widget.controllerMargin.text.isNotEmpty) {
+            margin = double.parse(widget.controllerMargin.text);
+            hasil = hPokok + (hPokok * (margin / 100));
+          } else {
+            hasil = hPokok;
+          }
+        }
+        setState(() {
+          widget.controllerHJual.text = hasil.toStringAsFixed(2);
+        });
+        break;
+      case "margin":
+        if (widget.controllerMargin.text.isNotEmpty) {
+          if (widget.controllerPokok.text.isNotEmpty) {
+            hPokok = double.parse(widget.controllerPokok.text);
+          }
+          margin = double.parse(widget.controllerMargin.text);
+          hasil = hPokok + (hPokok * (margin / 100));
+        }
+        setState(() {
+          widget.controllerHJual.text = hasil.toStringAsFixed(2);
+        });
+        break;
+      case "hargajual":
+        if (widget.controllerPokok.text.isNotEmpty) {
+          hPokok = double.parse(widget.controllerPokok.text);
+        }
+
+        if (widget.controllerHJual.text.isNotEmpty) {
+          hJual = double.parse(widget.controllerHJual.text);
+        }
+
+        if (hPokok > 0) {
+          hasil = ((hJual - hPokok) / hPokok) * 100;
+        }
+
+        setState(() {
+          widget.controllerMargin.text = hasil.toStringAsFixed(2);
+        });
+        break;
+      default:
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final prov = context.watch<MasterProvider>();
+
+    return Container(
+      padding: const EdgeInsets.only(top: 8),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Row(
+            children: [
+              Expanded(
+                  child: DropdownButtonFormField<String>(
+                      hint: const Text("Pilih Satuan"),
+                      style: const TextStyle(
+                          fontSize: 13, fontWeight: FontWeight.normal),
+                      items: prov.daftarSatuan.map((sat) {
+                        return DropdownMenuItem(
+                            value: sat,
+                            child: Text(
+                              sat,
+                              style: const TextStyle(color: Colors.black87),
+                            ));
+                      }).toList(),
+                      onChanged: (val) {})),
+              IconButton(
+                  onPressed: () async {
+                    String? newSat = await DialogHelper.showRefForm(context,
+                        title: "Satuan");
+                    if (newSat != null) {
+                      if (context.mounted) {
+                        context
+                            .read<MasterProvider>()
+                            .addNewRef(context, "satuan", newSat);
+                      }
+                    }
+                  },
+                  icon: const Icon(
+                    Icons.add_circle,
+                    size: 18,
+                  ))
+            ],
+          ),
+          spasi(),
+          if (!widget.satDasar)
+            Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                SizedBox(
+                  width: 80,
+                  child: TextFormField(
+                    keyboardType: TextInputType.number,
+                    controller: widget.controllerIsi,
+                    decoration: const InputDecoration(label: Text("Isi")),
+                    validator: (val) {
+                      if (val!.isEmpty) {
+                        return "Wajib diisi";
+                      } else if (!widget.satDasar && int.parse(val) < 2) {
+                        return "Harus > 1";
+                      }
+
+                      return null;
+                    },
+                  ),
+                ),
+                spasi(),
+              ],
+            ),
+          TextFormField(
+            controller: widget.controllerPokok,
+            keyboardType: TextInputType.number,
+            decoration: const InputDecoration(label: Text("Harga Pokok")),
+            onChanged: (val) {
+              hitungHarga(dari: "pokok");
+            },
+            validator: (val) {
+              if (val!.isEmpty) return "Wajib diisi";
+              return null;
+            },
+          ),
+          spasi(),
+          Row(
+            children: [
+              SizedBox(
+                width: 120,
+                child: TextFormField(
+                  controller: widget.controllerMargin,
+                  keyboardType: TextInputType.number,
+                  decoration: const InputDecoration(
+                      hintText: "Cth. 10", label: Text("Margin Profit")),
+                  validator: (val) {
+                    if (val!.isEmpty) return "Wajib diisi";
+                    return null;
+                  },
+                  onChanged: (val) {
+                    hitungHarga(dari: "margin");
+                  },
+                ),
+              ),
+              IconButton(
+                  onPressed: () {
+                    DialogHelper.showInfoMargiProfit(context);
+                  },
+                  icon: const Icon(
+                    Icons.info,
+                    size: 18,
+                    color: Colors.teal,
+                  ))
+            ],
+          ),
+          spasi(),
+          TextFormField(
+            controller: widget.controllerHJual,
+            keyboardType: TextInputType.number,
+            decoration: const InputDecoration(label: Text("Harga Jual")),
+            validator: (val) {
+              if (val!.isEmpty) return "Wajib diisi";
+              return null;
+            },
+            onChanged: (val) {
+              hitungHarga(dari: "hargajual");
+            },
+          ),
+          spasi(),
+          TextFormField(
+            controller: widget.controllerBcode,
+            readOnly: true,
+            onTap: () async {
+              final barcode = await scanBarcode(context);
+              if (barcode != null) {
+                setState(() {
+                  widget.controllerBcode.text = barcode;
+                });
+              }
+            },
+            decoration: const InputDecoration(
+                label: Text("Barcode"),
+                suffixIcon: Icon(
+                  Icons.barcode_reader,
+                  size: 18,
+                )),
+          )
+        ],
+      ),
+    );
+  }
+}

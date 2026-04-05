@@ -32,14 +32,19 @@ class Customstepper extends StatelessWidget {
                   width: 32,
                   height: 32,
                   decoration: BoxDecoration(
-                    color: isCompleted || isActive
-                        ? Colors.yellowAccent.shade200
-                        : Colors.grey.shade300,
+                    color: isCompleted
+                        ? Colors.teal.shade300
+                        : (isActive
+                            ? Colors.yellow.shade300
+                            : Colors.grey.shade400),
+                    // isCompleted || isActive
+                    //     ? Colors.yellow.shade200
+                    //     : Colors.grey.shade200,
                     shape: BoxShape.circle,
                   ),
                   child: Center(
                     child: isCompleted
-                        ? const Icon(Icons.check, color: Colors.teal, size: 18)
+                        ? const Icon(Icons.check, color: Colors.white, size: 18)
                         : Text(
                             '${index + 1}',
                             style: TextStyle(
@@ -58,7 +63,8 @@ class Customstepper extends StatelessWidget {
                 steps[index],
                 style: TextStyle(
                   fontWeight: isActive ? FontWeight.bold : FontWeight.normal,
-                  color: isActive ? Colors.yellowAccent : Colors.grey,
+                  color:
+                      isActive ? Colors.yellow.shade200 : Colors.grey.shade200,
                 ),
               ),
 
@@ -68,7 +74,9 @@ class Customstepper extends StatelessWidget {
                     width: 30,
                     child: Icon(
                       Icons.chevron_right,
-                      color: isCompleted ? Colors.blue : Colors.grey.shade400,
+                      color: isCompleted
+                          ? Theme.of(context).primaryColorLight
+                          : Colors.grey.shade400,
                     )),
             ],
           );

@@ -2,8 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 class EmptydataElement extends StatelessWidget {
-  const EmptydataElement({super.key, this.caption = "Belum ada data"});
+  const EmptydataElement(
+      {super.key, this.caption = "Belum ada data", this.iconSize = 50});
   final String caption;
+  final double iconSize;
   @override
   Widget build(BuildContext context) {
     TextTheme tema = TextTheme.of(context);
@@ -13,7 +15,7 @@ class EmptydataElement extends StatelessWidget {
         children: [
           FaIcon(
             FontAwesomeIcons.database,
-            size: 50,
+            size: iconSize,
             color: Colors.grey.shade300,
           ),
           const SizedBox(

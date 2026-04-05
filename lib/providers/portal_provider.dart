@@ -50,9 +50,7 @@ class PortalProvider with ChangeNotifier {
   String? get noTelp => _noTelp;
   String? get email => _email;
 
-// -----------------
-// group admin
-// -----------------
+// =======group admin=======
   String? _user;
   String? _password;
 
@@ -69,9 +67,7 @@ class PortalProvider with ChangeNotifier {
   String? get user => _user;
   String? get password => _password;
 
-  // --------------------
-  // submit register
-  // --------------------
+  // ========submit register========
   Future<bool> submitRegister() async {
     setLoading(true);
 

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:mbspos/models/args_model.dart';
-import 'package:mbspos/providers/produk_provider.dart';
+import 'package:mbspos/providers/master_provider.dart';
 import 'package:mbspos/ui/widgets/elements/emptydata_element.dart';
 import 'package:mbspos/service/utils/global_enums.dart';
 import 'package:provider/provider.dart';
@@ -13,17 +13,6 @@ class ProdukPage extends StatefulWidget {
 }
 
 class _ProdukPageState extends State<ProdukPage> {
-  late ProdukProvider provider;
-  @override
-  void initState() {
-    provider = Provider.of(context, listen: false);
-
-    WidgetsBinding.instance.addPostFrameCallback((_) async {
-      await provider.getAllProduk();
-    });
-    super.initState();
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -43,8 +32,10 @@ class _ProdukPageState extends State<ProdukPage> {
         },
         child: const Icon(Icons.add),
       ),
-      body: Consumer<ProdukProvider>(builder: (context, prov, _) {
-        return prov.lstProduk.isEmpty ? const EmptydataElement() : Container();
+      body: Consumer<MasterProvider>(builder: (context, prov, _) {
+        return prov.daftarProduk.isEmpty
+            ? const EmptydataElement()
+            : Container();
       }),
     );
   }

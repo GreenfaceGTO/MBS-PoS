@@ -8,6 +8,7 @@ enum OrientationMode { vertical, horizontal }
 
 const double defaultPadding = 16;
 
+// ============Metode scan barcode============
 Future<String?> scanBarcode(
   BuildContext context,
 ) async {
@@ -29,16 +30,22 @@ Future<String?> scanBarcode(
   return null;
 }
 
+// =========Metode konversi angka ke rupiah=========
 NumberFormat toRupiah = NumberFormat.currency(
   locale: 'ID',
   symbol: "Rp. ",
   decimalDigits: 2,
 );
 
-sectionTitle(BuildContext context, {required String title}) {
+// ============Metode pembulatan angka============
+int bulatkan(double angka, int pembulat) {
+  return ((angka / pembulat).round()) * pembulat;
+}
+
+sectionTitle(BuildContext context, {required String title, Widget? trailing}) {
   TextTheme tema = Theme.of(context).textTheme;
   return Padding(
-    padding: const EdgeInsets.only(bottom: 12),
+    padding: EdgeInsets.only(bottom: trailing == null ? 8 : 0),
     child: Row(
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
@@ -51,7 +58,8 @@ sectionTitle(BuildContext context, {required String title}) {
           margin: const EdgeInsets.only(left: 8),
           height: 1,
           decoration: const BoxDecoration(color: Colors.black26),
-        ))
+        )),
+        if (trailing != null) trailing
       ],
     ),
   );
@@ -86,7 +94,8 @@ SizedBox spasi(
 }
 
 void showMessage(
-  BuildContext context, {
+    // BuildContext context
+    {
   required String message,
   MessageMode mode = MessageMode.info,
   int durasi = 3,
@@ -100,8 +109,8 @@ void showMessage(
     frColor = Colors.black;
   }
 
-  final messenger = ScaffoldMessenger.maybeOf(context) ??
-      rootScaffoldMessengerKey.currentState;
+  final messenger = rootScaffoldMessengerKey.currentState;
+  // ScaffoldMessenger.maybeOf(context) ??
 
   messenger?.showSnackBar(
     SnackBar(

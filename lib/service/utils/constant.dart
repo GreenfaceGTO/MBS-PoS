@@ -58,6 +58,10 @@ List<MenuModel> lstLaporan = [
   MenuModel(id: 3, title: 'Kelas Barang per Periode', icon: Icons.receipt),
 ];
 
+// ==============constat message==============
+const String msgSafeFail = "Gagal menyimpan data";
+const String msgSafeDone = "Data tersimpan";
+
 // ================Router name================
 const String rtRegister = "/register";
 const String rtLogin = "/login";

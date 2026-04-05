@@ -5,7 +5,7 @@ import 'package:mbspos/ui/dashboard_page.dart';
 import 'package:mbspos/ui/dummy_page.dart';
 import 'package:mbspos/ui/pages/form/mitra_form.dart';
 // import 'package:mbspos/ui/pages/form/produk_form.xoldart';
-import 'package:mbspos/ui/pages/form/satkonversi_form.dart';
+import 'package:mbspos/ui/pages/form/xsatkonversi_form.oldart';
 import 'package:mbspos/ui/pages/produk_page.dart';
 import 'package:mbspos/ui/pages/referensi_page.dart';
 import 'package:mbspos/ui/register_page.dart';
