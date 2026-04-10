@@ -1,18 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:mbspos/providers/portal_provider.dart';
 import 'package:mbspos/ui/widgets/components/custombutton.dart';
-import 'package:mbspos/ui/widgets/elements/register_element.dart';
 import 'package:mbspos/ui/widgets/components/general_widget.dart';
+import 'package:mbspos/ui/widgets/elements/register_element.dart';
 import 'package:provider/provider.dart';
 
-class RegisterPage extends StatefulWidget {
-  const RegisterPage({super.key});
+class MobileRegister extends StatefulWidget {
+  const MobileRegister({super.key});
 
   @override
-  State<RegisterPage> createState() => _RegisterPageState();
+  State<MobileRegister> createState() => _MobileRegisterState();
 }
 
-class _RegisterPageState extends State<RegisterPage> {
+class _MobileRegisterState extends State<MobileRegister> {
   @override
   Widget build(BuildContext context) {
     TextTheme tema = Theme.of(context).textTheme;

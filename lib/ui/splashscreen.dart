@@ -6,8 +6,8 @@ import 'package:mbspos/providers/startup_provider.dart';
 import 'package:mbspos/service/startup_service.dart';
 import 'package:mbspos/ui/dashboard_page.dart';
 import 'package:mbspos/ui/dummy_page.dart';
-import 'package:mbspos/ui/intro_page.dart';
-import 'package:mbspos/ui/register_page.dart';
+import 'package:mbspos/ui/pages/intro_page.dart';
+import 'package:mbspos/ui/pages/register_page.dart';
 import 'package:provider/provider.dart';
 
 class Splashscreen extends StatefulWidget {

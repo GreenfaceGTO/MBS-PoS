@@ -1,5 +1,6 @@
 // ==============App Identifier==============
 import 'package:flutter/material.dart';
+import 'package:mbspos/models/intro_model.dart';
 import 'package:mbspos/models/menu_model.dart';
 
 const String appName = "Micro Business Solution";
@@ -72,3 +73,24 @@ const String rtMitraForm = '/mitraform';
 const String rtProdukForm = '/produkform';
 const String rtBrowserData = '/browser';
 const String rtSatKonversi = "/satkonversi";
+
+// =====================Intro=====================
+List<IntroModel> lstIntro = [
+  IntroModel(
+      gambar: Image.asset(
+        "assets/mbsposintro1.png",
+      ),
+      title: "Selamat Datang",
+      subTitle:
+          "Dagang bukan hanya soal profit, ada kegiatan lain yang wajib menyertainya agar usaha berjalan lancar dan minim resiko."),
+  IntroModel(
+      gambar: Image.asset("assets/mbsposintro2.png"),
+      title: "Pahami Potensi Pasar",
+      subTitle:
+          "Catat semua permintaan, baik yang terlayani maupun yang batal karena ketersediaan produk, semuanya adalah potensi."),
+  IntroModel(
+      gambar: Image.asset("assets/mbsposintro3.png"),
+      title: "Efektifitas Modal",
+      subTitle:
+          "Persediaan yang melimpah tidak berarti keuntungan besar.\nTentukan jadwal pengadaan ulang, sistem akan menghitung jumlah barang yang perlu disediakan hingga pengadaan berikutnya."),
+];

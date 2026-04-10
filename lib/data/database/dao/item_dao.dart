@@ -8,16 +8,12 @@ class ItemDao {
   // -------------------------------
   /// Menyimpan data produk
   // -------------------------------
-  Future<int> saveProduk(ItemModel data) async {
-    final db = await Dbhelper.database;
-    final id = await db.insert(ItemTable.table, data.toMap());
-
-    final String sku = "SKU-${id.toString().padLeft(4, '0')}";
-
-    await db.update(ItemTable.table, {"no_sku": sku},
-        where: "id=?", whereArgs: [id]);
-    return id;
-  }
+  // Future<int> simpanProduk(ItemModel data) async {
+  //   final db = await Dbhelper.database;
+  //   return db.transaction<int>((txn) async {
+  //     final itemId=await txn.insert(ItemTable.table, values)
+  //   });
+  // }
 
   // ----------------------------
   /// Mengambil daftar produk

@@ -170,20 +170,44 @@ class _ProdukFormState extends State<ProdukForm> {
     // final prov = context.read<MasterProvider>();
     return selectedSatDasar == null
         ? Center(
-            child: SizedBox(
-              height: 45,
-              child: OutlinedButton.icon(
-                onPressed: () async {
-                  final satDasar = await openSatuanForm(satDasar: true);
-                  if (satDasar != null) {
-                    setState(() {
-                      selectedSatDasar = satDasar;
-                    });
-                  }
-                },
-                label: const Text("PILIH SATUAN"),
-                icon: const Icon(Icons.add_circle_outline),
-              ),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                SizedBox(
+                  height: 45,
+                  child: OutlinedButton.icon(
+                    onPressed: () async {
+                      final satDasar = await openSatuanForm(satDasar: true);
+                      if (satDasar != null) {
+                        setState(() {
+                          selectedSatDasar = satDasar;
+                        });
+                      }
+                    },
+                    label: const Text("PILIH SATUAN DASAR"),
+                    icon: const Icon(Icons.add_circle_outline),
+                  ),
+                ),
+                spasi(jarak: 4),
+                Row(
+                  mainAxisSize: MainAxisSize.min,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    const Icon(
+                      Icons.info,
+                      color: Colors.teal,
+                    ),
+                    spasi(jarak: 6, mode: OrientationMode.horizontal),
+                    SizedBox(
+                      width: MediaQuery.of(context).size.width * 0.6,
+                      child: Text(
+                        "Satuan dasar adalah satuan jual terkecil produk ${txtNama.text.trim()} ini di tempat Anda",
+                        style: const TextStyle(fontSize: 11),
+                      ),
+                    ),
+                  ],
+                )
+              ],
             ),
           )
         : SingleChildScrollView(
@@ -199,14 +223,35 @@ class _ProdukFormState extends State<ProdukForm> {
                 _rowFieldWidget("Kemasan", selectedSatDasar!.satuan!),
                 _rowFieldWidget("Harga Pokok",
                     toRupiah.format(selectedSatDasar!.hargaPokok)),
-                _rowFieldWidget("Margin profit",
-                    "${selectedSatDasar!.margin!.toStringAsFixed(2)}%"),
                 _rowFieldWidget(
-                    "Harga Jual",
-                    toRupiah.format((hargaJualSat(selectedSatDasar!.hargaPokok!,
-                            selectedSatDasar!.margin!)
-                        .round()))),
-                spasi(jarak: 30),
+                    "Harga Jual", toRupiah.format(selectedSatDasar!.hargaJual)),
+                _rowFieldWidget(
+                    "Stok. Min.", selectedSatDasar!.stokMin.toString()),
+                spasi(jarak: 10),
+                if (lstSatuan.isEmpty)
+                  Align(
+                    alignment: Alignment.centerRight,
+                    child: InkWell(
+                      onTap: () {
+                        setState(() {
+                          selectedSatDasar = null;
+                        });
+                      },
+                      child: const Padding(
+                        padding:
+                            EdgeInsets.symmetric(vertical: 2, horizontal: 4),
+                        child: Text(
+                          "Ubah",
+                          style: TextStyle(
+                              fontSize: 15,
+                              color: Colors.blue,
+                              fontWeight: FontWeight.w700),
+                        ),
+                      ),
+                    ),
+                  ),
+                spasi(jarak: 10),
+                const Divider(),
                 _satuanLainWidget()
               ],
             ),
@@ -359,6 +404,7 @@ class _ProdukFormState extends State<ProdukForm> {
           if (selectedMerek != null) _rowFieldWidget("Merek", selectedMerek!),
           if (selectedSupplier != null)
             _rowFieldWidget("Supplier", selectedSupplier!.nama!),
+          _rowFieldWidget("Stok. Min.", selectedSatDasar!.stokMin.toString()),
           spasi(),
           sectionTitle(context, title: "Kategori"),
           SizedBox(

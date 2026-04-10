@@ -8,7 +8,7 @@ import 'package:mbspos/ui/pages/form/mitra_form.dart';
 import 'package:mbspos/ui/pages/form/xsatkonversi_form.oldart';
 import 'package:mbspos/ui/pages/produk_page.dart';
 import 'package:mbspos/ui/pages/referensi_page.dart';
-import 'package:mbspos/ui/register_page.dart';
+import 'package:mbspos/ui/pages/register_page.dart';
 import 'package:mbspos/ui/widgets/components/databrowser.dart';
 import 'package:mbspos/service/utils/constant.dart';
 

@@ -22,12 +22,14 @@ class DetailsatuanForm extends StatefulWidget {
 class _DetailsatuanFormState extends State<DetailsatuanForm> {
   TextEditingController txtIsi = TextEditingController();
   TextEditingController txtHpokok = TextEditingController();
-  TextEditingController txtMargin = TextEditingController();
+  // TextEditingController txtMargin = TextEditingController();
   TextEditingController txtHjual = TextEditingController();
   TextEditingController txtBarcode = TextEditingController();
+  TextEditingController txtStokMin = TextEditingController();
   final formKey = GlobalKey<FormState>();
 
   String? selectedSatuan;
+  double profit = 0;
 
   @override
   void initState() {
@@ -39,37 +41,21 @@ class _DetailsatuanFormState extends State<DetailsatuanForm> {
 
   void hitungHarga({required String dari}) {
     double hPokok = 0;
-    double margin = 0;
     double hJual = 0;
-    double hasil = 0;
 
     switch (dari) {
       case 'pokok':
         if (txtHpokok.text.isNotEmpty) {
           hPokok = double.parse(txtHpokok.text);
-          if (txtMargin.text.isNotEmpty) {
-            margin = double.parse(txtMargin.text);
-            hasil = hPokok + (hPokok * (margin / 100));
-          } else {
-            hasil = hPokok;
+          if (txtHjual.text.isNotEmpty) {
+            hJual = double.parse(txtHjual.text);
           }
         }
         setState(() {
-          txtHjual.text = hasil.toStringAsFixed(2);
+          profit = hJual - hPokok;
         });
         break;
-      case "margin":
-        if (txtMargin.text.isNotEmpty) {
-          if (txtHpokok.text.isNotEmpty) {
-            hPokok = double.parse(txtHpokok.text);
-          }
-          margin = double.parse(txtMargin.text);
-          hasil = hPokok + (hPokok * (margin / 100));
-        }
-        setState(() {
-          txtHjual.text = hasil.toStringAsFixed(2);
-        });
-        break;
+
       case "hargajual":
         if (txtHpokok.text.isNotEmpty) {
           hPokok = double.parse(txtHpokok.text);
@@ -79,12 +65,8 @@ class _DetailsatuanFormState extends State<DetailsatuanForm> {
           hJual = double.parse(txtHjual.text);
         }
 
-        if (hPokok > 0) {
-          hasil = ((hJual - hPokok) / hPokok) * 100;
-        }
-
         setState(() {
-          txtMargin.text = hasil.toStringAsFixed(2);
+          profit = hJual - hPokok;
         });
         break;
       default:
@@ -178,6 +160,9 @@ class _DetailsatuanFormState extends State<DetailsatuanForm> {
                                 controller: txtIsi,
                                 keyboardType: TextInputType.number,
                                 textInputAction: TextInputAction.next,
+                                onChanged: (va) {
+                                  // TODO: hitung harga pokok konversi dari harga pokok satuan dasar
+                                },
                                 decoration:
                                     const InputDecoration(label: Text("Isi")),
                                 validator: (val) {
@@ -209,36 +194,6 @@ class _DetailsatuanFormState extends State<DetailsatuanForm> {
                         },
                       ),
                       spasi(),
-                      Row(
-                        children: [
-                          SizedBox(
-                              width: 120,
-                              child: TextFormField(
-                                controller: txtMargin,
-                                keyboardType: TextInputType.number,
-                                textInputAction: TextInputAction.next,
-                                onFieldSubmitted: (val) {
-                                  FocusScope.of(context).nextFocus();
-                                },
-                                onChanged: (val) {
-                                  hitungHarga(dari: "margin");
-                                },
-                                decoration: const InputDecoration(
-                                    hintText: "cth. 20",
-                                    label: Text("Margin Profit")),
-                              )),
-                          IconButton(
-                              onPressed: () {
-                                DialogHelper.showInfoMargiProfit(context);
-                              },
-                              icon: const Icon(
-                                Icons.info,
-                                size: 18,
-                                color: Colors.teal,
-                              ))
-                        ],
-                      ),
-                      spasi(),
                       TextFormField(
                         controller: txtHjual,
                         keyboardType: TextInputType.number,
@@ -252,10 +207,27 @@ class _DetailsatuanFormState extends State<DetailsatuanForm> {
                       spasi(),
                       Row(
                         children: [
+                          const Text("Keuntungan : "),
+                          spasi(mode: OrientationMode.horizontal),
+                          Text(
+                            toRupiah.format(profit),
+                            style: TextStyle(
+                                fontWeight: FontWeight.w700,
+                                color: profit < 0 ? Colors.red : Colors.teal),
+                          ),
+                          Text(" /$selectedSatuan")
+                        ],
+                      ),
+                      spasi(),
+                      Row(
+                        children: [
                           Expanded(
                             child: TextFormField(
                               controller: txtBarcode,
-                              textInputAction: TextInputAction.done,
+                              textInputAction: TextInputAction.next,
+                              onFieldSubmitted: (val) {
+                                FocusScope.of(context).nextFocus();
+                              },
                               decoration:
                                   const InputDecoration(label: Text("Barcode")),
                             ),
@@ -274,27 +246,67 @@ class _DetailsatuanFormState extends State<DetailsatuanForm> {
                                 size: 20,
                               ))
                         ],
+                      ),
+                      spasi(),
+                      if (widget.satDasar)
+                        Align(
+                          alignment: Alignment.centerLeft,
+                          child: Row(
+                            children: [
+                              SizedBox(
+                                width: 150,
+                                child: TextFormField(
+                                  controller: txtStokMin,
+                                  keyboardType: TextInputType.number,
+                                  textInputAction: TextInputAction.done,
+                                  decoration: const InputDecoration(
+                                      label: Text("Stok Minimum")),
+                                  validator: (val) {
+                                    if (widget.satDasar) {
+                                      if (val!.isEmpty) {
+                                        return "Wajib diisi";
+                                      }
+                                    }
+                                    return null;
+                                  },
+                                ),
+                              ),
+                              IconButton(
+                                  onPressed: () {
+                                    DialogHelper.showInfoStokMin(context);
+                                  },
+                                  icon: const Icon(
+                                    Icons.info,
+                                    color: Colors.teal,
+                                    size: 18,
+                                  ))
+                            ],
+                          ),
+                        ),
+                      spasi(jarak: 30),
+                      CustomButton(
+                        onPress: () {
+                          if (formKey.currentState!.validate()) {
+                            SatitemModel satProduk = SatitemModel(
+                                satuan: selectedSatuan,
+                                isi: int.parse(txtIsi.text),
+                                tipe: widget.satDasar ? "D" : "K",
+                                stokMin: widget.satDasar
+                                    ? int.parse(txtStokMin.text)
+                                    : 0,
+                                hargaJual: double.parse(txtHjual.text),
+                                hargaPokok: double.parse(txtHpokok.text),
+                                margin: profit / double.parse(txtHpokok.text),
+                                barcode: txtBarcode.text);
+
+                            Navigator.pop(context, satProduk);
+                          }
+                        },
+                        caption: "KONFIRMASI",
+                        width: 220,
                       )
                     ],
                   ),
-                spasi(jarak: 30),
-                CustomButton(
-                  onPress: () {
-                    if (formKey.currentState!.validate()) {
-                      SatitemModel satProduk = SatitemModel(
-                          satuan: selectedSatuan,
-                          isi: int.parse(txtIsi.text),
-                          tipe: widget.satDasar ? "D" : "K",
-                          hargaPokok: double.parse(txtHpokok.text),
-                          margin: double.parse(txtMargin.text),
-                          barcode: txtBarcode.text);
-
-                      Navigator.pop(context, satProduk);
-                    }
-                  },
-                  caption: "KONFIRMASI",
-                  width: 220,
-                )
               ],
             ),
           )),

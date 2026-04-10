@@ -34,36 +34,36 @@ class DialogHelper {
         barrierDismissible: true);
   }
 
-  static void showInfoMargiProfit(BuildContext context) {
-    showDialog(
-        context: context,
-        builder: (ctx) {
-          return const AlertDialog(
-            title: Text("Margin Profit"),
-            content: Text.rich(TextSpan(
-                text:
-                    "Adalah nilai persentase keuntungan berdasarkan harga pokok produk.",
-                children: [
-                  TextSpan(
-                      text:
-                          "\n\nHarga pokok adalah akumulasi dari harga perolehan produk, yaitu :"),
-                  TextSpan(text: "\n-. Harga produk."),
-                  TextSpan(text: "\n-. Biaya pengiriman."),
-                  TextSpan(text: "\n-. Pajak pembelian (jika ada)."),
-                  TextSpan(
-                      text: "\n\nTips :",
-                      style: TextStyle(
-                          color: Colors.red, fontWeight: FontWeight.w500)),
-                  TextSpan(
-                      text:
-                          "\nPraktek terbaik dalam menentukan margin adalah fokus pada volume penjualan, bukan pada besar keuntungan yang bisa didapatkan dari penjualan satu produk. "),
-                  TextSpan(
-                      text:
-                          "Harga produk yang terlalu mahal beresiko lama laku atau bahkan tidak laku."),
-                ])),
-          );
-        });
-  }
+  // static void showInfoMargiProfit(BuildContext context) {
+  //   showDialog(
+  //       context: context,
+  //       builder: (ctx) {
+  //         return const AlertDialog(
+  //           title: Text("Margin Profit"),
+  //           content: Text.rich(TextSpan(
+  //               text:
+  //                   "Adalah nilai persentase keuntungan berdasarkan harga pokok produk.",
+  //               children: [
+  //                 TextSpan(
+  //                     text:
+  //                         "\n\nHarga pokok adalah akumulasi dari harga perolehan produk, yaitu :"),
+  //                 TextSpan(text: "\n-. Harga produk."),
+  //                 TextSpan(text: "\n-. Biaya pengiriman."),
+  //                 TextSpan(text: "\n-. Pajak pembelian (jika ada)."),
+  //                 TextSpan(
+  //                     text: "\n\nTips :",
+  //                     style: TextStyle(
+  //                         color: Colors.red, fontWeight: FontWeight.w500)),
+  //                 TextSpan(
+  //                     text:
+  //                         "\nPraktek terbaik dalam menentukan margin adalah fokus pada volume penjualan, bukan pada besar keuntungan yang bisa didapatkan dari penjualan satu produk. "),
+  //                 TextSpan(
+  //                     text:
+  //                         "Harga produk yang terlalu mahal beresiko lama laku atau bahkan tidak laku."),
+  //               ])),
+  //         );
+  //       });
+  // }
 
   static void showInfoSatuan(BuildContext context) {
     showDialog(
@@ -73,18 +73,42 @@ class DialogHelper {
             title: Text("Satuan Lainnya"),
             content: Text.rich(TextSpan(
                 text:
-                    "Satuan lainnya adalah konversi isi dan harga dari satuan dasar. Produk umumnya memiliki beberapa satuan kemasan.",
+                    "Produk umumnya memiliki satuan kemasan lain yang isinya lebih banyak.",
                 children: [
                   TextSpan(
-                      text: "\n\nContoh : ",
+                      text: "\n\nContoh :",
                       style: TextStyle(fontWeight: FontWeight.bold)),
-                  TextSpan(text: "\n- 1 Lusin isi 12 Pcs"),
-                  TextSpan(text: "\n- 1 Dus isi 144 Pcs"),
-                  // TextSpan(
-                  //   text: "Isi satuan konversi harus lebih banyak dar"
-                  //       // "\n\nSecara default, penjualan retail menggunakan satuan dasar, namun pada saat pembelian dari supplier menggunakan satuan kemasan lain yang isinya lebih banyak.",
-                  // ),
+                  TextSpan(text: "\nProduk Mie"),
+                  TextSpan(text: "\n- 1 Lusin isi 12 Bks"),
+                  TextSpan(text: "\n- 1 Dus isi 48 Bks"),
+                  TextSpan(
+                      text: "\n\nPada contoh di atas, satuan dasarnya adalah"),
+                  TextSpan(
+                      text: " Bks",
+                      style: TextStyle(fontWeight: FontWeight.bold)),
+                  TextSpan(text: " dan satuan lainnya"),
+                  TextSpan(
+                      text: " Lusin",
+                      style: TextStyle(fontWeight: FontWeight.bold)),
+                  TextSpan(text: " dan "),
+                  TextSpan(
+                      text: " Dus",
+                      style: TextStyle(fontWeight: FontWeight.bold)),
                 ])),
+          );
+        });
+  }
+
+  static void showInfoStokMin(BuildContext context) {
+    showDialog(
+        context: context,
+        builder: (ctx) {
+          return const AlertDialog(
+            title: Text("Stok Minimum"),
+            content: Text.rich(TextSpan(
+              text:
+                  "Adalah ambang batas minimal barang yang wajib tersedia di pajangan sebagai pengaman persediaan, yaitu untuk meminimalisir kemungkinan terjadinya permintaan yang tidak terlayani.",
+            )),
           );
         });
   }
