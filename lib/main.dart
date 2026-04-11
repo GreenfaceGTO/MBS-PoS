@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:mbspos/providers/providers.dart';
 import 'package:mbspos/ui/splashscreen.dart';
 import 'package:mbspos/ui/theme.dart';
@@ -12,6 +13,7 @@ final GlobalKey<ScaffoldMessengerState> rootScaffoldMessengerKey =
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
+  await SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
   await Preference().init(clear: false);
 
   runApp(const MyApp());

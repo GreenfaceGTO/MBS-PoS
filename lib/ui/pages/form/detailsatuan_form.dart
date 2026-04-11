@@ -110,6 +110,7 @@ class _DetailsatuanFormState extends State<DetailsatuanForm> {
                             hint: const Text("Pilih Satuan"),
                             style: const TextStyle(
                                 fontSize: 13, fontWeight: FontWeight.normal),
+                            value: selectedSatuan,
                             items: prov.daftarSatuan.map((sat) {
                               return DropdownMenuItem(
                                   value: sat,
@@ -132,9 +133,12 @@ class _DetailsatuanFormState extends State<DetailsatuanForm> {
                               title: "Satuan");
                           if (newSat != null) {
                             if (context.mounted) {
-                              context
+                              await context
                                   .read<MasterProvider>()
                                   .addNewRef(context, "satuan", newSat);
+                              setState(() {
+                                selectedSatuan = newSat;
+                              });
                             }
                           }
                         },

@@ -9,6 +9,7 @@ import 'package:mbspos/service/utils/global_enums.dart';
 import 'package:mbspos/service/utils/textformatter.dart';
 import 'package:mbspos/ui/pages/form/dialog_helper.dart';
 import 'package:mbspos/ui/pages/form/detailsatuan_form.dart';
+import 'package:mbspos/ui/widgets/components/custombutton.dart';
 import 'package:mbspos/ui/widgets/components/customstepper.dart';
 import 'package:mbspos/ui/widgets/components/general_widget.dart';
 import 'package:mbspos/ui/widgets/elements/emptydata_element.dart';
@@ -24,7 +25,9 @@ class ProdukForm extends StatefulWidget {
 
 class _ProdukFormState extends State<ProdukForm> {
   final formKey = GlobalKey<FormState>();
+
   int currentStep = 0;
+
   List<String> lstStepTitle = [
     "Data Umum",
     "Kategori",
@@ -53,6 +56,18 @@ class _ProdukFormState extends State<ProdukForm> {
 
   List<SatitemModel> lstSatuan = [];
 // =============end of properti data satuan (step3)=============
+
+  void increaseStep() {
+    setState(() {
+      currentStep++;
+    });
+  }
+
+  void decreaseStep() {
+    setState(() {
+      currentStep--;
+    });
+  }
 
 // =============metode validasi setiap halaman=============
   bool validateInput(BuildContext context) {
@@ -230,26 +245,19 @@ class _ProdukFormState extends State<ProdukForm> {
                 spasi(jarak: 10),
                 if (lstSatuan.isEmpty)
                   Align(
-                    alignment: Alignment.centerRight,
-                    child: InkWell(
-                      onTap: () {
-                        setState(() {
-                          selectedSatDasar = null;
-                        });
-                      },
-                      child: const Padding(
-                        padding:
-                            EdgeInsets.symmetric(vertical: 2, horizontal: 4),
-                        child: Text(
-                          "Ubah",
-                          style: TextStyle(
-                              fontSize: 15,
-                              color: Colors.blue,
-                              fontWeight: FontWeight.w700),
+                      alignment: Alignment.centerRight,
+                      child: SizedBox(
+                        height: 30,
+                        child: CustomButton(
+                          mode: ButtonMode.outlined,
+                          caption: "UBAH",
+                          onPress: () {
+                            setState(() {
+                              selectedSatDasar = null;
+                            });
+                          },
                         ),
-                      ),
-                    ),
-                  ),
+                      )),
                 spasi(jarak: 10),
                 const Divider(),
                 _satuanLainWidget()
@@ -482,6 +490,7 @@ class _ProdukFormState extends State<ProdukForm> {
                             fontSize: 13,
                             fontWeight: FontWeight.w400,
                             color: Colors.black87),
+                        value: selectedMerek,
                         items: prov.daftarMerek.map((mrk) {
                           return DropdownMenuItem(value: mrk, child: Text(mrk));
                         }).toList(),
@@ -496,9 +505,12 @@ class _ProdukFormState extends State<ProdukForm> {
                           title: "Merek");
                       if (newMerek != null) {
                         if (context.mounted) {
-                          context
+                          await context
                               .read<MasterProvider>()
                               .addNewRef(context, "merek", newMerek);
+                          setState(() {
+                            selectedMerek = newMerek;
+                          });
                         }
                       }
                     },
@@ -541,34 +553,39 @@ class _ProdukFormState extends State<ProdukForm> {
       child: Consumer<MasterProvider>(builder: (context, prov, _) {
         return Column(
           children: [
-            const Text(
-              "Pilih satu atau beberapa kategori sekaligus",
-              style: TextStyle(color: Colors.teal),
-            ),
+            if (prov.daftarKategori.isNotEmpty)
+              const Text(
+                "Pilih satu atau beberapa kategori sekaligus",
+                style: TextStyle(color: Colors.teal),
+              ),
             spasi(jarak: 4),
             Expanded(
-              child: ListView(
-                  children: prov.daftarKategori.map((kat) {
-                return ListTile(
-                  onTap: () {
-                    bool check = selectedKategori.contains(kat);
-                    if (!check) {
-                      selectedKategori.add(kat);
-                    } else {
-                      selectedKategori.removeWhere((e) => e == kat);
-                    }
-                    setState(() {});
-                  },
-                  title: Text(kat),
-                  trailing: selectedKategori.contains(kat)
-                      ? const Icon(
-                          Icons.check_circle,
-                          size: 18,
-                          color: Colors.teal,
-                        )
-                      : null,
-                );
-              }).toList()),
+              child: prov.daftarKategori.isEmpty
+                  ? const EmptydataElement(
+                      caption: "Belum ada master kategori",
+                    )
+                  : ListView(
+                      children: prov.daftarKategori.map((kat) {
+                      return ListTile(
+                        onTap: () {
+                          bool check = selectedKategori.contains(kat);
+                          if (!check) {
+                            selectedKategori.add(kat);
+                          } else {
+                            selectedKategori.removeWhere((e) => e == kat);
+                          }
+                          setState(() {});
+                        },
+                        title: Text(kat),
+                        trailing: selectedKategori.contains(kat)
+                            ? const Icon(
+                                Icons.check_circle,
+                                size: 18,
+                                color: Colors.teal,
+                              )
+                            : null,
+                      );
+                    }).toList()),
             ),
             SizedBox(
               height: 45,
@@ -579,7 +596,7 @@ class _ProdukFormState extends State<ProdukForm> {
                       title: "Kategori");
                   if (newKat != null) {
                     if (context.mounted) {
-                      context
+                      await context
                           .read<MasterProvider>()
                           .addNewRef(context, 'kategori', newKat);
                     }
@@ -612,9 +629,10 @@ class _ProdukFormState extends State<ProdukForm> {
               iconAlignment: IconAlignment.start,
               onPressed: () {
                 if (currentStep > 0) {
-                  setState(() {
-                    currentStep--;
-                  });
+                  decreaseStep();
+                  // setState(() {
+                  //   currentStep--;
+                  // });
                 } else {
                   Navigator.pop(context);
                 }
@@ -634,16 +652,19 @@ class _ProdukFormState extends State<ProdukForm> {
                   foregroundColor: Colors.yellow.shade200,
                   shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(8))),
-              iconAlignment: IconAlignment.end,
+              iconAlignment: currentStep < (lstStepTitle.length - 1)
+                  ? IconAlignment.end
+                  : IconAlignment.start,
               onPressed: () {
                 if (currentStep < lstStepTitle.length - 1) {
                   bool next = validateInput(context);
                   false;
 
                   if (next) {
-                    setState(() {
-                      currentStep++;
-                    });
+                    increaseStep();
+                    // setState(() {
+                    //   currentStep++;
+                    // });
                   }
                 }
               },
@@ -652,7 +673,7 @@ class _ProdukFormState extends State<ProdukForm> {
                   : const Text("SIMPAN"),
               icon: currentStep < lstStepTitle.length - 1
                   ? const Icon(Icons.arrow_forward)
-                  : null,
+                  : const Icon(Icons.save),
             ),
           )
         ],

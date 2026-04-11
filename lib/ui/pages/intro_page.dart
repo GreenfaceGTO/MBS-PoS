@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:mbspos/ui/pages/layout/intro/mobile_intro.dart';
-import 'package:mbspos/ui/pages/layout/intro/tablet_intro.dart';
 import 'package:mbspos/ui/responsive_frame.dart';
 
 class IntroPage extends StatefulWidget {
@@ -13,7 +12,7 @@ class IntroPage extends StatefulWidget {
 class _IntroPageState extends State<IntroPage> {
   @override
   Widget build(BuildContext context) {
-    return const ResponsiveFrame(
-        portraitView: MobileIntro(), landscapeView: TabletIntro());
+    return ResponsiveFrame(
+        portraitView: const MobileIntro(), landscapeView: Container());
   }
 }

@@ -1,4 +1,5 @@
 import 'package:flutter/cupertino.dart';
+import 'package:mbspos/ui/widgets/elements/tabletwarning_page.dart';
 
 class ResponsiveFrame extends StatelessWidget {
   const ResponsiveFrame(
@@ -10,7 +11,9 @@ class ResponsiveFrame extends StatelessWidget {
   Widget build(BuildContext context) {
     double mobileDevice = 600;
     return LayoutBuilder(builder: (context, constraint) {
-      return constraint.maxWidth < mobileDevice ? portraitView : landscapeView;
+      return constraint.maxWidth < mobileDevice
+          ? portraitView
+          : const TabletwarningPage();
     });
   }
 }

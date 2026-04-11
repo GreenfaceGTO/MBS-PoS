@@ -90,7 +90,7 @@ List<IntroModel> lstIntro = [
           "Catat semua permintaan, baik yang terlayani maupun yang batal karena ketersediaan produk, semuanya adalah potensi."),
   IntroModel(
       gambar: Image.asset("assets/mbsposintro3.png"),
-      title: "Efektifitas Modal",
+      title: "Efektifkan Modal",
       subTitle:
           "Persediaan yang melimpah tidak berarti keuntungan besar.\nTentukan jadwal pengadaan ulang, sistem akan menghitung jumlah barang yang perlu disediakan hingga pengadaan berikutnya."),
 ];
