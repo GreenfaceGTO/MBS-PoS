@@ -683,17 +683,17 @@ class _ProdukFormState extends State<ProdukForm> {
                 } else {
                   ItemModel newItem = ItemModel(
                       namaProduk: txtNama.text,
-                      merek: selectedMerek,
-                      supplier: selectedSupplier?.nama!,
+                      merek: selectedMerek?.trim(),
+                      supplier: selectedSupplier?.nama!.trim(),
                       kategori: selectedKategori,
                       minStok: selectedSatDasar!.minStok,
                       satuan: [selectedSatDasar!]);
                   for (var sat in lstSatuan) {
                     newItem.satuan.add(sat);
                   }
-                  log(newItem.toDb().toString());
-                  log("======");
-                  log(newItem.toMap().toString());
+                  // log(newItem.toDb().toString());
+                  // log("======");
+                  // log(newItem.toMap().toString());
                   bool sukses = await context
                       .read<MasterProvider>()
                       .addNewProduk(newItem);

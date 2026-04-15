@@ -95,7 +95,7 @@ class MasterdataRepo {
     try {
       return await ItemDao.getAllProduk() ?? [];
     } catch (e) {
-      throw Exception('Gagal mengambil daftar produk');
+      throw Exception('Gagal mengambil daftar produk ${e.toString()}');
     }
   }
 

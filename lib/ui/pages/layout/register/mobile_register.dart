@@ -38,7 +38,7 @@ class _MobileRegisterState extends State<MobileRegister> {
                   spasi(jarak: defaultPadding * 3),
                   CustomButton(
                     elevation: 1,
-                    mode: ButtonMode.elevated,
+                    mode: ButtonMode.outlined,
                     caption: "SIMPAN",
                     onPress: () async {
                       if (formKey.currentState!.validate()) {

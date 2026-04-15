@@ -176,6 +176,7 @@ class MasterProvider with ChangeNotifier, CacheManager {
     // generate SKU
     newItem.noSku = 'SKU-${id.toString().padLeft(4, '0')}';
     _daftarProduk.add(newItem);
+    notifyListeners();
 
     return true;
   }

@@ -1,42 +1,43 @@
 class SatitemModel {
   int? id;
+  int? idProduk;
   String? satuan;
   int? isi;
   String? tipe;
   double? hargaPokok;
   double? hargaJual;
-  double? margin;
   int minStok;
   double? potongan;
   String? barcode;
 
   SatitemModel({
     this.id,
+    this.idProduk,
     this.satuan,
     this.isi,
     this.tipe,
     this.hargaPokok,
     this.hargaJual,
-    this.margin,
     this.minStok = 0,
     this.potongan,
     this.barcode,
   });
 
   factory SatitemModel.fromMap(Map<String, dynamic> map) => SatitemModel(
-      id: map['id'],
+      id: map['id'] ?? 0,
+      idProduk: map['id_produk'],
       satuan: map['satuan'],
-      isi: map['isi'],
+      isi: map['isi'] ?? 0,
       tipe: map['tipe'],
       hargaPokok: map['harga_pokok'],
       hargaJual: map['harga_jual'],
-      minStok: map['min_stok'],
+      minStok: map['min_stok'] ?? 0,
       barcode: map['barcode'],
-      margin: map['margin'],
-      potongan: map['potongan']);
+      potongan: map['potongan'] ?? 0);
 
   Map<String, dynamic> toMap() => {
         "id": id,
+        "id_produk": idProduk,
         "satuan": satuan,
         "isi": isi,
         "tipe": tipe,
@@ -44,19 +45,18 @@ class SatitemModel {
         "harga_jual": hargaJual,
         "barcode": barcode,
         "min_stok": minStok,
-        "margin": margin,
         "potongan": potongan
       };
 
   Map<String, dynamic> toDb() => {
         "id": id,
+        "id_produk": idProduk,
         "satuan": satuan,
         "isi": isi,
         "tipe": tipe,
         "harga_pokok": hargaPokok,
         "harga_jual": hargaJual,
         "barcode": barcode,
-        "margin": margin,
         "potongan": potongan
       };
 }

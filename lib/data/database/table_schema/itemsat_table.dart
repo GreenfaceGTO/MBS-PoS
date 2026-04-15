@@ -10,7 +10,6 @@ class ItemSatTable {
     barcode     TEXT,
     harga_pokok REAL    DEFAULT 0,
     harga_jual  REAL    DEFAULT (0),
-    margin      REAL    DEFAULT 0,
     potongan    REAL    DEFAULT 0,
     FOREIGN KEY (
         id_produk

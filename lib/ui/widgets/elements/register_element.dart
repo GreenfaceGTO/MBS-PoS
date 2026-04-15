@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:mbspos/providers/portal_provider.dart';
+import 'package:mbspos/service/utils/textformatter.dart';
 import 'package:mbspos/ui/widgets/components/general_widget.dart';
 import 'package:provider/provider.dart';
 
@@ -31,6 +32,7 @@ class _RegisterElementState extends State<RegisterElement> {
             textInputAction: TextInputAction.next,
             decoration: const InputDecoration(hintText: "Nama Kios"),
             onChanged: prov.setNamaKios,
+            inputFormatters: [CapitalizeEachWord()],
             validator: (val) {
               if (val!.isEmpty) return "Wajib diisi";
               return null;

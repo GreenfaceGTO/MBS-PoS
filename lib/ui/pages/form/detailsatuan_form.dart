@@ -75,6 +75,7 @@ class _DetailsatuanFormState extends State<DetailsatuanForm> {
           hPokok = isi * hppDasar;
           txtHpokok.text = hPokok.toStringAsFixed(2);
           txtHjual.text = (isi * hpjDasar).toStringAsFixed(2);
+          hJual = double.parse(txtHjual.text);
         }
         setState(() {
           profit = hJual - hPokok;
@@ -311,7 +312,6 @@ class _DetailsatuanFormState extends State<DetailsatuanForm> {
                                     : 0,
                                 hargaJual: double.parse(txtHjual.text),
                                 hargaPokok: double.parse(txtHpokok.text),
-                                margin: profit / double.parse(txtHpokok.text),
                                 barcode: txtBarcode.text);
 
                             Navigator.pop(context, satProduk);

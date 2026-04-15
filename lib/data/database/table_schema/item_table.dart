@@ -1,4 +1,7 @@
+import 'package:mbspos/data/database/table_schema/itemsat_table.dart';
+
 class ItemTable {
+  static const tableSatuan = ItemSatTable.table;
   static const table = 'tb_item';
 
   static const create = '''CREATE TABLE $table (
