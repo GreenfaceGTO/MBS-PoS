@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:mbspos/models/args_model.dart';
 import 'package:mbspos/models/data/mitra_model.dart';
 import 'package:mbspos/providers/master_provider.dart';
+import 'package:mbspos/service/utils/constant.dart';
+import 'package:mbspos/service/utils/global_enums.dart';
 import 'package:mbspos/ui/widgets/elements/emptydata_element.dart';
 import 'package:mbspos/service/utils/extension.dart';
 import 'package:provider/provider.dart';
@@ -14,45 +17,23 @@ class Databrowser extends StatefulWidget {
 }
 
 class _DatabrowserState extends State<Databrowser> {
-  // List<String>? dataRef = [];
-  // List<MitraModel> dataMitra = [];
-  // late ProdukProvider provider;
   @override
   void initState() {
     super.initState();
-    // provider = Provider.of<ProdukProvider>(context, listen: false);
-    // WidgetsBinding.instance.addPostFrameCallback((_) async {
-    //   if (widget.tipeRef == 'supplier' || widget.tipeRef == 'pelanggan') {
-    //     dataMitra = await provider.getMitra(tipe: widget.tipeRef);
-    //   } else {
-    //     dataRef = await provider.getReferensi(tipe: widget.tipeRef);
-    //   }
-    //   setState(() {});
-    // });
   }
 
   void onFloatinButtonTapped() async {
-    await context
-        .read<MasterProvider>()
-        .addNewRef(context, widget.tipeRef.toLowerCase(), widget.tipeRef);
-    // if (widget.tipeRef == 'kategori') {
-    //   // provider.addNewRef(context, tipeRef: "Kategori");
-    //   // if (newKat != null) {
-    //   //   setState(() {
-    //   //     dataRef!.add(newKat);
-    //   //     dataRef!.sort((a, b) => a.compareTo(b));
-    //   //   });
-    //   // }
-    // } else if (widget.tipeRef == 'satuan') {
-    //   // final String? newSat =
-    //   await provider.addNewRef(context, tipeRef: "Satuan");
-    //   // if (newSat != null) {
-    //   //   setState(() {
-    //   //     dataRef!.add(newSat);
-    //   //     dataRef!.sort((a, b) => a.compareTo(b));
-    //   //   });
-    //   // }
-    // }
+    if (widget.tipeRef == 'supplier' || widget.tipeRef == 'pelanggan') {
+      Navigator.pushNamed(context, rtMitraForm,
+          arguments: ArgsModel(
+            formMode: FormMode.input,
+            tipe: widget.tipeRef,
+          ));
+    } else {
+      // await context
+      //     .read<MasterProvider>()
+      //     .addNewRef(context, widget.tipeRef.toLowerCase(), widget.tipeRef);
+    }
   }
 
   @override

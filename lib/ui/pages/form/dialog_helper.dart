@@ -2,9 +2,32 @@ import 'package:flutter/material.dart';
 import 'package:mbspos/service/utils/textformatter.dart';
 
 class DialogHelper {
-  // -----------------------------
-  /// Form input referensi
-  // -----------------------------
+  /// =============Jendela konfirmasi delete=============
+  static Future<bool?> confirmDelete(BuildContext context,
+      {required String content}) async {
+    return await showDialog(
+        context: context,
+        builder: (ctx) {
+          return AlertDialog(
+            title: const Text("Konfirmasi"),
+            content: Text(content),
+            actions: [
+              TextButton(
+                  onPressed: () {
+                    Navigator.pop(ctx, true);
+                  },
+                  child: const Text("HAPUS")),
+              TextButton(
+                  onPressed: () {
+                    Navigator.pop(ctx, false);
+                  },
+                  child: const Text("BATAL"))
+            ],
+          );
+        });
+  }
+
+  /// ==============Form input referensi==============
   static Future<String?> showRefForm(BuildContext context,
       {required String title}) async {
     TextEditingController txtRef = TextEditingController();
@@ -34,37 +57,7 @@ class DialogHelper {
         barrierDismissible: true);
   }
 
-  // static void showInfoMargiProfit(BuildContext context) {
-  //   showDialog(
-  //       context: context,
-  //       builder: (ctx) {
-  //         return const AlertDialog(
-  //           title: Text("Margin Profit"),
-  //           content: Text.rich(TextSpan(
-  //               text:
-  //                   "Adalah nilai persentase keuntungan berdasarkan harga pokok produk.",
-  //               children: [
-  //                 TextSpan(
-  //                     text:
-  //                         "\n\nHarga pokok adalah akumulasi dari harga perolehan produk, yaitu :"),
-  //                 TextSpan(text: "\n-. Harga produk."),
-  //                 TextSpan(text: "\n-. Biaya pengiriman."),
-  //                 TextSpan(text: "\n-. Pajak pembelian (jika ada)."),
-  //                 TextSpan(
-  //                     text: "\n\nTips :",
-  //                     style: TextStyle(
-  //                         color: Colors.red, fontWeight: FontWeight.w500)),
-  //                 TextSpan(
-  //                     text:
-  //                         "\nPraktek terbaik dalam menentukan margin adalah fokus pada volume penjualan, bukan pada besar keuntungan yang bisa didapatkan dari penjualan satu produk. "),
-  //                 TextSpan(
-  //                     text:
-  //                         "Harga produk yang terlalu mahal beresiko lama laku atau bahkan tidak laku."),
-  //               ])),
-  //         );
-  //       });
-  // }
-
+  // =============info satuan konversi=============
   static void showInfoSatuan(BuildContext context) {
     showDialog(
         context: context,
@@ -73,14 +66,14 @@ class DialogHelper {
             title: Text("Satuan Lainnya"),
             content: Text.rich(TextSpan(
                 text:
-                    "Produk umumnya memiliki satuan kemasan lain yang isinya lebih banyak.",
+                    "Umumnya produk memiliki satuan kemasan lain yang isinya lebih banyak.",
                 children: [
                   TextSpan(
                       text: "\n\nContoh :",
                       style: TextStyle(fontWeight: FontWeight.bold)),
                   TextSpan(text: "\nProduk Mie"),
-                  TextSpan(text: "\n- 1 Lusin isi 12 Bks"),
-                  TextSpan(text: "\n- 1 Dus isi 48 Bks"),
+                  TextSpan(text: "\n- 1 Lusin berisi 12 Bks"),
+                  TextSpan(text: "\n- 1 Dus berisi 48 Bks"),
                   TextSpan(
                       text: "\n\nPada contoh di atas, satuan dasarnya adalah"),
                   TextSpan(
@@ -99,6 +92,7 @@ class DialogHelper {
         });
   }
 
+  // =============Info deskripsi minimum stok=============
   static void showInfoStokMin(BuildContext context) {
     showDialog(
         context: context,

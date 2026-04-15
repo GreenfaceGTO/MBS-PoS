@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:mbspos/models/data/satitem_model.dart';
 
 class ItemModel {
@@ -5,11 +7,11 @@ class ItemModel {
   String? noSku;
   String? namaProduk;
   String? merek;
-  String? kategori;
+  List<String>? kategori;
   int stok;
   int minStok;
   String? supplier;
-  bool aktif;
+  int aktif;
   List<SatitemModel> satuan;
 
   ItemModel(
@@ -21,7 +23,7 @@ class ItemModel {
       this.supplier,
       this.stok = 0,
       this.minStok = 0,
-      this.aktif = true,
+      this.aktif = 1,
       this.satuan = const []});
 
   factory ItemModel.fromMap(Map<String, dynamic> map) => ItemModel(
@@ -29,7 +31,7 @@ class ItemModel {
       noSku: map['no_sku'],
       namaProduk: map['nama_produk'],
       merek: map['merek'],
-      kategori: map['kategori'],
+      kategori: List.from(jsonDecode(map['kategori'])),
       stok: map['stok'],
       minStok: map['min_stok'],
       supplier: map['supplier'],
@@ -43,11 +45,23 @@ class ItemModel {
         "no_sku": noSku,
         "nama_produk": namaProduk,
         "merek": merek,
-        "kategori": kategori,
+        "kategori": jsonEncode(kategori),
         "stok": stok,
         "min_stok": minStok,
         "supplier": supplier,
         "aktif": aktif,
-        "satuan": List.from(satuan.map((e) => e.toMap()))
+        "satuan": jsonEncode(satuan.map((e) => e.toMap()).toList())
+      };
+
+  Map<String, dynamic> toDb() => {
+        "id": id,
+        "no_sku": noSku,
+        "nama_produk": namaProduk,
+        "merek": merek,
+        "kategori": jsonEncode(kategori),
+        "stok": stok,
+        "min_stok": minStok,
+        "supplier": supplier,
+        "aktif": aktif,
       };
 }

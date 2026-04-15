@@ -11,12 +11,16 @@ class UsahaDao {
   // static Future<List<UsahaModel>?> getDataUsaha() async {
   static Future<UsahaModel?> getDataUsaha() async {
     final db = await Dbhelper.database;
-    final result = await db.query(UsahaTable.table, limit: 1);
+    try {
+      final result = await db.query(UsahaTable.table, limit: 1);
 
-    if (result.isEmpty) {
-      return null;
-    } else {
-      return UsahaModel.fromMap(result[0]);
+      if (result.isEmpty) {
+        return null;
+      } else {
+        return UsahaModel.fromMap(result[0]);
+      }
+    } catch (e) {
+      throw Exception('DAO error : $e');
     }
   }
 
@@ -25,8 +29,12 @@ class UsahaDao {
   // -----------------------
   static Future<void> saveDataUsaha({required UsahaModel data}) async {
     final db = await Dbhelper.database;
-    final result = await db.insert(UsahaTable.table, data.toMap());
-    log(result.toString());
+    try {
+      final result = await db.insert(UsahaTable.table, data.toMap());
+      log(result.toString());
+    } catch (e) {
+      throw Exception('DAO error : $e');
+    }
   }
 
   // --------------------------
@@ -34,6 +42,10 @@ class UsahaDao {
   // --------------------------
   static Future<bool> delDataUsaha() async {
     final db = await Dbhelper.database;
-    return await db.delete(UsahaTable.table) > 0;
+    try {
+      return await db.delete(UsahaTable.table) > 0;
+    } catch (e) {
+      throw Exception('DAO error : $e');
+    }
   }
 }

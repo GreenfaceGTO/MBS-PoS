@@ -41,8 +41,6 @@ class _CustomstepperState extends State<Customstepper> {
   void _scrollToStep(int index) {
     if (index < 0 || index >= _stepKey.length) return;
 
-    // await Future.delayed(const Duration(milliseconds: 50));
-
     final context = _stepKey[index].currentContext;
     if (context != null) {
       log("on update Widget");
@@ -50,10 +48,6 @@ class _CustomstepperState extends State<Customstepper> {
           duration: const Duration(milliseconds: 300),
           curve: Curves.easeInOut,
           alignment: 0.5);
-      // if (context.mounted) {
-      // }
-    } else {
-      log("context null");
     }
   }
 

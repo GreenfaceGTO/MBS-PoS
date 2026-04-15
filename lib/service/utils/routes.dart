@@ -1,11 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:mbspos/models/args_model.dart';
-import 'package:mbspos/models/data/satitem_model.dart';
 import 'package:mbspos/ui/dashboard_page.dart';
 import 'package:mbspos/ui/dummy_page.dart';
 import 'package:mbspos/ui/pages/form/mitra_form.dart';
-// import 'package:mbspos/ui/pages/form/produk_form.xoldart';
-import 'package:mbspos/ui/pages/form/xsatkonversi_form.oldart';
 import 'package:mbspos/ui/pages/produk_page.dart';
 import 'package:mbspos/ui/pages/referensi_page.dart';
 import 'package:mbspos/ui/pages/register_page.dart';
@@ -50,13 +47,7 @@ class AppRoutes {
         return MaterialPageRoute(builder: (_) {
           return Databrowser(tipeRef: ref['tipe']);
         });
-      case rtSatKonversi:
-        final args = setting.arguments as ArgsModel;
-        return MaterialPageRoute<SatitemModel?>(builder: (_) {
-          return SatkonversiForm(
-            args: args,
-          );
-        });
+
       default:
         return MaterialPageRoute(
             builder: (_) =>

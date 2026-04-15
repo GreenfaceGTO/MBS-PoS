@@ -4,6 +4,7 @@ class UsahaTable {
   // ---------------------
   // Query create table
   // ---------------------
+  // TODO : Tambahkah field untuk kode reseler.
   static const create = '''CREATE TABLE $table (
     nama_usaha TEXT,
     alamat     TEXT,

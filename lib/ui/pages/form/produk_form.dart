@@ -2,9 +2,11 @@ import 'dart:developer';
 
 import 'package:flutter/material.dart';
 import 'package:mbspos/models/args_model.dart';
+import 'package:mbspos/models/data/item_model.dart';
 import 'package:mbspos/models/data/mitra_model.dart';
 import 'package:mbspos/models/data/satitem_model.dart';
 import 'package:mbspos/providers/master_provider.dart';
+import 'package:mbspos/service/utils/constant.dart';
 import 'package:mbspos/service/utils/global_enums.dart';
 import 'package:mbspos/service/utils/textformatter.dart';
 import 'package:mbspos/ui/pages/form/dialog_helper.dart';
@@ -106,7 +108,7 @@ class _ProdukFormState extends State<ProdukForm> {
         context,
         MaterialPageRoute(
             builder: (context) => DetailsatuanForm(
-                  satDasar: satDasar,
+                  satDasar: selectedSatDasar,
                   namaProduk: txtNama.text,
                 )));
     if (satuan != null) {
@@ -118,7 +120,7 @@ class _ProdukFormState extends State<ProdukForm> {
   // ========Menampilkan browser untuk memilih supplier========
   Future<MitraModel?> browseMitra(BuildContext context,
       {required String tipeMitra}) async {
-    final result = await Navigator.pushNamed(context, "/browser",
+    final result = await Navigator.pushNamed(context, rtBrowserData,
         arguments: {'tipe': tipeMitra});
     if (result == null) {
       return null;
@@ -241,7 +243,7 @@ class _ProdukFormState extends State<ProdukForm> {
                 _rowFieldWidget(
                     "Harga Jual", toRupiah.format(selectedSatDasar!.hargaJual)),
                 _rowFieldWidget(
-                    "Stok. Min.", selectedSatDasar!.stokMin.toString()),
+                    "Stok. Min.", selectedSatDasar!.minStok.toString()),
                 spasi(jarak: 10),
                 if (lstSatuan.isEmpty)
                   Align(
@@ -250,7 +252,7 @@ class _ProdukFormState extends State<ProdukForm> {
                         height: 30,
                         child: CustomButton(
                           mode: ButtonMode.outlined,
-                          caption: "UBAH",
+                          caption: "GANTI",
                           onPress: () {
                             setState(() {
                               selectedSatDasar = null;
@@ -349,35 +351,51 @@ class _ProdukFormState extends State<ProdukForm> {
                   shrinkWrap: true,
                   physics: const NeverScrollableScrollPhysics(),
                   children: lstSatuan.map((satl) {
-                    int hargaJual = bulatkan(
-                        satl.hargaPokok! +
-                            (satl.hargaPokok! * (satl.margin! / 100)),
-                        1000);
                     return Container(
-                        margin: const EdgeInsets.symmetric(
-                            vertical: 4, horizontal: 8),
-                        padding: const EdgeInsets.symmetric(
-                            vertical: 4, horizontal: 8),
-                        decoration: BoxDecoration(
-                            border:
-                                Border.all(color: Colors.black38, width: 0.5),
-                            borderRadius: BorderRadius.circular(4)),
-                        child: Column(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            _rowFieldWidget("Kemasan", satl.satuan!),
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      margin: const EdgeInsets.symmetric(
+                          vertical: 4, horizontal: 8),
+                      padding: const EdgeInsets.symmetric(
+                          vertical: 4, horizontal: 8),
+                      decoration: BoxDecoration(
+                          border: Border.all(color: Colors.black38, width: 0.5),
+                          borderRadius: BorderRadius.circular(4)),
+                      child: Row(
+                        children: [
+                          Expanded(
+                            child: Column(
+                              mainAxisSize: MainAxisSize.min,
                               children: [
-                                _colFieldWidget("Isi", satl.isi.toString()),
-                                _colFieldWidget(
-                                    "Pokok", toRupiah.format(satl.hargaPokok)),
-                                _colFieldWidget(
-                                    "Harga", toRupiah.format(hargaJual))
+                                _rowFieldWidget(satl.satuan!,
+                                    "${satl.isi} ${selectedSatDasar!.satuan!}"),
+                                _rowFieldWidget("Harga Pokok",
+                                    toRupiah.format(satl.hargaPokok)),
+                                _rowFieldWidget("Harga Jual",
+                                    toRupiah.format(satl.hargaJual)),
                               ],
-                            )
-                          ],
-                        ));
+                            ),
+                          ),
+                          spasi(mode: OrientationMode.horizontal, jarak: 4),
+                          IconButton(
+                              onPressed: () async {
+                                bool? confirm = await DialogHelper.confirmDelete(
+                                    context,
+                                    content:
+                                        "Satuan ${satl.satuan} ini ingin di hapus?");
+                                if (confirm != null && confirm) {
+                                  setState(() {
+                                    lstSatuan.removeWhere(
+                                        (e) => e.satuan == satl.satuan);
+                                  });
+                                }
+                              },
+                              icon: const Icon(
+                                Icons.clear_rounded,
+                                color: Colors.red,
+                                size: 18,
+                              ))
+                        ],
+                      ),
+                    );
                   }).toList(),
                 )
         ],
@@ -385,35 +403,21 @@ class _ProdukFormState extends State<ProdukForm> {
     );
   }
 
-  Widget _colFieldWidget(String title, String value) {
-    return Column(
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        Text(
-          title,
-        ),
-        Text(
-          value,
-          style: const TextStyle(fontWeight: FontWeight.w500),
-        )
-      ],
-    );
-  }
-
   Widget _preview() {
-    final hargaJualDasar = selectedSatDasar!.hargaPokok! +
-        (selectedSatDasar!.hargaPokok! * (selectedSatDasar!.margin! / 100));
     return SingleChildScrollView(
       padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 12),
       child: Column(
         children: [
+          // data umum
           sectionTitle(context, title: "Data Umum"),
           _rowFieldWidget("Nama Produk", txtNama.text),
           if (selectedMerek != null) _rowFieldWidget("Merek", selectedMerek!),
           if (selectedSupplier != null)
             _rowFieldWidget("Supplier", selectedSupplier!.nama!),
-          _rowFieldWidget("Stok. Min.", selectedSatDasar!.stokMin.toString()),
+          _rowFieldWidget("Stok. Min.", selectedSatDasar!.minStok.toString()),
           spasi(),
+
+          // kategori
           sectionTitle(context, title: "Kategori"),
           SizedBox(
             width: double.infinity,
@@ -427,6 +431,8 @@ class _ProdukFormState extends State<ProdukForm> {
             ),
           ),
           spasi(),
+
+          // harga pokok
           sectionTitle(context, title: "Harga Pokok"),
           _rowFieldWidget("1 ${selectedSatDasar!.satuan}",
               toRupiah.format(selectedSatDasar!.hargaPokok)),
@@ -439,19 +445,33 @@ class _ProdukFormState extends State<ProdukForm> {
               }).toList(),
             ),
           spasi(),
+
+          // harga jual
           sectionTitle(context, title: "Harga Jual"),
           _rowFieldWidget("1 ${selectedSatDasar!.satuan!}",
-              toRupiah.format(bulatkan(hargaJualDasar, 1000))),
+              toRupiah.format(bulatkan(selectedSatDasar!.hargaJual!, 1000))),
           if (lstSatuan.isNotEmpty)
             Column(
               mainAxisSize: MainAxisSize.min,
               children: lstSatuan.map((satl) {
-                final hJualkonv = satl.hargaPokok! +
-                    (satl.hargaPokok! * (satl.margin! / 100));
                 return _rowFieldWidget("1 ${satl.satuan}",
-                    toRupiah.format(bulatkan(hJualkonv, 1000)));
+                    toRupiah.format(bulatkan(satl.hargaJual!, 1000)));
               }).toList(),
-            )
+            ),
+          spasi(),
+          sectionTitle(context, title: "Profit"),
+          _rowFieldWidget(
+              "1 ${selectedSatDasar!.satuan}",
+              toRupiah.format(selectedSatDasar!.hargaJual! -
+                  selectedSatDasar!.hargaPokok!)),
+          if (lstSatuan.isNotEmpty)
+            Column(
+              mainAxisSize: MainAxisSize.min,
+              children: lstSatuan.map((satl) {
+                return _rowFieldWidget("1 ${satl.satuan}",
+                    toRupiah.format(satl.hargaJual! - satl.hargaPokok!));
+              }).toList(),
+            ),
         ],
       ),
     );
@@ -630,9 +650,6 @@ class _ProdukFormState extends State<ProdukForm> {
               onPressed: () {
                 if (currentStep > 0) {
                   decreaseStep();
-                  // setState(() {
-                  //   currentStep--;
-                  // });
                 } else {
                   Navigator.pop(context);
                 }
@@ -655,16 +672,35 @@ class _ProdukFormState extends State<ProdukForm> {
               iconAlignment: currentStep < (lstStepTitle.length - 1)
                   ? IconAlignment.end
                   : IconAlignment.start,
-              onPressed: () {
+              onPressed: () async {
                 if (currentStep < lstStepTitle.length - 1) {
                   bool next = validateInput(context);
                   false;
 
                   if (next) {
                     increaseStep();
-                    // setState(() {
-                    //   currentStep++;
-                    // });
+                  }
+                } else {
+                  ItemModel newItem = ItemModel(
+                      namaProduk: txtNama.text,
+                      merek: selectedMerek,
+                      supplier: selectedSupplier?.nama!,
+                      kategori: selectedKategori,
+                      minStok: selectedSatDasar!.minStok,
+                      satuan: [selectedSatDasar!]);
+                  for (var sat in lstSatuan) {
+                    newItem.satuan.add(sat);
+                  }
+                  log(newItem.toDb().toString());
+                  log("======");
+                  log(newItem.toMap().toString());
+                  bool sukses = await context
+                      .read<MasterProvider>()
+                      .addNewProduk(newItem);
+                  if (sukses) {
+                    if (context.mounted) {
+                      Navigator.pop(context);
+                    }
                   }
                 }
               },

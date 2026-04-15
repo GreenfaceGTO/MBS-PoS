@@ -1,0 +1,1 @@
+Folder layout berisi widget tampilan yang dipisahkan menurut device yang menggunakannya. Widget tampilan bisa hanya merupakan frame atau kontainer dari objek utama yang ingin di tampilkan pada device yang berbeda.

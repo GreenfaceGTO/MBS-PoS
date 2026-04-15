@@ -72,7 +72,7 @@ const String rtReferensi = "/referensi";
 const String rtMitraForm = '/mitraform';
 const String rtProdukForm = '/produkform';
 const String rtBrowserData = '/browser';
-const String rtSatKonversi = "/satkonversi";
+// const String rtSatKonversi = "/satkonversi";
 
 // =====================Intro=====================
 List<IntroModel> lstIntro = [

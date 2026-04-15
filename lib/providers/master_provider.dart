@@ -48,11 +48,10 @@ class MasterProvider with ChangeNotifier, CacheManager {
     notifyListeners();
   }
 
-  // =============Method=============
-
   // --------------------------
-  // inisialisasi local data
+  // Metode
   // --------------------------
+  // =============inisialisasi=============
   Future<void> init() async {
     if (_isInitialized) return;
     _isInitialized = true;
@@ -65,9 +64,7 @@ class MasterProvider with ChangeNotifier, CacheManager {
     notifyListeners();
   }
 
-  // -------------------------------
-  // Menambahkan data referensi
-  // -------------------------------
+  // ==========Menambahkan data referensi==========
   Future<void> addNewRef(
       BuildContext context, String tipe, String namaRef) async {
     try {
@@ -96,9 +93,7 @@ class MasterProvider with ChangeNotifier, CacheManager {
     }
   }
 
-  // ----------------------------
-  // Menghapus data referensi
-  // ----------------------------
+  // ============Menghapus data referensi============
   Future<void> deleteRef(String tipe, String namaRef) async {
     bool done = await _masterdataRepo.delRef(tipe, namaRef);
     if (done) {
@@ -120,9 +115,7 @@ class MasterProvider with ChangeNotifier, CacheManager {
     }
   }
 
-  // -----------------------------------------------------------
-  // Menambah data mitra baru baik supplier maupun pelanggan
-  // -----------------------------------------------------------
+  // ========Menambah data mitra baru baik supplier maupun pelanggan========
   Future<void> addNewMitra(String tipe, MitraModel data) async {
     int id = await _masterdataRepo.addNewMitra(data);
     if (id > 0) {
@@ -142,9 +135,7 @@ class MasterProvider with ChangeNotifier, CacheManager {
     }
   }
 
-  // -------------------------------------------------
-  // Menghapus mitra baik supplier atau pelanggan
-  // -------------------------------------------------
+  // =======Menghapus mitra baik supplier atau pelanggan=======
   Future<void> updateMitra(MitraModel data) async {
     bool done = await _masterdataRepo.updateMitra(data);
     if (done) {
@@ -163,9 +154,7 @@ class MasterProvider with ChangeNotifier, CacheManager {
     }
   }
 
-  // ------------------------------------------------
-  // Menghapus mitra baik supplier maupun pelanggan
-  // ------------------------------------------------
+  // ==========Menghapus mitra baik supplier maupun pelanggan==========
   Future<void> delMitra(MitraModel data) async {
     bool done = await _masterdataRepo.delMitra(data.id!);
     if (done) {
@@ -177,5 +166,17 @@ class MasterProvider with ChangeNotifier, CacheManager {
       }
       notifyListeners();
     }
+  }
+
+  // ==============Menyimpan produk baru==============
+  Future<bool> addNewProduk(ItemModel newItem) async {
+    log(newItem.toMap().toString());
+    int id = await _masterdataRepo.saveNewProduk(newItem);
+    newItem.id = id;
+    // generate SKU
+    newItem.noSku = 'SKU-${id.toString().padLeft(4, '0')}';
+    _daftarProduk.add(newItem);
+
+    return true;
   }
 }

@@ -11,10 +11,13 @@ class MitraDao {
   // -----------------------------------------
   static Future<bool> delMitraById(int id) async {
     final db = await Dbhelper.database;
-
-    final result =
-        await db.delete(MitraTable.table, where: "id=?", whereArgs: [id]);
-    return result == 1;
+    try {
+      final result =
+          await db.delete(MitraTable.table, where: "id=?", whereArgs: [id]);
+      return result == 1;
+    } catch (e) {
+      throw Exception('DAO error : $e');
+    }
   }
 
   // ---------------------------
@@ -24,12 +27,15 @@ class MitraDao {
     final db = await Dbhelper.database;
 
     log("data ${data.toMap().toString()}");
+    try {
+      final result = await db.update(MitraTable.table, data.toMapForUpdate(),
+          where: "id=?", whereArgs: [data.id]);
+      log("result : ${result.toString()}");
 
-    final result = await db.update(MitraTable.table, data.toMapForUpdate(),
-        where: "id=?", whereArgs: [data.id]);
-    log("result : ${result.toString()}");
-
-    return result == 1;
+      return result == 1;
+    } catch (e) {
+      throw Exception('DAO error : $e');
+    }
   }
 
   // -------------------------------------
@@ -37,7 +43,11 @@ class MitraDao {
   // -------------------------------------
   static Future<void> delAllMitra() async {
     final db = await Dbhelper.database;
-    await db.delete(MitraTable.table);
+    try {
+      await db.delete(MitraTable.table);
+    } catch (e) {
+      throw Exception('DAO error : $e');
+    }
   }
 
   // -------------------------
@@ -46,7 +56,11 @@ class MitraDao {
   static Future<int> saveMitra(MitraModel data) async {
     final db = await Dbhelper.database;
 
-    return await db.insert(MitraTable.table, data.toMap());
+    try {
+      return await db.insert(MitraTable.table, data.toMap());
+    } catch (e) {
+      throw Exception('DAO error : $e');
+    }
   }
 
   // -----------------------------------------
@@ -54,9 +68,13 @@ class MitraDao {
   // -----------------------------------------
   static Future<List<MitraModel>> getAllMitra(String tipe) async {
     final db = await Dbhelper.database;
-    final result =
-        await db.query(MitraTable.table, where: "tipe=?", whereArgs: [tipe]);
+    try {
+      final result =
+          await db.query(MitraTable.table, where: "tipe=?", whereArgs: [tipe]);
 
-    return result.map((e) => MitraModel.fromMap(e)).toList();
+      return result.map((e) => MitraModel.fromMap(e)).toList();
+    } catch (e) {
+      throw Exception('DAO error : $e');
+    }
   }
 }

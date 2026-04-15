@@ -1,0 +1,1 @@
+Folder element ini berisi kumpulan widget yang merupakan bagian yang tidak terpisahkan dari halaman utama yang menggunakannya atau merupakan widget elemen halaman utamanya.

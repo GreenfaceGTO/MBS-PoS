@@ -15,6 +15,7 @@ import 'package:path/path.dart';
 class Dbhelper {
   static Database? _db;
 
+  // ========getter database========
   static Future<Database> get database async {
     if (_db != null) return _db!;
 
@@ -22,12 +23,14 @@ class Dbhelper {
     return _db!;
   }
 
+  // =============membuat/membuka database=============
   static Future<Database> _init() async {
     final path = join(await getDatabasesPath(), 'mbs.app');
     return openDatabase(path,
         version: 1, onCreate: _onCreate, onUpgrade: _onUpgrade);
   }
 
+  // ===========mengupdgrade database=============
   static Future<void> _onUpgrade(
       Database db, int oldVersion, int newVersion) async {
     if (oldVersion < 2) {
@@ -35,6 +38,7 @@ class Dbhelper {
     }
   }
 
+  // ===========membuat strutur table=============
   static Future<void> _onCreate(Database db, int version) async {
     log("Creating database...");
     await db.execute(ItemTable.create);

@@ -1,7 +1,10 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:mbspos/models/args_model.dart';
 import 'package:mbspos/models/data/mitra_model.dart';
 import 'package:mbspos/providers/master_provider.dart';
+import 'package:mbspos/service/utils/textformatter.dart';
 import 'package:mbspos/ui/widgets/components/custombutton.dart';
 import 'package:mbspos/ui/widgets/components/general_widget.dart';
 import 'package:mbspos/service/utils/global_enums.dart';
@@ -72,6 +75,7 @@ class _MitraFormState extends State<MitraForm> {
                   keyboardType: TextInputType.name,
                   textInputAction: TextInputAction.next,
                   decoration: const InputDecoration(hintText: "Nama"),
+                  inputFormatters: [CapitalizeEachWord()],
                   validator: (val) {
                     if (val!.isEmpty) return "Wajib diisi";
                     return null;
@@ -115,13 +119,13 @@ class _MitraFormState extends State<MitraForm> {
                               txtAlamat.text.isNotEmpty ? txtAlamat.text : null,
                           noTelp:
                               txtNoTelp.text.isNotEmpty ? txtNoTelp.text : null,
-                          tipe: prov.selectedRef.toLowerCase(),
+                          tipe: widget.args.tipe.toLowerCase(),
                           keterangan:
                               txtKet.text.isNotEmpty ? txtKet.text : null,
                           createdAt: DateTime.now().toString());
+                      log(newMitra.toMap().toString());
                       if (modeInput) {
-                        prov.addNewMitra(
-                            prov.selectedRef.toLowerCase(), newMitra);
+                        prov.addNewMitra(newMitra.tipe!, newMitra);
                       } else {
                         prov.updateMitra(newMitra);
                       }

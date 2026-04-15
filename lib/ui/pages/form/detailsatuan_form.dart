@@ -10,9 +10,8 @@ import 'package:provider/provider.dart';
 // import 'package:mbspos/ui/widgets/elements/xdetailsatuan_element.oldart';
 
 class DetailsatuanForm extends StatefulWidget {
-  const DetailsatuanForm(
-      {super.key, this.satDasar = true, required this.namaProduk});
-  final bool satDasar;
+  const DetailsatuanForm({super.key, this.satDasar, required this.namaProduk});
+  final SatitemModel? satDasar;
   final String namaProduk;
 
   @override
@@ -22,7 +21,6 @@ class DetailsatuanForm extends StatefulWidget {
 class _DetailsatuanFormState extends State<DetailsatuanForm> {
   TextEditingController txtIsi = TextEditingController();
   TextEditingController txtHpokok = TextEditingController();
-  // TextEditingController txtMargin = TextEditingController();
   TextEditingController txtHjual = TextEditingController();
   TextEditingController txtBarcode = TextEditingController();
   TextEditingController txtStokMin = TextEditingController();
@@ -33,7 +31,7 @@ class _DetailsatuanFormState extends State<DetailsatuanForm> {
 
   @override
   void initState() {
-    if (widget.satDasar) {
+    if (widget.satDasar == null) {
       txtIsi.text = "1";
     }
     super.initState();
@@ -69,6 +67,18 @@ class _DetailsatuanFormState extends State<DetailsatuanForm> {
           profit = hJual - hPokok;
         });
         break;
+      case "isi":
+        if (txtIsi.text.isNotEmpty) {
+          double hppDasar = widget.satDasar!.hargaPokok!;
+          double hpjDasar = widget.satDasar!.hargaJual!;
+          int isi = int.parse(txtIsi.text);
+          hPokok = isi * hppDasar;
+          txtHpokok.text = hPokok.toStringAsFixed(2);
+          txtHjual.text = (isi * hpjDasar).toStringAsFixed(2);
+        }
+        setState(() {
+          profit = hJual - hPokok;
+        });
       default:
     }
   }
@@ -79,7 +89,7 @@ class _DetailsatuanFormState extends State<DetailsatuanForm> {
 
     return Scaffold(
       appBar: AppBar(
-        title: widget.satDasar
+        title: widget.satDasar == null
             ? const Text("Detail Satuan")
             : const Text("Detail Satuan Konversi"),
       ),
@@ -152,7 +162,7 @@ class _DetailsatuanFormState extends State<DetailsatuanForm> {
                   Column(
                     children: [
                       spasi(),
-                      if (!widget.satDasar)
+                      if (widget.satDasar != null)
                         Align(
                           alignment: Alignment.centerLeft,
                           child: Padding(
@@ -165,7 +175,7 @@ class _DetailsatuanFormState extends State<DetailsatuanForm> {
                                 keyboardType: TextInputType.number,
                                 textInputAction: TextInputAction.next,
                                 onChanged: (va) {
-                                  // TODO: hitung harga pokok konversi dari harga pokok satuan dasar
+                                  hitungHarga(dari: "isi");
                                 },
                                 decoration:
                                     const InputDecoration(label: Text("Isi")),
@@ -228,7 +238,9 @@ class _DetailsatuanFormState extends State<DetailsatuanForm> {
                           Expanded(
                             child: TextFormField(
                               controller: txtBarcode,
-                              textInputAction: TextInputAction.next,
+                              textInputAction: widget.satDasar == null
+                                  ? TextInputAction.next
+                                  : TextInputAction.done,
                               onFieldSubmitted: (val) {
                                 FocusScope.of(context).nextFocus();
                               },
@@ -252,7 +264,7 @@ class _DetailsatuanFormState extends State<DetailsatuanForm> {
                         ],
                       ),
                       spasi(),
-                      if (widget.satDasar)
+                      if (widget.satDasar == null)
                         Align(
                           alignment: Alignment.centerLeft,
                           child: Row(
@@ -266,11 +278,10 @@ class _DetailsatuanFormState extends State<DetailsatuanForm> {
                                   decoration: const InputDecoration(
                                       label: Text("Stok Minimum")),
                                   validator: (val) {
-                                    if (widget.satDasar) {
-                                      if (val!.isEmpty) {
-                                        return "Wajib diisi";
-                                      }
+                                    if (val!.isEmpty) {
+                                      return "Wajib diisi";
                                     }
+
                                     return null;
                                   },
                                 ),
@@ -294,8 +305,8 @@ class _DetailsatuanFormState extends State<DetailsatuanForm> {
                             SatitemModel satProduk = SatitemModel(
                                 satuan: selectedSatuan,
                                 isi: int.parse(txtIsi.text),
-                                tipe: widget.satDasar ? "D" : "K",
-                                stokMin: widget.satDasar
+                                tipe: widget.satDasar == null ? "D" : "K",
+                                minStok: widget.satDasar == null
                                     ? int.parse(txtStokMin.text)
                                     : 0,
                                 hargaJual: double.parse(txtHjual.text),

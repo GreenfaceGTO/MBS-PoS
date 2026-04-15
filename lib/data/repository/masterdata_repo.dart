@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:mbspos/data/database/dao/item_dao.dart';
 import 'package:mbspos/data/database/dao/mitra_dao.dart';
 import 'package:mbspos/data/database/dao/ref_dao.dart';
@@ -12,64 +14,97 @@ class MasterdataRepo {
   MasterdataRepo(
       {required this.refDao, required this.mitraDao, required this.itemDao});
 
-// ============REFERENSI============
+  // ---------------------------------
+  // DATA REFERENSI
+  // ---------------------------------
 
-  // Menghapus data referensi
-  // ---------------------------
+  // =============Menghapus data referensi=============
   Future<bool> delRef(String tipe, String namaRef) async {
-    return await RefDao.delRef(tipe, namaRef);
+    try {
+      return await RefDao.delRef(tipe, namaRef);
+    } catch (e) {
+      throw Exception('Gagal menghapus data $tipe');
+    }
   }
 
-  // -----------------------------
-  // Menyimpan data referensi
-  // -----------------------------
+  // ===========Menyimpan data referensi===========
   Future<int> addNewRef(String tipe, String data) async {
-    return await RefDao.saveRef(tipe, data);
+    try {
+      return await RefDao.saveRef(tipe, data);
+    } catch (e) {
+      throw Exception('Gagal menyimpan data $tipe');
+    }
   }
 
-  // -----------------------------------------
-  // Mengambil data referensi menurut tipe
-  // -----------------------------------------
+  // ============Mengambil data referensi menurut tipe============
   Future<List<String>> getAllRef(String tipe) async {
-    return await RefDao.getRefByTipe(tipe);
+    try {
+      return await RefDao.getRefByTipe(tipe);
+    } catch (e) {
+      throw Exception('Gagal mengambil data referensi $tipe');
+    }
   }
 
-  // =========MITRA=========
+  // -------------------------
+  // DATA MITRA
+  // -------------------------
 
-  // ------------------------------
-  // Mengambil seluruh data mitra
-  // ------------------------------
+  // ===============Mengambil seluruh data mitra===============
   Future<List<MitraModel>> getAllMitra(String tipe) async {
-    return await MitraDao.getAllMitra(tipe);
+    try {
+      return await MitraDao.getAllMitra(tipe);
+    } catch (e) {
+      throw Exception('Gagal mengambil data mitra $tipe');
+    }
   }
 
-  // ---------------------------
-  // Menambah data mitra baru
-  // ---------------------------
+  // =============Menambah data mitra baru=============
   Future<int> addNewMitra(MitraModel data) async {
-    return await MitraDao.saveMitra(data);
+    try {
+      return await MitraDao.saveMitra(data);
+    } catch (e) {
+      log(e.toString());
+      throw Exception('Gagal menyimpan data ${data.tipe}');
+    }
   }
 
-  // -------------------------
-  // Mengupdate data mitra
-  // -------------------------
+  // ============Mengupdate data mitra============
   Future<bool> updateMitra(MitraModel data) async {
-    return await MitraDao.updateMitra(data);
+    try {
+      return await MitraDao.updateMitra(data);
+    } catch (e) {
+      throw Exception('Gagal mengupdate data ${data.tipe}');
+    }
   }
 
-  // ----------------------
-  // Menghapus data mitra
-  // ----------------------
+  // ==========Menghapus data mitra==========
   Future<bool> delMitra(int id) async {
-    return await MitraDao.delMitraById(id);
+    try {
+      return await MitraDao.delMitraById(id);
+    } catch (e) {
+      throw Exception('Gagal menghapus');
+    }
   }
 
-  // ============PRODUK====================
+  // --------------------------------
+  // DATA PRODUK
+  // --------------------------------
 
-  // ----------------------------------
-  // Mengambil seluruh data produk
-  // ----------------------------------
+  // ===============Mengambil seluruh data produk===============
   Future<List<ItemModel>> getAllProduk() async {
-    return await ItemDao.getAllProduk() ?? [];
+    try {
+      return await ItemDao.getAllProduk() ?? [];
+    } catch (e) {
+      throw Exception('Gagal mengambil daftar produk');
+    }
+  }
+
+  // ===============Menyimpan data produk===============
+  Future<int> saveNewProduk(ItemModel data) async {
+    try {
+      return await ItemDao.simpanProduk(data);
+    } catch (e) {
+      throw Exception('Gagal menyimpan: ${e.toString()}');
+    }
   }
 }
