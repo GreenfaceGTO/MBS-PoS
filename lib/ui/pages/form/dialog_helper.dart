@@ -101,7 +101,7 @@ class DialogHelper {
             title: Text("Stok Minimum"),
             content: Text.rich(TextSpan(
               text:
-                  "Adalah ambang batas minimal barang yang wajib tersedia di pajangan sebagai pengaman persediaan, yaitu untuk meminimalisir kemungkinan terjadinya permintaan yang tidak terlayani.",
+                  "Adalah minimal barang yang wajib tersedia di pajangan sebagai pengaman persediaan.\n\nStok ini untuk mengantisipasi kemungkinan terjadinya permintaan yang tidak terlayani sebelum jadwal pengadaan ulang.",
             )),
           );
         });

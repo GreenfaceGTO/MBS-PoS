@@ -9,9 +9,7 @@ import 'package:mbspos/models/data/satitem_model.dart';
 class ItemDao {
   final dbManager = Dbhelper();
 
-  // -------------------------------
-  /// Menyimpan data produk
-  // -------------------------------
+  /// ==========Menyimpan data produk==========
   static Future<int> simpanProduk(ItemModel data) async {
     final db = await Dbhelper.database;
     try {
@@ -69,6 +67,18 @@ class ItemDao {
       return result;
     } catch (e) {
       throw Exception(e.toString());
+    }
+  }
+
+  // ==================Menghapus data produk==================
+  static Future<bool> deleteProduk(int produkId) async {
+    final db = await Dbhelper.database;
+    try {
+      return await db
+              .delete(ItemTable.table, where: "id=?", whereArgs: [produkId]) >
+          0;
+    } catch (e) {
+      throw Exception(e);
     }
   }
 }

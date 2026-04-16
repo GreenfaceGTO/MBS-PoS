@@ -180,4 +180,12 @@ class MasterProvider with ChangeNotifier, CacheManager {
 
     return true;
   }
+
+  Future<void> deleteProduk(int id) async {
+    bool done = await _masterdataRepo.delProduk(id);
+    if (done) {
+      daftarProduk.removeWhere((e) => e.id == id);
+      notifyListeners();
+    }
+  }
 }

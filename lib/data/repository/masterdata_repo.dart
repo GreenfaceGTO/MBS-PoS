@@ -107,4 +107,13 @@ class MasterdataRepo {
       throw Exception('Gagal menyimpan: ${e.toString()}');
     }
   }
+
+  // ==============Menghapus produk dari master data==============
+  Future<bool> delProduk(int id) async {
+    try {
+      return await ItemDao.deleteProduk(id);
+    } catch (e) {
+      throw Exception(e);
+    }
+  }
 }

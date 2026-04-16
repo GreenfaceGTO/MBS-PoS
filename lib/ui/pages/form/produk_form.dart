@@ -691,9 +691,7 @@ class _ProdukFormState extends State<ProdukForm> {
                   for (var sat in lstSatuan) {
                     newItem.satuan.add(sat);
                   }
-                  // log(newItem.toDb().toString());
-                  // log("======");
-                  // log(newItem.toMap().toString());
+
                   bool sukses = await context
                       .read<MasterProvider>()
                       .addNewProduk(newItem);
