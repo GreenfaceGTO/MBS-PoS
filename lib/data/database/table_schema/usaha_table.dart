@@ -4,14 +4,14 @@ class UsahaTable {
   // ---------------------
   // Query create table
   // ---------------------
-  // TODO : Tambahkah field untuk kode reseler.
-  static const create = '''CREATE TABLE $table (
+  static const create = '''CREATE TABLE tb_usaha (
     nama_usaha TEXT,
     alamat     TEXT,
     no_telp    TEXT,
     email      TEXT,
     user_name  TEXT,
-    password   TEXT
-);
+    password   TEXT,
+    kode_ref   TEXT (25) 
+)
 ''';
 }

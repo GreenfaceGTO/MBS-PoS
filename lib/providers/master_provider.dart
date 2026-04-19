@@ -171,21 +171,50 @@ class MasterProvider with ChangeNotifier, CacheManager {
   // ==============Menyimpan produk baru==============
   Future<bool> addNewProduk(ItemModel newItem) async {
     log(newItem.toMap().toString());
-    int id = await _masterdataRepo.saveNewProduk(newItem);
-    newItem.id = id;
-    // generate SKU
-    newItem.noSku = 'SKU-${id.toString().padLeft(4, '0')}';
-    _daftarProduk.add(newItem);
+    var result = await _masterdataRepo.saveNewProduk(newItem);
+
+    _daftarProduk.add(result);
     notifyListeners();
 
     return true;
   }
 
+  // ==========Menghapus data produk==========
   Future<void> deleteProduk(int id) async {
     bool done = await _masterdataRepo.delProduk(id);
     if (done) {
       daftarProduk.removeWhere((e) => e.id == id);
       notifyListeners();
+    }
+  }
+
+  // ===========Menyimpan update produk===========
+  Future<void> updateProduk(ItemModel updatedData) async {}
+
+  // =============Menyimpan update stok=============
+  Future<void> updateStok(int idProduk, int newStok) async {
+    try {
+      if (await _masterdataRepo.updateStok(idProduk, newStok)) {
+        int idx = daftarProduk.indexWhere((e) => e.id == idProduk);
+        daftarProduk[idx].stok = newStok;
+        notifyListeners();
+      }
+    } catch (e) {
+      showMessage(message: "Gagal ${e.toString()}");
+    }
+  }
+
+  // ==============Update Status Item==============
+  Future<void> updateStatusItem(int idProduk, bool newStatus) async {
+    try {
+      if (await _masterdataRepo.updateStatus(idProduk, newStatus)) {
+        int idx = daftarProduk.indexWhere((e) => e.id == idProduk);
+        log(newStatus.toString());
+        daftarProduk[idx].aktif = newStatus ? 1 : 0;
+        notifyListeners();
+      } else {}
+    } catch (e) {
+      showMessage(message: "Gagal ${e.toString()}");
     }
   }
 }

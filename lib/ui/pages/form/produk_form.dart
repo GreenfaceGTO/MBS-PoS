@@ -30,6 +30,10 @@ class _ProdukFormState extends State<ProdukForm> {
 
   int currentStep = 0;
 
+  // variabel ini akan berisi data yang akan diedit jika form
+  // dijalankan dalam mode edit
+  ItemModel? currentData;
+
   List<String> lstStepTitle = [
     "Data Umum",
     "Kategori",
@@ -69,6 +73,45 @@ class _ProdukFormState extends State<ProdukForm> {
     setState(() {
       currentStep--;
     });
+  }
+
+  @override
+  initState() {
+    if (widget.args.formMode == FormMode.update) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        initForEdit();
+      });
+    }
+    super.initState();
+  }
+
+  void initForEdit() {
+    currentStep = lstStepTitle.length - 1;
+    currentData = widget.args.data;
+    final provider = context.read<MasterProvider>();
+
+    txtNama.text = currentData!.namaProduk!;
+    int idx = provider.daftarMerek
+        .indexWhere((e) => e.trim() == currentData!.merek!.trim());
+    if (idx != -1) {
+      log('init merek');
+
+      setState(() {
+        selectedMerek = provider.daftarMerek[idx];
+      });
+    }
+
+    int id = provider.daftarSupplier
+        .indexWhere((e) => e.nama == currentData!.supplier);
+    if (id > -1) {
+      selectedSupplier = provider.daftarSupplier[id];
+      txtSupplier.text = selectedSupplier!.nama!;
+    }
+    selectedKategori.addAll(currentData!.kategori!);
+
+    selectedSatDasar = currentData!.satuan[0];
+    selectedSatDasar!.minStok = currentData!.minStok;
+    lstSatuan = currentData!.satuan.skip(1).map((e) => e).toList();
   }
 
 // =============metode validasi setiap halaman=============
@@ -139,7 +182,17 @@ class _ProdukFormState extends State<ProdukForm> {
       child: Scaffold(
         appBar: AppBar(
           automaticallyImplyLeading: false,
-          title: const Text("Produk"),
+          title: Text(widget.args.formMode == FormMode.input
+              ? "Produk Baru"
+              : "Edit Produk"),
+          actions: [
+            if (widget.args.formMode == FormMode.update)
+              IconButton(
+                  onPressed: () {
+                    Navigator.pop(context);
+                  },
+                  icon: const Icon(Icons.clear))
+          ],
         ),
         body: Form(
           key: formKey,
@@ -150,7 +203,11 @@ class _ProdukFormState extends State<ProdukForm> {
                 child: Customstepper(
                     currentStep: currentStep,
                     steps: lstStepTitle,
-                    onStepTapped: (val) {}),
+                    onStepTapped: (val) {
+                      setState(() {
+                        currentStep = val;
+                      });
+                    }),
               ),
               Expanded(
                   child: Container(
@@ -324,6 +381,11 @@ class _ProdukFormState extends State<ProdukForm> {
                           showMessage(
                               message:
                                   "Satuan konversi tidak boleh sama dengan satuan dasar",
+                              mode: MessageMode.error);
+                        } else if (lstSatuan
+                            .any((e) => e.satuan == satKonv.satuan)) {
+                          showMessage(
+                              message: "Satuan ${satKonv.satuan} sudah ada!",
                               mode: MessageMode.error);
                         } else {
                           setState(() {
@@ -682,6 +744,9 @@ class _ProdukFormState extends State<ProdukForm> {
                   }
                 } else {
                   ItemModel newItem = ItemModel(
+                      id: widget.args.formMode == FormMode.update
+                          ? currentData!.id!
+                          : null,
                       namaProduk: txtNama.text,
                       merek: selectedMerek?.trim(),
                       supplier: selectedSupplier?.nama!.trim(),
@@ -691,10 +756,15 @@ class _ProdukFormState extends State<ProdukForm> {
                   for (var sat in lstSatuan) {
                     newItem.satuan.add(sat);
                   }
-
-                  bool sukses = await context
-                      .read<MasterProvider>()
-                      .addNewProduk(newItem);
+                  bool sukses = false;
+                  if (widget.args.formMode == FormMode.input) {
+                    sukses = await context
+                        .read<MasterProvider>()
+                        .addNewProduk(newItem);
+                  } else {
+                    //  sukses=
+                    log("edit ...");
+                  }
                   if (sukses) {
                     if (context.mounted) {
                       Navigator.pop(context);

@@ -74,7 +74,12 @@ class _CustomstepperState extends State<Customstepper> {
               children: [
                 // STEP CIRCLE
                 GestureDetector(
-                  onTap: isCompleted ? () => widget.onStepTapped(index) : null,
+                  onTap: isCompleted
+                      ? () {
+                          log("here");
+                          widget.onStepTapped(index);
+                        }
+                      : null,
                   child: AnimatedContainer(
                     duration: const Duration(milliseconds: 300),
                     width: 32,

@@ -19,6 +19,7 @@ class _RegisterElementState extends State<RegisterElement> {
   final TextEditingController txtNoTelp = TextEditingController();
   final TextEditingController txtEmail = TextEditingController();
   final TextEditingController txtUser = TextEditingController();
+  final TextEditingController txtRefkode = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -30,21 +31,9 @@ class _RegisterElementState extends State<RegisterElement> {
             controller: txtKios,
             keyboardType: TextInputType.name,
             textInputAction: TextInputAction.next,
-            decoration: const InputDecoration(hintText: "Nama Kios"),
+            decoration: const InputDecoration(label: Text("Nama Kios")),
             onChanged: prov.setNamaKios,
             inputFormatters: [CapitalizeEachWord()],
-            validator: (val) {
-              if (val!.isEmpty) return "Wajib diisi";
-              return null;
-            },
-          ),
-          spasi(),
-          TextFormField(
-            controller: txtUser,
-            keyboardType: TextInputType.name,
-            textInputAction: TextInputAction.next,
-            decoration: const InputDecoration(hintText: "Nama Pemilik"),
-            onChanged: prov.setUser,
             validator: (val) {
               if (val!.isEmpty) return "Wajib diisi";
               return null;
@@ -56,8 +45,20 @@ class _RegisterElementState extends State<RegisterElement> {
             textInputAction: TextInputAction.newline,
             keyboardType: TextInputType.multiline,
             onChanged: prov.setAlamat,
-            decoration: const InputDecoration(hintText: "Alamat"),
+            decoration: const InputDecoration(label: Text("Alamat")),
             maxLines: 3,
+          ),
+          spasi(),
+          TextFormField(
+            controller: txtUser,
+            keyboardType: TextInputType.name,
+            textInputAction: TextInputAction.next,
+            decoration: const InputDecoration(label: Text("Nama Pemilik")),
+            onChanged: prov.setUser,
+            validator: (val) {
+              if (val!.isEmpty) return "Wajib diisi";
+              return null;
+            },
           ),
           spasi(),
           TextFormField(
@@ -65,16 +66,29 @@ class _RegisterElementState extends State<RegisterElement> {
             controller: txtNoTelp,
             keyboardType: TextInputType.phone,
             onChanged: prov.setNoTelp,
-            decoration: const InputDecoration(hintText: "No. Telp/HP"),
+            decoration: const InputDecoration(label: Text("No. Telp/HP")),
           ),
           spasi(),
           TextFormField(
             keyboardType: TextInputType.emailAddress,
-            textInputAction: TextInputAction.done,
+            textInputAction: TextInputAction.next,
             controller: txtEmail,
             onChanged: prov.setEmail,
-            decoration: const InputDecoration(hintText: "Email"),
+            decoration: const InputDecoration(label: Text("Email")),
+            validator: (val) {
+              if (val!.isEmpty) return "Wajib diisi";
+              return null;
+            },
           ),
+          spasi(),
+          TextFormField(
+            controller: txtRefkode,
+            keyboardType: TextInputType.number,
+            textInputAction: TextInputAction.done,
+            onChanged: prov.setKodeRef,
+            decoration: const InputDecoration(
+                label: Text("Kode Referall"), hintText: "Kode seller aplikasi"),
+          )
         ],
       );
     });

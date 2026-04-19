@@ -54,7 +54,7 @@ class _ProdukPageState extends State<ProdukPage> {
       body: Consumer<MasterProvider>(builder: (context, prov, _) {
         return prov.daftarProduk.isEmpty
             ? const EmptydataElement()
-            : ProdukElement(prov: prov);
+            : const ProdukElement();
       }),
     );
   }

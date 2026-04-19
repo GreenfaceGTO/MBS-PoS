@@ -13,6 +13,7 @@ class AppStartUpService {
   Future<AppStartRoute> initializing() async {
     final hasConnection = await connectivityService.hasConnection();
 
+    // TODO: ambil setting, dari firebase atau local (default)
     if (hasConnection) {
       final hasInternet = await connectivityService.hasInternet();
       if (hasInternet) {
@@ -32,10 +33,6 @@ class AppStartUpService {
     if (usaha == null) {
       return AppStartRoute.intro;
     } else {
-      // log("delete usaha");
-      // final db = await Dbhelper.database;
-      // await db.delete(UsahaTable.table);
-
       if (usaha.password != null) {
         return AppStartRoute.login;
       } else {

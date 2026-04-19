@@ -5,6 +5,7 @@ class UsahaModel {
   String? userName;
   String? password;
   String? email;
+  String? kodeRef;
 
   UsahaModel(
       {this.namaUsaha,
@@ -12,7 +13,8 @@ class UsahaModel {
       this.noTelp,
       this.userName,
       this.password,
-      this.email});
+      this.email,
+      this.kodeRef});
 
   factory UsahaModel.fromMap(Map<String, dynamic> map) => UsahaModel(
       namaUsaha: map['nama_usaha'],
@@ -20,7 +22,8 @@ class UsahaModel {
       noTelp: map['no_telp'],
       email: map['email'],
       userName: map['user_name'],
-      password: map['password']);
+      password: map['password'],
+      kodeRef: map['kode_ref']);
 
   Map<String, dynamic> toMap() => {
         "nama_usaha": namaUsaha,
@@ -28,6 +31,7 @@ class UsahaModel {
         "no_telp": noTelp,
         "email": email,
         "user_name": userName,
-        "password": password
+        "password": password,
+        "kode_ref": kodeRef
       };
 }

@@ -24,6 +24,7 @@ class PortalProvider with ChangeNotifier {
   String? _alamat;
   String? _noTelp;
   String? _email;
+  String? _kodeRef;
 
   void setNamaKios(String value) {
     _namaKios = value;
@@ -45,10 +46,16 @@ class PortalProvider with ChangeNotifier {
     notifyListeners();
   }
 
+  void setKodeRef(String val) {
+    _kodeRef = val;
+    notifyListeners();
+  }
+
   String? get namaKios => _namaKios;
   String? get alamat => _alamat;
   String? get noTelp => _noTelp;
   String? get email => _email;
+  String? get kodeRef => _kodeRef;
 
 // =======group admin=======
   String? _user;
@@ -77,7 +84,8 @@ class PortalProvider with ChangeNotifier {
         noTelp: noTelp,
         email: email,
         userName: user,
-        password: password);
+        password: password,
+        kodeRef: kodeRef);
 
     log("data : ${data.toMap().toString()}");
 

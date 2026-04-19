@@ -90,6 +90,24 @@ class MasterdataRepo {
   // DATA PRODUK
   // --------------------------------
 
+  // ============Update Status============
+  Future<bool> updateStatus(int id, bool newStatus) async {
+    try {
+      return await ItemDao.updateStatus(id, newStatus);
+    } catch (e) {
+      throw Exception(e);
+    }
+  }
+
+  // ============Update Stok============
+  Future<bool> updateStok(int id, int stok) async {
+    try {
+      return await ItemDao.updateStok(id, stok);
+    } catch (e) {
+      throw Exception(e);
+    }
+  }
+
   // ===============Mengambil seluruh data produk===============
   Future<List<ItemModel>> getAllProduk() async {
     try {
@@ -100,7 +118,7 @@ class MasterdataRepo {
   }
 
   // ===============Menyimpan data produk===============
-  Future<int> saveNewProduk(ItemModel data) async {
+  Future<ItemModel> saveNewProduk(ItemModel data) async {
     try {
       return await ItemDao.simpanProduk(data);
     } catch (e) {
@@ -112,6 +130,15 @@ class MasterdataRepo {
   Future<bool> delProduk(int id) async {
     try {
       return await ItemDao.deleteProduk(id);
+    } catch (e) {
+      throw Exception(e);
+    }
+  }
+
+  // ============Menyimpan update data produk============
+  Future<bool> updateProduk(ItemModel item) async {
+    try {
+      return await ItemDao.updateProduk(item);
     } catch (e) {
       throw Exception(e);
     }

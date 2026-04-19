@@ -17,4 +17,19 @@ class ItemSatTable {
     REFERENCES tb_item (id) ON DELETE CASCADE
 );
 ''';
+
+//   static const updateSatuan = '''
+//   INSERT INTO $table
+//   (id,id_produk,satuan,isi,tipe,barcode,harga_pokok,harga_jual,potongan)
+//   VALUES(?,?,?,?,?,?,?,?,?)
+//   ON CONFLICT DO UPDATE SET
+//   id_produk = excluded.id_produk,
+//   satuan = excluded.satuan,
+//   isi = excluded.isi,
+//   tipe = excluded.tipe,
+//   barcode = excluded.barcode,
+//   harga_pokok = excluded.harga_pokok,
+//   harga_jual = excluded.harga_jual,
+//   potongan = excluded.potongan
+// ''';
 }
