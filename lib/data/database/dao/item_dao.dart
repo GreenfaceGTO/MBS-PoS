@@ -7,8 +7,6 @@ import 'package:mbspos/models/data/item_model.dart';
 import 'package:mbspos/models/data/satitem_model.dart';
 
 class ItemDao {
-  final dbManager = Dbhelper();
-
   /// =============Update Status=============
   static Future<bool> updateStatus(int idProduk, bool status) async {
     final db = await Dbhelper.database;
@@ -32,52 +30,61 @@ class ItemDao {
   }
 
   /// ==============Menyimpan update data produk==============
-  static Future<bool> updateProduk(ItemModel updatedData) async {
+  static Future<ItemModel> updateProduk(ItemModel updatedData) async {
     final db = await Dbhelper.database;
     try {
-      // update header
-      await db.update(ItemTable.table, updatedData.toDb(),
-          where: "id=?", whereArgs: [updatedData.id]);
+      return db.transaction((txn) async {
+        // update header
+        await txn.update(ItemTable.table, updatedData.toDb(),
+            where: "id=?", whereArgs: [updatedData.id]);
 
-      // looping satuan untuk insert baru atau update yang lama
-      for (var sat in updatedData.satuan) {
-        await db.rawInsert('''INSERT INTO satuan (
-              id_produk,
-              satuan,
-              isi,
-              tipe,
-              barcode,
-              harga_pokok,
-              harga_jual,
-              potongan
-            )
-            VALUES (?, ?, ?, ?, ?, ?, ?, ?)
-            ON CONFLICT(id_produk, satuan) DO UPDATE SET
-              isi = excluded.isi,
-              tipe = excluded.tipe,
-              barcode = excluded.barcode,
-              harga_pokok = excluded.harga_pokok,
-              harga_jual = excluded.harga_jual,
-              potongan = excluded.potongan
-          ''', [
-          sat.id,
-          sat.idProduk,
-          sat.isi,
-          sat.tipe,
-          sat.barcode,
-          sat.hargaPokok,
-          sat.hargaJual,
-          sat.potongan
-        ]);
-      }
-      // // hapus semua detail
-      // await db.delete(ItemSatTable.table,
-      //     where: "id_produk=?", whereArgs: [updatedData.id]);
+        // ambil semua id satuan di db untuk dibandingkan dengan yang di list
+        final fromDb = await txn.query(ItemSatTable.table,
+            columns: ['id'], where: "id_produk=?", whereArgs: [updatedData.id]);
 
-      // for (var sat in updatedData.satuan) {
-      //   await db.insert(ItemSatTable.table, sat.toDb());
-      // }
-      return true;
+        // ambil semua id satuan di list, untuk dibandingkan dengan yang dari db
+        final fromList = updatedData.satuan
+            .where((e) => e.id != null)
+            .map((e) => e.id)
+            .toList();
+
+        // bandingkan kedua list, ambil yang harus dihapus dari db
+        final toDelete = fromDb
+            .map((e) => e['id'] as int)
+            .where((id) => !fromList.contains(id))
+            .toList();
+
+        // hapus dari db yang sudah tidak ada di list
+        for (var id in toDelete) {
+          await txn.delete(ItemSatTable.table, where: "id=?", whereArgs: [id]);
+        }
+        // looping lagi satuan untuk insert baru atau update yang lama
+        for (var sat in updatedData.satuan) {
+          if (sat.id != null) {
+            // Jika id satuan ada, update satuan
+            await txn.update(
+                ItemSatTable.table,
+                {
+                  "satuan": sat.satuan,
+                  "isi": sat.isi,
+                  "tipe": sat.tipe,
+                  "barcode": sat.barcode,
+                  "harga_pokok": sat.hargaPokok,
+                  "harga_jual": sat.hargaJual
+                },
+                where: "id=?",
+                whereArgs: [sat.id]);
+          } else {
+            // jika id satuan belum ada, insert
+            sat.idProduk = updatedData.id;
+            final idSat = await txn.insert(ItemSatTable.table, sat.toDb());
+            sat.id = idSat;
+          }
+        }
+        return updatedData;
+      });
+
+      // return updatedData;
     } catch (e) {
       throw Exception("DAO Error : Gagal mengupdate data [$e]");
     }
@@ -91,6 +98,7 @@ class ItemDao {
         // insert data produk (Header)
         final itemId = await txn.insert(ItemTable.table, data.toDb());
 
+        data.id = itemId;
         // generate nomor SKU
         data.noSku = 'SKU-${itemId.toString().padLeft(6, '0')}';
 

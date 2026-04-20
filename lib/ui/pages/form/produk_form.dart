@@ -302,21 +302,22 @@ class _ProdukFormState extends State<ProdukForm> {
                 _rowFieldWidget(
                     "Stok. Min.", selectedSatDasar!.minStok.toString()),
                 spasi(jarak: 10),
-                if (lstSatuan.isEmpty)
-                  Align(
-                      alignment: Alignment.centerRight,
-                      child: SizedBox(
-                        height: 30,
-                        child: CustomButton(
-                          mode: ButtonMode.outlined,
-                          caption: "GANTI",
-                          onPress: () {
-                            setState(() {
-                              selectedSatDasar = null;
-                            });
-                          },
-                        ),
-                      )),
+                if (widget.args.formMode == FormMode.input)
+                  if (lstSatuan.isEmpty)
+                    Align(
+                        alignment: Alignment.centerRight,
+                        child: SizedBox(
+                          height: 30,
+                          child: CustomButton(
+                            mode: ButtonMode.outlined,
+                            caption: "GANTI",
+                            onPress: () {
+                              setState(() {
+                                selectedSatDasar = null;
+                              });
+                            },
+                          ),
+                        )),
                 spasi(jarak: 10),
                 const Divider(),
                 _satuanLainWidget()
@@ -439,16 +440,7 @@ class _ProdukFormState extends State<ProdukForm> {
                           spasi(mode: OrientationMode.horizontal, jarak: 4),
                           IconButton(
                               onPressed: () async {
-                                bool? confirm = await DialogHelper.confirmDelete(
-                                    context,
-                                    content:
-                                        "Satuan ${satl.satuan} ini ingin di hapus?");
-                                if (confirm != null && confirm) {
-                                  setState(() {
-                                    lstSatuan.removeWhere(
-                                        (e) => e.satuan == satl.satuan);
-                                  });
-                                }
+                                _hapusSatuanLain(satl);
                               },
                               icon: const Icon(
                                 Icons.clear_rounded,
@@ -463,6 +455,16 @@ class _ProdukFormState extends State<ProdukForm> {
         ],
       ),
     );
+  }
+
+  void _hapusSatuanLain(SatitemModel satuan) async {
+    bool? confirm = await DialogHelper.confirmDelete(context,
+        content: "Satuan ${satuan.satuan} ini ingin di hapus?");
+    if (confirm != null && confirm) {
+      setState(() {
+        lstSatuan.removeWhere((e) => e.satuan == satuan.satuan);
+      });
+    }
   }
 
   Widget _preview() {
@@ -747,6 +749,9 @@ class _ProdukFormState extends State<ProdukForm> {
                       id: widget.args.formMode == FormMode.update
                           ? currentData!.id!
                           : null,
+                      noSku: widget.args.formMode == FormMode.update
+                          ? currentData!.noSku
+                          : null,
                       namaProduk: txtNama.text,
                       merek: selectedMerek?.trim(),
                       supplier: selectedSupplier?.nama!.trim(),
@@ -762,8 +767,9 @@ class _ProdukFormState extends State<ProdukForm> {
                         .read<MasterProvider>()
                         .addNewProduk(newItem);
                   } else {
-                    //  sukses=
-                    log("edit ...");
+                    sukses = await context
+                        .read<MasterProvider>()
+                        .updateProduk(newItem);
                   }
                   if (sukses) {
                     if (context.mounted) {

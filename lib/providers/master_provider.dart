@@ -24,6 +24,7 @@ class MasterProvider with ChangeNotifier, CacheManager {
   List<String> _daftarKategori = [];
   List<String> _daftarSatuan = [];
   List<ItemModel> _daftarProduk = [];
+  List<ItemModel> _lstFilterProduk = [];
   List<MitraModel> _daftarSupplier = [];
   List<MitraModel> _daftarPelanggan = [];
   String _selectedRef = "Satuan";
@@ -33,6 +34,7 @@ class MasterProvider with ChangeNotifier, CacheManager {
   List<String> get daftarKategori => _daftarKategori;
   List<String> get daftarSatuan => _daftarSatuan;
   List<ItemModel> get daftarProduk => _daftarProduk;
+  List<ItemModel> get lstFilterProduk => _lstFilterProduk;
   List<MitraModel> get daftarSupplier => _daftarSupplier;
   List<MitraModel> get daftarPelanggan => _daftarPelanggan;
 
@@ -59,6 +61,7 @@ class MasterProvider with ChangeNotifier, CacheManager {
     _daftarKategori = await _masterdataRepo.getAllRef("kategori");
     _daftarSatuan = await _masterdataRepo.getAllRef("satuan");
     _daftarProduk = await _masterdataRepo.getAllProduk();
+    _lstFilterProduk.addAll(_daftarProduk);
     _daftarSupplier = await _masterdataRepo.getAllMitra("supplier");
     _daftarPelanggan = await _masterdataRepo.getAllMitra("pelanggan");
     notifyListeners();
@@ -175,29 +178,51 @@ class MasterProvider with ChangeNotifier, CacheManager {
 
     _daftarProduk.add(result);
     notifyListeners();
-
+    _rebuildFilterList();
     return true;
+  }
+
+  // ==============memperbaharui [lstFilterProduk] saat ada perubahan di [daftarProduk]
+  void _rebuildFilterList() async {
+    _lstFilterProduk.clear();
+    _lstFilterProduk.addAll(_daftarProduk);
+    notifyListeners();
   }
 
   // ==========Menghapus data produk==========
   Future<void> deleteProduk(int id) async {
     bool done = await _masterdataRepo.delProduk(id);
     if (done) {
-      daftarProduk.removeWhere((e) => e.id == id);
+      _daftarProduk.removeWhere((e) => e.id == id);
       notifyListeners();
+      _rebuildFilterList();
     }
   }
 
   // ===========Menyimpan update produk===========
-  Future<void> updateProduk(ItemModel updatedData) async {}
+  Future<bool> updateProduk(ItemModel updatedData) async {
+    try {
+      final result = await _masterdataRepo.updateProduk(updatedData);
+      int idx = daftarProduk.indexWhere((e) => e.id == result.id);
+      _daftarProduk[idx] = result;
+      notifyListeners();
+      _rebuildFilterList();
+      return true;
+    } catch (e) {
+      log(e.toString());
+      showMessage(message: "Gagal ${e.toString()}");
+    }
+    return false;
+  }
 
   // =============Menyimpan update stok=============
   Future<void> updateStok(int idProduk, int newStok) async {
     try {
       if (await _masterdataRepo.updateStok(idProduk, newStok)) {
         int idx = daftarProduk.indexWhere((e) => e.id == idProduk);
-        daftarProduk[idx].stok = newStok;
+        _daftarProduk[idx].stok = newStok;
         notifyListeners();
+        _rebuildFilterList();
       }
     } catch (e) {
       showMessage(message: "Gagal ${e.toString()}");
@@ -210,11 +235,33 @@ class MasterProvider with ChangeNotifier, CacheManager {
       if (await _masterdataRepo.updateStatus(idProduk, newStatus)) {
         int idx = daftarProduk.indexWhere((e) => e.id == idProduk);
         log(newStatus.toString());
-        daftarProduk[idx].aktif = newStatus ? 1 : 0;
+        _daftarProduk[idx].aktif = newStatus ? 1 : 0;
+
         notifyListeners();
+        _rebuildFilterList();
       } else {}
     } catch (e) {
       showMessage(message: "Gagal ${e.toString()}");
     }
+  }
+
+  // ==========Fiture pencarian item==========
+  void searchProduk(String query) {
+    String kunci = query.toLowerCase();
+    if (kunci.isNotEmpty) {
+      var result = _daftarProduk.where((e) {
+        final nama = e.namaProduk!.toLowerCase();
+        final merek = e.merek!.toLowerCase();
+        return nama.contains(kunci) ||
+            merek.contains(kunci) ||
+            e.kategori!.contains(kunci);
+      });
+      _lstFilterProduk.clear();
+      _lstFilterProduk.addAll(result);
+    } else {
+      _lstFilterProduk.clear();
+      _lstFilterProduk.addAll(daftarProduk);
+    }
+    notifyListeners();
   }
 }

@@ -52,7 +52,7 @@ class _ProdukPageState extends State<ProdukPage> {
         child: const Icon(Icons.add),
       ),
       body: Consumer<MasterProvider>(builder: (context, prov, _) {
-        return prov.daftarProduk.isEmpty
+        return prov.lstFilterProduk.isEmpty
             ? const EmptydataElement()
             : const ProdukElement();
       }),

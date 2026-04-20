@@ -136,7 +136,7 @@ class MasterdataRepo {
   }
 
   // ============Menyimpan update data produk============
-  Future<bool> updateProduk(ItemModel item) async {
+  Future<ItemModel> updateProduk(ItemModel item) async {
     try {
       return await ItemDao.updateProduk(item);
     } catch (e) {

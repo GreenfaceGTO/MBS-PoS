@@ -17,6 +17,14 @@ class ProdukElement extends StatefulWidget {
 }
 
 class _ProdukElementState extends State<ProdukElement> {
+  final TextEditingController txtSearch = TextEditingController();
+
+  @override
+  void dispose() {
+    txtSearch.dispose();
+    super.dispose();
+  }
+
   // menampilkan jendela update stok
   Future showFormUpdateStok(ItemModel item) async {
     TextEditingController txtStok = TextEditingController();
@@ -77,14 +85,31 @@ class _ProdukElementState extends State<ProdukElement> {
     }
   }
 
+  // =========clear search=========
+  void clearSearch() {
+    setState(() {
+      txtSearch.text = '';
+      context.read<MasterProvider>().searchProduk('');
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
+    final provider = context.read<MasterProvider>();
     return Column(
       children: [
+        // TODO: lengkapi widget pencarian item di bawah ini
         Padding(
           padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 12),
           child: TextFormField(
-            decoration: const InputDecoration(label: Text("Cari...")),
+            controller: txtSearch,
+            onChanged: provider.searchProduk,
+            decoration: InputDecoration(
+                label: const Text("Cari..."),
+                suffixIcon: txtSearch.text.isNotEmpty
+                    ? IconButton(
+                        onPressed: () {}, icon: const Icon(Icons.clear))
+                    : null),
           ),
         ),
         Expanded(
@@ -92,7 +117,7 @@ class _ProdukElementState extends State<ProdukElement> {
               padding: const EdgeInsets.symmetric(vertical: 4, horizontal: 12),
               child: Consumer<MasterProvider>(builder: (context, prov, _) {
                 return Column(
-                  children: prov.daftarProduk.map((item) {
+                  children: prov.lstFilterProduk.map((item) {
                     return InkWell(
                       onTap: () {
                         log(item.toMap().toString());
