@@ -24,10 +24,11 @@ class MasterProvider with ChangeNotifier, CacheManager {
   List<String> _daftarKategori = [];
   List<String> _daftarSatuan = [];
   List<ItemModel> _daftarProduk = [];
-  List<ItemModel> _lstFilterProduk = [];
+  final List<ItemModel> _lstFilterProduk = [];
   List<MitraModel> _daftarSupplier = [];
   List<MitraModel> _daftarPelanggan = [];
   String _selectedRef = "Satuan";
+  bool _produkSearchMode = false;
 
   // ================getter================
   List<String> get daftarMerek => _daftarMerek;
@@ -39,6 +40,7 @@ class MasterProvider with ChangeNotifier, CacheManager {
   List<MitraModel> get daftarPelanggan => _daftarPelanggan;
 
   String get selectedRef => _selectedRef;
+  bool get produkSearchMode => _produkSearchMode;
 
   int get tabIndex {
     return lstRefPage.indexOf(_selectedRef);
@@ -47,6 +49,11 @@ class MasterProvider with ChangeNotifier, CacheManager {
   // ===================Setter===================
   void selectTab(String tabName) {
     _selectedRef = tabName;
+    notifyListeners();
+  }
+
+  void onSearchModeChange() {
+    _produkSearchMode = !_produkSearchMode;
     notifyListeners();
   }
 
@@ -247,14 +254,16 @@ class MasterProvider with ChangeNotifier, CacheManager {
 
   // ==========Fiture pencarian item==========
   void searchProduk(String query) {
-    String kunci = query.toLowerCase();
-    if (kunci.isNotEmpty) {
+    String searchKey = query.toLowerCase();
+    if (searchKey.isNotEmpty) {
       var result = _daftarProduk.where((e) {
         final nama = e.namaProduk!.toLowerCase();
         final merek = e.merek!.toLowerCase();
-        return nama.contains(kunci) ||
-            merek.contains(kunci) ||
-            e.kategori!.contains(kunci);
+        final kat = e.kategori!.any((e) {
+          return e.toLowerCase().contains(searchKey);
+        });
+
+        return nama.contains(searchKey) || merek.contains(searchKey) || kat;
       });
       _lstFilterProduk.clear();
       _lstFilterProduk.addAll(result);

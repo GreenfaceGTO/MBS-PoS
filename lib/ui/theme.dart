@@ -11,6 +11,7 @@ class AppTema {
             surface: Colors.white),
     dialogTheme: DialogThemeData(
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8))),
+    appBarTheme: const AppBarTheme(leadingWidth: 40),
     cardTheme: CardThemeData(
         elevation: 3,
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8))),

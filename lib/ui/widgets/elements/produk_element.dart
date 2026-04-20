@@ -7,6 +7,7 @@ import 'package:mbspos/providers/master_provider.dart';
 import 'package:mbspos/service/utils/global_enums.dart';
 import 'package:mbspos/ui/pages/form/dialog_helper.dart';
 import 'package:mbspos/ui/widgets/components/general_widget.dart';
+import 'package:mbspos/ui/widgets/elements/emptydata_element.dart';
 import 'package:provider/provider.dart';
 
 class ProdukElement extends StatefulWidget {
@@ -95,202 +96,179 @@ class _ProdukElementState extends State<ProdukElement> {
 
   @override
   Widget build(BuildContext context) {
-    final provider = context.read<MasterProvider>();
-    return Column(
-      children: [
-        // TODO: lengkapi widget pencarian item di bawah ini
-        Padding(
-          padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 12),
-          child: TextFormField(
-            controller: txtSearch,
-            onChanged: provider.searchProduk,
-            decoration: InputDecoration(
-                label: const Text("Cari..."),
-                suffixIcon: txtSearch.text.isNotEmpty
-                    ? IconButton(
-                        onPressed: () {}, icon: const Icon(Icons.clear))
-                    : null),
-          ),
-        ),
-        Expanded(
-          child: SingleChildScrollView(
-              padding: const EdgeInsets.symmetric(vertical: 4, horizontal: 12),
-              child: Consumer<MasterProvider>(builder: (context, prov, _) {
-                return Column(
-                  children: prov.lstFilterProduk.map((item) {
-                    return InkWell(
-                      onTap: () {
-                        log(item.toMap().toString());
-                      },
-                      child: Stack(
+    return Consumer<MasterProvider>(builder: (context, prov, _) {
+      return Column(
+        children: [
+          Expanded(
+            child: prov.lstFilterProduk.isEmpty
+                ? const Center(
+                    child: EmptydataElement(
+                      caption: "Tidak ada data",
+                    ),
+                  )
+                : _dataBody(prov),
+          )
+        ],
+      );
+    });
+  }
+
+  Widget _dataBody(MasterProvider prov) {
+    return SingleChildScrollView(
+        padding: const EdgeInsets.symmetric(vertical: 4, horizontal: 12),
+        child: Column(
+          children: prov.lstFilterProduk.map((item) {
+            return Stack(
+              children: [
+                Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 4),
+                  child: Material(
+                    elevation: 2,
+                    shape: RoundedRectangleBorder(
+                        side:
+                            const BorderSide(color: Colors.black38, width: 0.3),
+                        borderRadius: BorderRadius.circular(8)),
+                    child: Container(
+                      width: double.infinity,
+                      padding: const EdgeInsets.all(defaultPadding),
+                      child: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Padding(
-                            padding: const EdgeInsets.symmetric(vertical: 4),
-                            child: Material(
-                              elevation: 2,
-                              shape: RoundedRectangleBorder(
-                                  side: const BorderSide(
-                                      color: Colors.black38, width: 0.3),
-                                  borderRadius: BorderRadius.circular(8)),
-                              child: Container(
-                                width: double.infinity,
-                                padding: const EdgeInsets.all(defaultPadding),
+                          Text(
+                            item.namaProduk!,
+                            style: const TextStyle(
+                                fontSize: 14, fontWeight: FontWeight.w500),
+                          ),
+                          Text("No. SKU : ${item.noSku}"),
+                          spasi(jarak: 2),
+                          if (item.merek != null) Text('Merek : ${item.merek}'),
+                          Row(
+                            children: [
+                              const Text("Kategori : "),
+                              Expanded(
+                                  child: Wrap(
+                                alignment: WrapAlignment.start,
+                                spacing: 4,
+                                runSpacing: 4,
+                                children: item.kategori!.map((kat) {
+                                  return Container(
+                                    padding: const EdgeInsets.symmetric(
+                                        vertical: 2, horizontal: 4),
+                                    decoration: BoxDecoration(
+                                        borderRadius: BorderRadius.circular(4),
+                                        border: Border.all(
+                                            color: Colors.grey.shade700,
+                                            width: 0.3)),
+                                    child: Text(kat),
+                                  );
+                                }).toList(),
+                              ))
+                            ],
+                          ),
+                          const Divider(),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Expanded(
                                 child: Column(
                                   mainAxisSize: MainAxisSize.min,
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
-                                    Text(
-                                      item.namaProduk!,
-                                      style: const TextStyle(
-                                          fontSize: 14,
-                                          fontWeight: FontWeight.w500),
-                                    ),
-                                    Text("No. SKU : ${item.noSku}"),
-                                    spasi(jarak: 2),
-                                    if (item.merek != null)
-                                      Text('Merek : ${item.merek}'),
-                                    Row(
-                                      children: [
-                                        const Text("Kategori : "),
-                                        Expanded(
-                                            child: Wrap(
-                                          alignment: WrapAlignment.start,
-                                          spacing: 4,
-                                          runSpacing: 4,
-                                          children: item.kategori!.map((kat) {
-                                            return Text(kat);
-                                          }).toList(),
-                                        ))
-                                      ],
-                                    ),
-                                    const Divider(),
-                                    Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.spaceBetween,
-                                      children: [
-                                        Expanded(
-                                          child: Column(
-                                            mainAxisSize: MainAxisSize.min,
-                                            crossAxisAlignment:
-                                                CrossAxisAlignment.start,
-                                            children: [
-                                              Text.rich(TextSpan(
-                                                  text: "H. Pokok : ",
-                                                  children: [
-                                                    TextSpan(
-                                                        text: toRupiah.format(
-                                                            item.satuan[0]
-                                                                .hargaPokok),
-                                                        style: const TextStyle(
-                                                            fontWeight:
-                                                                FontWeight
-                                                                    .w500))
-                                                  ])),
-                                              Text.rich(TextSpan(
-                                                  text: "H. Jual : ",
-                                                  children: [
-                                                    TextSpan(
-                                                        text: toRupiah.format(
-                                                            item.satuan[0]
-                                                                .hargaJual),
-                                                        style: const TextStyle(
-                                                            fontWeight:
-                                                                FontWeight
-                                                                    .w500))
-                                                  ])),
-                                              Text.rich(TextSpan(
-                                                  text: "Satuan : ",
-                                                  children: [
-                                                    TextSpan(
-                                                        text: item
-                                                            .satuan[0].satuan,
-                                                        style: const TextStyle(
-                                                            fontWeight:
-                                                                FontWeight
-                                                                    .w500))
-                                                  ])),
-                                              Text.rich(TextSpan(
-                                                  text: "Status : ",
-                                                  children: [
-                                                    TextSpan(
-                                                        text: item.aktif == 1
-                                                            ? "Aktif"
-                                                            : "Non Aktif",
-                                                        style: TextStyle(
-                                                            fontWeight:
-                                                                FontWeight.w500,
-                                                            color: item.aktif ==
-                                                                    1
-                                                                ? Colors.teal
-                                                                : Colors.red))
-                                                  ]))
-                                            ],
-                                          ),
-                                        ),
-                                        Container(
-                                          constraints: const BoxConstraints(
-                                              minWidth: 50),
-                                          padding: const EdgeInsets.all(4),
-                                          decoration: BoxDecoration(
-                                              border: Border.all(
-                                                color: Colors.teal,
-                                              ),
-                                              borderRadius:
-                                                  BorderRadius.circular(4)),
-                                          child: Column(
-                                            mainAxisSize: MainAxisSize.min,
-                                            children: [
-                                              const Text("Stok"),
-                                              spasi(jarak: 4),
-                                              Text(
-                                                item.stok.toString(),
-                                                style: TextStyle(
-                                                    fontSize: 14,
-                                                    color: item.stok == 0
-                                                        ? Colors.red
-                                                        : null,
-                                                    fontWeight:
-                                                        FontWeight.w500),
-                                              )
-                                            ],
-                                          ),
-                                        )
-                                      ],
-                                    ),
-                                    const Divider(),
-                                    Row(
-                                      children: [
-                                        const Text("Satuan Lainnya : "),
-                                        Wrap(
-                                          alignment: WrapAlignment.start,
-                                          spacing: 8,
-                                          runSpacing: 8,
-                                          children:
-                                              item.satuan.skip(1).map((sat) {
-                                            return Text(
-                                              "[${sat.satuan!} isi ${sat.isi}]",
+                                    Text.rich(TextSpan(
+                                        text: "H. Pokok : ",
+                                        children: [
+                                          TextSpan(
+                                              text: toRupiah.format(
+                                                  item.satuan[0].hargaPokok),
                                               style: const TextStyle(
-                                                  fontWeight: FontWeight.w500),
-                                            );
-                                          }).toList(),
-                                        )
-                                      ],
-                                    )
+                                                  fontWeight: FontWeight.w500))
+                                        ])),
+                                    Text.rich(
+                                        TextSpan(text: "H. Jual : ", children: [
+                                      TextSpan(
+                                          text: toRupiah
+                                              .format(item.satuan[0].hargaJual),
+                                          style: const TextStyle(
+                                              fontWeight: FontWeight.w500))
+                                    ])),
+                                    Text.rich(
+                                        TextSpan(text: "Satuan : ", children: [
+                                      TextSpan(
+                                          text: item.satuan[0].satuan,
+                                          style: const TextStyle(
+                                              fontWeight: FontWeight.w500))
+                                    ])),
+                                    Text.rich(
+                                        TextSpan(text: "Status : ", children: [
+                                      TextSpan(
+                                          text: item.aktif == 1
+                                              ? "Aktif"
+                                              : "Non Aktif",
+                                          style: TextStyle(
+                                              fontWeight: FontWeight.w500,
+                                              color: item.aktif == 1
+                                                  ? Colors.teal
+                                                  : Colors.red))
+                                    ]))
                                   ],
                                 ),
                               ),
-                            ),
+                              Container(
+                                constraints: const BoxConstraints(minWidth: 50),
+                                padding: const EdgeInsets.all(4),
+                                decoration: BoxDecoration(
+                                    border: Border.all(
+                                      color: Colors.teal,
+                                    ),
+                                    borderRadius: BorderRadius.circular(4)),
+                                child: Column(
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: [
+                                    const Text("Stok"),
+                                    spasi(jarak: 4),
+                                    Text(
+                                      item.stok.toString(),
+                                      style: TextStyle(
+                                          fontSize: 14,
+                                          color: item.stok == 0
+                                              ? Colors.red
+                                              : null,
+                                          fontWeight: FontWeight.w500),
+                                    )
+                                  ],
+                                ),
+                              )
+                            ],
                           ),
-                          _popupMenu(item)
+                          const Divider(),
+                          Row(
+                            children: [
+                              const Text("Satuan Lainnya : "),
+                              Wrap(
+                                alignment: WrapAlignment.start,
+                                spacing: 8,
+                                runSpacing: 8,
+                                children: item.satuan.skip(1).map((sat) {
+                                  return Text(
+                                    "[${sat.satuan!} isi ${sat.isi}]",
+                                    style: const TextStyle(
+                                        fontWeight: FontWeight.w500),
+                                  );
+                                }).toList(),
+                              )
+                            ],
+                          )
                         ],
                       ),
-                    );
-                  }).toList(),
-                );
-              })),
-        ),
-      ],
-    );
+                    ),
+                  ),
+                ),
+                if (!prov.produkSearchMode) _popupMenu(item)
+              ],
+            );
+          }).toList(),
+        ));
   }
 
   void _onPopupMenuSelected(String val, {required ItemModel item}) async {
