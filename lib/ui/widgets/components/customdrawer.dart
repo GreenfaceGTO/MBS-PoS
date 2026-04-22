@@ -68,7 +68,7 @@ class _CustomdrawerState extends State<Customdrawer> {
                       onTap: () {
                         onMasterMenuTap(mst.id);
                       },
-                      leading: Icon(mst.icon),
+                      leading: mst.icon,
                       title: Text(mst.title),
                     );
                   }).toList(),
@@ -79,7 +79,7 @@ class _CustomdrawerState extends State<Customdrawer> {
                   title: const Text("Pembelian"),
                   children: lstPembelian.map((pbl) {
                     return ListTile(
-                      leading: Icon(pbl.icon),
+                      leading: pbl.icon,
                       title: Text(pbl.title),
                     );
                   }).toList(),
@@ -90,7 +90,7 @@ class _CustomdrawerState extends State<Customdrawer> {
                   title: const Text("Penjualan"),
                   children: lstPenjualan.map((pjl) {
                     return ListTile(
-                      leading: Icon(pjl.icon),
+                      leading: pjl.icon,
                       title: Text(pjl.title),
                     );
                   }).toList(),
@@ -101,7 +101,7 @@ class _CustomdrawerState extends State<Customdrawer> {
                   title: const Text("Persediaan"),
                   children: lstPersediaan.map((stok) {
                     return ListTile(
-                      leading: Icon(stok.icon),
+                      leading: stok.icon,
                       title: Text(stok.title),
                     );
                   }).toList(),
@@ -112,7 +112,7 @@ class _CustomdrawerState extends State<Customdrawer> {
                   title: const Text("Laporan"),
                   children: lstLaporan.map((rpt) {
                     return ListTile(
-                      leading: Icon(rpt.icon),
+                      leading: rpt.icon,
                       title: Text(rpt.title),
                     );
                   }).toList(),

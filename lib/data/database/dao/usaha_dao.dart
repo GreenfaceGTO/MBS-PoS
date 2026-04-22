@@ -9,7 +9,7 @@ class UsahaDao {
   /// Mengambil data usaha
   // -----------------------
   // static Future<List<UsahaModel>?> getDataUsaha() async {
-  static Future<UsahaModel?> getDataUsaha() async {
+  Future<UsahaModel?> getDataUsaha() async {
     final db = await Dbhelper.database;
     try {
       final result = await db.query(UsahaTable.table, limit: 1);

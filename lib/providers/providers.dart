@@ -1,3 +1,4 @@
+import 'package:mbspos/providers/dashboard_provider.dart';
 import 'package:mbspos/providers/portal_provider.dart';
 import 'package:mbspos/providers/master_provider.dart';
 import 'package:mbspos/providers/startup_provider.dart';
@@ -14,5 +15,6 @@ class AppProviders {
             create: (context) => StartupProvider(startupService)),
         ChangeNotifierProvider(create: (context) => PortalProvider()),
         ChangeNotifierProvider(create: (context) => MasterProvider()),
+        ChangeNotifierProvider(create: (context) => DashboardProvider()),
       ];
 }

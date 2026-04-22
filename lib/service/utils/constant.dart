@@ -1,5 +1,6 @@
 // ==============App Identifier==============
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:mbspos/models/intro_model.dart';
 import 'package:mbspos/models/menu_model.dart';
 
@@ -31,35 +32,184 @@ List<String> lstRefPage = [
 
 // =============Daftar Menu Drawer=============
 List<MenuModel> lstMaster = [
-  MenuModel(id: 1, title: "Data Pendukung", icon: Icons.room_preferences),
-  MenuModel(id: 2, title: "Produk", icon: Icons.local_mall),
+  MenuModel(
+      id: 1,
+      title: "Data Pendukung",
+      icon: SvgPicture.asset(
+        "assets/svg/refdata.svg",
+        width: 20,
+        height: 20,
+      )),
+  MenuModel(
+      id: 2,
+      title: "Produk",
+      icon: SvgPicture.asset(
+        "assets/svg/product.svg",
+        width: 20,
+        height: 20,
+      )),
 ];
 List<MenuModel> lstPembelian = [
-  MenuModel(id: 1, title: "Pesanan Pembelian", icon: Icons.assignment_add),
-  MenuModel(id: 2, title: "Pembelian", icon: Icons.shopping_cart),
+  MenuModel(
+      id: 1,
+      title: "Pesanan Pembelian",
+      icon: SvgPicture.asset(
+        "assets/svg/order.svg",
+        width: 20,
+        height: 20,
+      )),
+  MenuModel(
+      id: 2,
+      title: "Pembelian",
+      icon: SvgPicture.asset(
+        "assets/svg/purchase.svg",
+        width: 20,
+        height: 20,
+      )),
 ];
 
 List<MenuModel> lstPenjualan = [
-  MenuModel(id: 1, title: "Pesanan Penjualan", icon: Icons.assignment_add),
-  MenuModel(id: 2, title: "Kasir", icon: Icons.point_of_sale),
-  MenuModel(id: 3, title: "Penjualan Kredit", icon: Icons.credit_card),
+  MenuModel(
+      id: 1,
+      title: "Pesanan Penjualan",
+      icon: SvgPicture.asset(
+        "assets/svg/order.svg",
+        width: 20,
+        height: 20,
+      )),
+  MenuModel(
+      id: 2,
+      title: "Kasir",
+      icon: SvgPicture.asset(
+        "assets/svg/kasir.svg",
+        width: 20,
+        height: 20,
+      )),
+  MenuModel(
+      id: 3,
+      title: "Penjualan Kredit",
+      icon: SvgPicture.asset(
+        "assets/svg/creditcard.svg",
+        width: 20,
+        height: 20,
+      )),
 ];
 
 List<MenuModel> lstPersediaan = [
-  MenuModel(id: 1, title: "Rekam Barcode", icon: Icons.barcode_reader),
-  MenuModel(id: 2, title: "Stok Opname", icon: Icons.add_task),
-  MenuModel(id: 3, title: "Item Masuk dan Keluar", icon: Icons.repeat),
-  MenuModel(id: 4, title: "Manajemen Diskon", icon: Icons.local_offer),
+  MenuModel(
+      id: 1,
+      title: "Rekam Barcode",
+      icon: SvgPicture.asset(
+        "assets/svg/barcoderecord.svg",
+        width: 20,
+        height: 20,
+      )),
+  MenuModel(
+      id: 2,
+      title: "Stok Opname",
+      icon: SvgPicture.asset(
+        "assets/svg/stock.svg",
+        width: 20,
+        height: 20,
+      )),
+  MenuModel(
+      id: 3,
+      title: "Item Masuk dan Keluar",
+      icon: SvgPicture.asset(
+        "assets/svg/inout.svg",
+        width: 20,
+        height: 20,
+      )),
+  MenuModel(
+      id: 4,
+      title: "Manajemen Diskon",
+      icon: SvgPicture.asset(
+        "assets/svg/discountmanage.svg",
+        width: 20,
+        height: 20,
+      )),
 ];
 
 List<MenuModel> lstLaporan = [
-  MenuModel(id: 1, title: 'Penjualan Harian', icon: Icons.receipt),
   MenuModel(
-      id: 2, title: 'Rekapitulasi Penjualan Bulanan', icon: Icons.receipt),
-  MenuModel(id: 3, title: 'Kelas Barang per Periode', icon: Icons.receipt),
+      id: 1,
+      title: 'Penjualan Harian',
+      icon: SvgPicture.asset(
+        "assets/svg/report.svg",
+        width: 20,
+        height: 20,
+      )),
+  MenuModel(
+      id: 2,
+      title: 'Rekapitulasi Penjualan Bulanan',
+      icon: SvgPicture.asset(
+        "assets/svg/report.svg",
+        width: 20,
+        height: 20,
+      )),
+  MenuModel(
+      id: 3,
+      title: 'Kelas Barang per Periode',
+      icon: SvgPicture.asset(
+        "assets/svg/report.svg",
+        width: 20,
+        height: 20,
+      )),
 ];
 
-// ==============constat message==============
+// ==========Daftar Menu Akses Dashboard==========
+List<MenuModel> lstDashMenu = [
+  MenuModel(
+      id: 1,
+      title: "Pembelian",
+      icon: SvgPicture.asset(
+        "assets/svg/purchase.svg",
+        width: 30,
+        height: 30,
+      )),
+  MenuModel(
+      id: 2,
+      title: "Rekam Barcode",
+      icon: SvgPicture.asset(
+        "assets/svg/barcoderecord.svg",
+        width: 30,
+        height: 30,
+      )),
+  MenuModel(
+      id: 3,
+      title: "Kasir",
+      icon: SvgPicture.asset(
+        "assets/svg/kasir.svg",
+        width: 30,
+        height: 30,
+      )),
+  MenuModel(
+      id: 4,
+      title: "Penjualan Kredit",
+      icon: SvgPicture.asset(
+        "assets/svg/creditcard.svg",
+        width: 30,
+        height: 30,
+      )),
+  MenuModel(
+      id: 5,
+      title: "Manajemen Diskon",
+      icon: SvgPicture.asset(
+        "assets/svg/discountmanage.svg",
+        width: 30,
+        height: 30,
+      )),
+  MenuModel(
+      id: 6,
+      title: "Stok Opname",
+      icon: SvgPicture.asset(
+        "assets/svg/stock.svg",
+        width: 30,
+        height: 30,
+      )),
+];
+
+// ==============constant message==============
 const String msgSafeFail = "Gagal menyimpan data";
 const String msgSafeDone = "Data tersimpan";
 
@@ -72,7 +222,6 @@ const String rtReferensi = "/referensi";
 const String rtMitraForm = '/mitraform';
 const String rtProdukForm = '/produkform';
 const String rtBrowserData = '/browser';
-// const String rtSatKonversi = "/satkonversi";
 
 // =====================Intro=====================
 List<IntroModel> lstIntro = [

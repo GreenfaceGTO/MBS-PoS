@@ -4,9 +4,11 @@ import 'package:flutter/material.dart';
 import 'package:mbspos/data/database/dao/item_dao.dart';
 import 'package:mbspos/data/database/dao/mitra_dao.dart';
 import 'package:mbspos/data/database/dao/ref_dao.dart';
+import 'package:mbspos/data/database/dao/usaha_dao.dart';
 import 'package:mbspos/data/repository/masterdata_repo.dart';
 import 'package:mbspos/models/data/item_model.dart';
 import 'package:mbspos/models/data/mitra_model.dart';
+import 'package:mbspos/models/data/usaha_model.dart';
 import 'package:mbspos/service/utils/cachemanager.dart';
 import 'package:mbspos/service/utils/constant.dart';
 import 'package:mbspos/service/utils/global_enums.dart';
@@ -14,7 +16,10 @@ import 'package:mbspos/ui/widgets/components/general_widget.dart';
 
 class MasterProvider with ChangeNotifier, CacheManager {
   final _masterdataRepo = MasterdataRepo(
-      refDao: RefDao(), mitraDao: MitraDao(), itemDao: ItemDao());
+      refDao: RefDao(),
+      mitraDao: MitraDao(),
+      itemDao: ItemDao(),
+      usahaDao: UsahaDao());
 
   // ===========marking inisialisasi provider===========
   bool _isInitialized = false;
@@ -24,11 +29,12 @@ class MasterProvider with ChangeNotifier, CacheManager {
   List<String> _daftarKategori = [];
   List<String> _daftarSatuan = [];
   List<ItemModel> _daftarProduk = [];
-  final List<ItemModel> _lstFilterProduk = [];
   List<MitraModel> _daftarSupplier = [];
   List<MitraModel> _daftarPelanggan = [];
+  final List<ItemModel> _lstFilterProduk = [];
   String _selectedRef = "Satuan";
   bool _produkSearchMode = false;
+  UsahaModel? _dataUsaha;
 
   // ================getter================
   List<String> get daftarMerek => _daftarMerek;
@@ -38,7 +44,7 @@ class MasterProvider with ChangeNotifier, CacheManager {
   List<ItemModel> get lstFilterProduk => _lstFilterProduk;
   List<MitraModel> get daftarSupplier => _daftarSupplier;
   List<MitraModel> get daftarPelanggan => _daftarPelanggan;
-
+  UsahaModel? get dataUsaha => _dataUsaha;
   String get selectedRef => _selectedRef;
   bool get produkSearchMode => _produkSearchMode;
 
@@ -63,14 +69,15 @@ class MasterProvider with ChangeNotifier, CacheManager {
   // =============inisialisasi=============
   Future<void> init() async {
     if (_isInitialized) return;
-    _isInitialized = true;
     _daftarMerek = await _masterdataRepo.getAllRef("merek");
     _daftarKategori = await _masterdataRepo.getAllRef("kategori");
     _daftarSatuan = await _masterdataRepo.getAllRef("satuan");
     _daftarProduk = await _masterdataRepo.getAllProduk();
     _lstFilterProduk.addAll(_daftarProduk);
+    _dataUsaha = await _masterdataRepo.getDataUsaha();
     _daftarSupplier = await _masterdataRepo.getAllMitra("supplier");
     _daftarPelanggan = await _masterdataRepo.getAllMitra("pelanggan");
+    _isInitialized = true;
     notifyListeners();
   }
 

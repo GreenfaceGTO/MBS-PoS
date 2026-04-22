@@ -26,10 +26,11 @@ class AppStartUpService {
     }
 
     log("$runtimeType : Mengambil data usaha...");
-    UsahaModel? usaha = await UsahaDao.getDataUsaha();
-    if (usaha != null) {
-      log(usaha.toMap().toString());
-    }
+    UsahaDao usahaDao = UsahaDao();
+    UsahaModel? usaha = await usahaDao.getDataUsaha();
+    // if (usaha != null) {
+    //   log(usaha.toMap().toString());
+    // }
     if (usaha == null) {
       return AppStartRoute.intro;
     } else {

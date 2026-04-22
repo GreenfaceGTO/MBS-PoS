@@ -9,7 +9,7 @@ class MitraDao {
   // -----------------------------------------
   // Menghapus mitra berdasarkan id
   // -----------------------------------------
-  static Future<bool> delMitraById(int id) async {
+  Future<bool> delMitraById(int id) async {
     final db = await Dbhelper.database;
     try {
       final result =
@@ -23,7 +23,7 @@ class MitraDao {
   // ---------------------------
   /// Mengupdate data mitra
   // ---------------------------
-  static Future<bool> updateMitra(MitraModel data) async {
+  Future<bool> updateMitra(MitraModel data) async {
     final db = await Dbhelper.database;
 
     log("data ${data.toMap().toString()}");
@@ -41,7 +41,7 @@ class MitraDao {
   // -------------------------------------
   /// Menghapus semua data tabel mitra
   // -------------------------------------
-  static Future<void> delAllMitra() async {
+  Future<void> delAllMitra() async {
     final db = await Dbhelper.database;
     try {
       await db.delete(MitraTable.table);
@@ -53,7 +53,7 @@ class MitraDao {
   // -------------------------
   /// Menyimpan data mitra
   // -------------------------
-  static Future<int> saveMitra(MitraModel data) async {
+  Future<int> saveMitra(MitraModel data) async {
     final db = await Dbhelper.database;
 
     try {
@@ -66,7 +66,7 @@ class MitraDao {
   // -----------------------------------------
   /// Mengambil daftar mitra menurut tipe
   // -----------------------------------------
-  static Future<List<MitraModel>> getAllMitra(String tipe) async {
+  Future<List<MitraModel>> getAllMitra(String tipe) async {
     final db = await Dbhelper.database;
     try {
       final result =

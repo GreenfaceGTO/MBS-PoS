@@ -29,7 +29,7 @@ class MyApp extends StatelessWidget {
       providers: AppProviders().providers,
       child: MaterialApp(
         scaffoldMessengerKey: rootScaffoldMessengerKey,
-        title: 'Flutter Demo',
+        title: 'MBSPoS',
         theme: AppTema.tema,
         onGenerateRoute: AppRoutes.generateRoute,
         home: const Splashscreen(),

@@ -8,7 +8,7 @@ import 'package:mbspos/models/data/satitem_model.dart';
 
 class ItemDao {
   /// =============Update Status=============
-  static Future<bool> updateStatus(int idProduk, bool status) async {
+  Future<bool> updateStatus(int idProduk, bool status) async {
     final db = await Dbhelper.database;
     try {
       return await db.update(ItemTable.table, {"aktif": status ? 1 : 0}) > 0;
@@ -18,7 +18,7 @@ class ItemDao {
   }
 
   /// ==============Update Stok==============
-  static Future<bool> updateStok(int idProduk, int newStok) async {
+  Future<bool> updateStok(int idProduk, int newStok) async {
     final db = await Dbhelper.database;
     try {
       return await db.update(ItemTable.table, {"stok": newStok},
@@ -30,7 +30,7 @@ class ItemDao {
   }
 
   /// ==============Menyimpan update data produk==============
-  static Future<ItemModel> updateProduk(ItemModel updatedData) async {
+  Future<ItemModel> updateProduk(ItemModel updatedData) async {
     final db = await Dbhelper.database;
     try {
       return db.transaction((txn) async {
@@ -91,7 +91,7 @@ class ItemDao {
   }
 
   /// ==========Menyimpan data produk==========
-  static Future<ItemModel> simpanProduk(ItemModel data) async {
+  Future<ItemModel> simpanProduk(ItemModel data) async {
     final db = await Dbhelper.database;
     try {
       return db.transaction<ItemModel>((txn) async {
@@ -122,7 +122,7 @@ class ItemDao {
   }
 
   /// ==========Mengambil daftar produk==========
-  static Future<List<ItemModel>?> getAllProduk() async {
+  Future<List<ItemModel>?> getAllProduk() async {
     final db = await Dbhelper.database;
     try {
       final result = await db.query(ItemTable.table);
@@ -145,7 +145,7 @@ class ItemDao {
   }
 
   /// =============Mengambil daftar satuan berdasarkan id produk=============
-  static Future<List<SatitemModel>> getSatuanById(int produkId) async {
+  Future<List<SatitemModel>> getSatuanById(int produkId) async {
     final db = await Dbhelper.database;
     log("Id produk : $produkId");
     try {
@@ -161,7 +161,7 @@ class ItemDao {
   }
 
   // ==================Menghapus data produk==================
-  static Future<bool> deleteProduk(int produkId) async {
+  Future<bool> deleteProduk(int produkId) async {
     final db = await Dbhelper.database;
     try {
       return await db

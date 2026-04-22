@@ -6,7 +6,7 @@ class RefDao {
   // ---------------------------
   // Menghapus data referensi
   // ---------------------------
-  static Future<bool> delRef(String tipe, String namaRef) async {
+  Future<bool> delRef(String tipe, String namaRef) async {
     final db = await Dbhelper.database;
     try {
       final result = await db.delete(RefTable.table,
@@ -20,7 +20,7 @@ class RefDao {
   // -------------------------
   // Menyimpan data referensi
   // -------------------------
-  static Future<int> saveRef(String tipe, String namaRef) async {
+  Future<int> saveRef(String tipe, String namaRef) async {
     final db = await Dbhelper.database;
     Map<String, String> data = {"nama_ref": namaRef, "tipe": tipe};
     try {
@@ -33,7 +33,7 @@ class RefDao {
   // ----------------------------------------
   // Mengambil data referensi menurut tipe
   // ----------------------------------------
-  static Future<List<String>> getRefByTipe(String tipe) async {
+  Future<List<String>> getRefByTipe(String tipe) async {
     final db = await Dbhelper.database;
     try {
       final result = await db.query(RefTable.table,
