@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:mbspos/providers/master_provider.dart';
 import 'package:mbspos/providers/startup_provider.dart';
 import 'package:mbspos/service/startup_service.dart';
-import 'package:mbspos/ui/dashboard_page.dart';
+import 'package:mbspos/ui/pages/dashboard_page.dart';
 import 'package:mbspos/ui/dummy_page.dart';
 import 'package:mbspos/ui/pages/intro_page.dart';
 import 'package:mbspos/ui/pages/register_page.dart';

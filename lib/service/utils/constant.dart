@@ -218,10 +218,13 @@ const String rtRegister = "/register";
 const String rtLogin = "/login";
 const String rtDashboard = "/dashboard";
 const String rtReferensi = "/referensi";
+const String rtProduk = "/produk";
+const String rtPembelian = "/pembelian";
 
 const String rtMitraForm = '/mitraform';
 const String rtProdukForm = '/produkform';
 const String rtBrowserData = '/browser';
+const String rtPembelianForm = "/pembelianform";
 
 // =====================Intro=====================
 List<IntroModel> lstIntro = [
