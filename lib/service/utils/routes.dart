@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:mbspos/models/args_model.dart';
-import 'package:mbspos/ui/dashboard_page.dart';
+import 'package:mbspos/ui/pages/dashboard_page.dart';
 import 'package:mbspos/ui/dummy_page.dart';
 import 'package:mbspos/ui/pages/form/mitra_form.dart';
+import 'package:mbspos/ui/pages/form/pembelian_form.dart';
+import 'package:mbspos/ui/pages/pembelian_page.dart';
 import 'package:mbspos/ui/pages/produk_page.dart';
 import 'package:mbspos/ui/pages/referensi_page.dart';
 import 'package:mbspos/ui/pages/register_page.dart';
@@ -17,11 +19,12 @@ class AppRoutes {
   /// dideklarasikan di sini agar lebih simple
   // ---------------------------------------------------------------
   static Map<String, WidgetBuilder> routes = {
-    "/register": (_) => const RegisterPage(),
-    "/login": (_) => const DummyPage(caption: "Login Page"),
-    "/dashboard": (_) => const DashboardPage(),
-    "/referensi": (_) => const ReferensiPage(),
-    "/produk": (_) => const ProdukPage(),
+    rtRegister: (_) => const RegisterPage(),
+    rtLogin: (_) => const DummyPage(caption: "Login Page"),
+    rtDashboard: (_) => const DashboardPage(),
+    rtReferensi: (_) => const ReferensiPage(),
+    rtProduk: (_) => const ProdukPage(),
+    rtPembelian: (_) => const PembelianPage()
   };
 
   // ---------------------------------------------------------------------
@@ -47,6 +50,9 @@ class AppRoutes {
         return MaterialPageRoute(builder: (_) {
           return Databrowser(tipeRef: ref['tipe']);
         });
+      case rtPembelianForm:
+        final args = setting.arguments as ArgsModel;
+        return MaterialPageRoute(builder: (_) => PembelianForm(args: args));
 
       default:
         return MaterialPageRoute(

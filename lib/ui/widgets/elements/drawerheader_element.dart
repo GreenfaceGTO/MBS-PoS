@@ -34,41 +34,5 @@ class _DrawerheaderElementState extends State<DrawerheaderElement> {
           ),
       ],
     );
-    // FutureBuilder(
-    //     // TODO: ganti ini menggunakan repo
-    //     future: UsahaDao.getDataUsaha(),
-    //     builder: (context, snapshot) {
-    //       if (snapshot.connectionState == ConnectionState.waiting) {
-    //         return const Center(
-    //           child: CircularProgressIndicator(),
-    //         );
-    //       }
-    //       if (!snapshot.hasData || snapshot.data == null) {
-    //         return const Center(
-    //           child: Text("Data Usaha belum ada"),
-    //         );
-    //       }
-    //       final dataUsaha = snapshot.data!;
-    //       log(dataUsaha.toMap().toString());
-    //       return Column(
-    //         mainAxisSize: MainAxisSize.min,
-    //         children: [
-    //           Text(
-    //             dataUsaha.namaUsaha!.toString(),
-    //             style: tema.titleMedium,
-    //           ),
-    //           if (dataUsaha.alamat != null)
-    //             Text(
-    //               dataUsaha.alamat!.toString(),
-    //               style: tema.bodyMedium,
-    //             ),
-    //           if (dataUsaha.noTelp != null)
-    //             Text(
-    //               dataUsaha.noTelp!.toString(),
-    //               style: tema.bodyMedium,
-    //             ),
-    //         ],
-    //       );
-    //     });
   }
 }

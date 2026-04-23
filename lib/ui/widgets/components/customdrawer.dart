@@ -39,6 +39,16 @@ class _CustomdrawerState extends State<Customdrawer> {
     }
   }
 
+  void onPembelianMenuTap(int menuId) {
+    switch (menuId) {
+      case 2:
+        Navigator.pushNamed(context, "/pembelian");
+
+        break;
+      default:
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Drawer(
@@ -79,6 +89,9 @@ class _CustomdrawerState extends State<Customdrawer> {
                   title: const Text("Pembelian"),
                   children: lstPembelian.map((pbl) {
                     return ListTile(
+                      onTap: () {
+                        onPembelianMenuTap(pbl.id);
+                      },
                       leading: pbl.icon,
                       title: Text(pbl.title),
                     );

@@ -1,3 +1,24 @@
+import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
+
+extension DateTimeExtension on DateTime {
+  String toIndonesianDate({bool withTime = false}) {
+    if (withTime) {
+      return DateFormat('dd MMM yyyy  HH:mm').format(this);
+    } else {
+      return DateFormat('dd MMM yyyy').format(this);
+    }
+  }
+}
+
+extension TimeExtension on TimeOfDay {
+  String toIndonesianTime() {
+    final hour = this.hour.toString().padLeft(2, '0');
+    final minute = this.minute.toString().padLeft(2, '0');
+    return "$hour:$minute";
+  }
+}
+
 extension StringExtension on String {
   // ------------------------------------------------------------------
   /// merubah huruf diawal kata pertama dalam kalimat menjadi capital
